@@ -1,0 +1,4 @@
+1. download ftd driver from ftdichip.com
+2. install the drivers (*.so) at /usr/lib
+3. apt-get install swig 
+4. apt-get install python-dev
