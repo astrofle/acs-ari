@@ -2,7 +2,7 @@ import SRT1_control_libV02 as SRT1
 import SRT2_control_libV02 as SRT2
 import datetime as dt
 import subprocess as sp
-import SHManager as SHManager
+import SHManager
 
 import time
 
@@ -20,20 +20,22 @@ eloff = 0
 #sh.stdin.write('1\n')
 #sh.stdin.write('1 2\n')
 
-sh = SHManager()
+sh = SHManager.SHManager()
 sh.set_bw(1e6)
 
-for i in range(-5, 5):
+for i in range(-1, 1):
     azoff = 0
     eloff = i*1
-    [az, el] = SRT1.source_azel(sun, SRT1.site)
+    #[az, el] = SRT1.source_azel(sun, SRT1.site)
+    az = 11.0
+    el = 6.0
     [az, el] = [az + azoff, el + eloff]
     [SRT1.aznow, SRT1.elnow, SRT1.azcount, SRT1.elcount, SRT1.p.azatstow, SRT1.p.elatstow] = SRT1.cmd_azel(az, el, SRT1.azcount, SRT1.elcount, SRT1.aznow, SRT1.elnow)
     [SRT2.aznow, SRT2.elnow, SRT2.azcount, SRT2.elcount, SRT2.p.azatstow, SRT2.p.elatstow] = SRT2.cmd_azel(az, el, SRT2.azcount, SRT2.elcount, SRT2.aznow, SRT2.elnow)
     #sh.stdin.write('4\n')
     #sh.stdin.write('test_%i.txt\n' %i)
     #sh.stdin.write('5\n')
-    sh.set_file_name("test_%i.txt\n" %i)
+    sh.set_file_name("test_%i.txt" %i)
     sh.get_spectrum()
     sh.write_spectrum()
     time.sleep(2)
