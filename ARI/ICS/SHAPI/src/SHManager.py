@@ -1,5 +1,6 @@
 import CUSBSA
 import sys
+import ctypes
 
 class SHManager:
    def __init__(self):
@@ -14,11 +15,12 @@ class SHManager:
       self.filename = "default.txt"
       self.amp = []
       self.freq = []
+      self.num_channel = 0
       self.update_freq()
    def __del__(self):
       #clean up
-      del(self.sh.amp)
-      del(self.sh.freq)
+      del(self.amp)
+      del(self.freq)
 
    def init_hound(self):
       val = self.sh.Initialize()
@@ -56,18 +58,30 @@ class SHManager:
        self.filename = _filename
    def get_spectrum(self): 
        print "Adquiring single spec ..."
-       num_channel = self.sh.SlowSweep(self.fi, self.ff, self.FFT)
+       #num_channel = self.sh.SlowSweep(self.fi, self.ff, self.FFT)
+       num_channel = self.sh.FastSweep(310.0e6,390.0e6)
+       
+      
+       pA = ctypes.cast( self.sh.dTraceAmpl.__long__(), ctypes.POINTER( ctypes.c_double ) )
+       pF = ctypes.cast( self.sh.dTraceFreq.__long__(), ctypes.POINTER( ctypes.c_double ) )
+       print "num_channel %d " %(num_channel)
+
+       self.num_channel = num_channel
+       self.amp = []
+       self.freq = []
+
        for i in range(0, num_channel):
-          self.amp = []
-          self.freq = []
-          self.amp.append(self.sh.dTraceAmpl[i])
-          self.freq.append(self.sh.dTraceFreq[i])
+          print "iteration %d" %i
+          print pA[i]
+          self.amp.append(pA[i])
+          print pF[i]
+          self.freq.append(pF[i])
        print "ready."
    def write_spectrum(self):
        print "Writting data to %s ..." % self.filename
        f = open(self.filename, 'w')
-       for i in range(0, len(self.amp)):
-           f.write("%0.10f    %0.10f" % (self.freq[i], self.amp[i]) )
+       for i in range(0, self.num_channel):
+           f.write("%0.10f    %0.10f \r\n" % (self.freq[i], self.amp[i]) )
        f.close()
        print "ready."
    

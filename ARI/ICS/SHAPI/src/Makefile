@@ -7,7 +7,7 @@ all:
 	@echo "Building python wrapper for CUSBSA"
 	swig -python -c++ CUSBSA.i
 	g++ -c CUSBSA_wrap.cxx -I/usr/include/python2.7
-	g++ -shared CUSBSA_wrap.o -lCUSBSA -lshapi  -lftd2xx -lpthread -o _CUSBSA.so
+	g++ -shared CUSBSA_wrap.o -L./ -lCUSBSA -lshapi  -lftd2xx -lpthread -o _CUSBSA.so
 	@echo "Building python wrapper for SHLAPI"
 	swig -python -c++ SHLAPI.i
 	g++ -c SHLAPI_wrap.cxx -I/usr/include/python2.7

@@ -62,7 +62,7 @@ int main()
     ofstream file("trace.plot");
 
     // Max Check
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 1; i++) {
       double max = 0.0;
       int max_ix = 0;
 
@@ -72,10 +72,12 @@ int main()
       cout << " max index = " << max_ix << endl;
 
       usleep(50000);
-      //for(int i = 0; i < count; i++)
-      //file << mySignalHound.dTraceFreq[i] << " "
-      //     << mySignalHound.dTraceAmpl[i] << endl;
-      //file << endl;
+      for(int i = 0; i < count; i++)
+      cout << mySignalHound.dTraceFreq[i] << " "
+           << mySignalHound.dTraceAmpl[i] << endl;
+      cout << endl;
+
+      cout << "size " << count << endl;
     }
 
     return 0;
