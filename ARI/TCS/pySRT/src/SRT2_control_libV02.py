@@ -52,6 +52,7 @@ def stow_antenna(p):
     elcount = 0
     axis = 1
     fcount = 0
+    count = 5000
     
     mm = 0
     cmd = "  move " + str(mm) + " " + str(count) + "\n"
@@ -61,7 +62,6 @@ def stow_antenna(p):
     [p.azatstow, p.elatstow, azcount, elcount, axis] = antenna_positionStatus(mm, cmd_r, p.tostow, p.azatstow, p.elatstow, azcount, elcount, fcount, axis, p.azlim1, p.ellim1)
     
     mm = 2
-    count = 5000
     cmd = "  move " + str(mm) + " " + str(count) + "\n"
     send_command(port, cmd)
     cmd_r = get_serialAnswer(port)

@@ -58,8 +58,8 @@ class SHManager:
        self.filename = _filename
    def get_spectrum(self): 
        print "Adquiring single spec ..."
-       #num_channel = self.sh.SlowSweep(self.fi, self.ff, self.FFT)
-       num_channel = self.sh.FastSweep(310.0e6, 390.0e6)
+       num_channel = self.sh.SlowSweep(self.fi, self.ff, self.FFT)
+       #num_channel = self.sh.FastSweep(310.0e6, 390.0e6)
        
        pA = ctypes.cast( self.sh.dTraceAmpl.__long__(), ctypes.POINTER( ctypes.c_double ) )
        pF = ctypes.cast( self.sh.dTraceFreq.__long__(), ctypes.POINTER( ctypes.c_double ) )
