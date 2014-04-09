@@ -53,15 +53,15 @@ def stow_antenna(p):
     axis = 1
     fcount = 0
     
-    mm = 2
-    count = 5000
+    mm = 0
     cmd = "  move " + str(mm) + " " + str(count) + "\n"
     send_command(port, cmd)
     cmd_r = get_serialAnswer(port)
     
     [p.azatstow, p.elatstow, azcount, elcount, axis] = antenna_positionStatus(mm, cmd_r, p.tostow, p.azatstow, p.elatstow, azcount, elcount, fcount, axis, p.azlim1, p.ellim1)
     
-    mm = 0
+    mm = 2
+    count = 5000
     cmd = "  move " + str(mm) + " " + str(count) + "\n"
     send_command(port, cmd)
     cmd_r = get_serialAnswer(port)
@@ -366,6 +366,14 @@ def track_source(source, site, p, aznow, elnow, azcount, elcount, tracktime=2/60
         if (time.time() > timeout):
             break
     return [aznow, elnow, azcount, elcount, p.azatstow, p.elatstow]
+
+def noise_on():
+	cmd = "  move 7 0\n"
+	send_command(port, cmd)
+
+def noise_off():
+	cmd = " move 6 0\n"
+	send_command(port, cmd)
        
 port = init_com(p)
 site = set_site(p)

@@ -59,9 +59,8 @@ class SHManager:
    def get_spectrum(self): 
        print "Adquiring single spec ..."
        #num_channel = self.sh.SlowSweep(self.fi, self.ff, self.FFT)
-       num_channel = self.sh.FastSweep(310.0e6,390.0e6)
+       num_channel = self.sh.FastSweep(310.0e6, 390.0e6)
        
-      
        pA = ctypes.cast( self.sh.dTraceAmpl.__long__(), ctypes.POINTER( ctypes.c_double ) )
        pF = ctypes.cast( self.sh.dTraceFreq.__long__(), ctypes.POINTER( ctypes.c_double ) )
        print "num_channel %d " %(num_channel)
@@ -77,6 +76,7 @@ class SHManager:
           print pF[i]
           self.freq.append(pF[i])
        print "ready."
+       
    def write_spectrum(self):
        print "Writting data to %s ..." % self.filename
        f = open(self.filename, 'w')
@@ -84,7 +84,6 @@ class SHManager:
            f.write("%0.10f    %0.10f \r\n" % (self.freq[i], self.amp[i]) )
        f.close()
        print "ready."
-   
        
 if __name__ == "__main__":
     print "Staring SHManager"
@@ -95,4 +94,3 @@ if __name__ == "__main__":
     sh.set_file_name("hola.txt")
     sh.get_spectrum()
     sh.write_spectrum()
-        
