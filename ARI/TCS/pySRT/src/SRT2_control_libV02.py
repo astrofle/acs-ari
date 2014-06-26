@@ -113,7 +113,8 @@ def normalize_az(az, south):
 	return az
 
 def get_cmd_inLimits(az, el, azlim1, azlim2, ellim1, ellim2):
-	# region is for find the relation between commanded position and antenna limits, if (az,el) don't fall in any region then command is out of limits
+	# region is for find the relation between commanded position and antenna limits, 
+	# if (az,el) don't fall in any region then command is out of limits
 	region1 = 0
 	region2 = 0
 	region3 = 0;
@@ -222,7 +223,8 @@ def parseAnswer(cmd_r, count):
 		#print "OK"
 		rec_count = float(cmd_r[1]) #encoder count read back from antenna controller
 		b2count = float(cmd_r[2]) #read back from antenna controller
-	#count is >5000 for stow command, fcount = 2*rec_count = 2*count and updates the current axis count whit the encoder counts during last step
+	#count is >5000 for stow command, 
+	#fcount = 2*rec_count = 2*count and updates the current axis count whit the encoder counts during last step
 	if (count < 5000):
 		fcount = count * 2 + b2count; # add extra 1/2 count from motor coast
 	else:
@@ -334,19 +336,27 @@ def set_site(p):
 	return site
 
 def set_object(source):
-    if(source == 'Sun'):
-        object = ephem.Sun()
-    if(source == 'Mars'):
-        object = ephem.Mars()
-    if(source == 'Jupiter'):
-        object = ephem.Jupiter()
-    if (source == 'LMC'):
-        object = ephem.readdb("LMC,f|G,5:23:34,-69:45:24,0.9,2000,3.87e4|3.3e4")
-    if (source == '3C273'):
-        object = ephem.readdb("3C273,f|G,12:29:06.6997,+02:03:08.598,12.8,2000,34.02|25.17")
-    if (source == 'sgrA'):
-        object = ephem.readdb("sgrA,f|J,17:45:40.036,-29:00:28.17,0,2000")
-    return object
+	if(source == 'Sun'):
+		object = ephem.Sun()
+	if(source == 'Mars'):
+		object = ephem.Mars()
+	if(source == 'Jupiter'):
+		object = ephem.Jupiter()
+	if (source == 'LMC'):
+		object = ephem.readdb("LMC,f|G,5:23:34,-69:45:24,0.9,2000,3.87e4|3.3e4")
+	if (source == '3C273'):
+		object = ephem.readdb("3C273,f|G,12:29:06.6997,+02:03:08.598,12.8,2000,34.02|25.17")
+	if (source == 'sgrA'):
+		object = ephem.readdb("sgrA,f|J,17:45:40.036,-29:00:28.17,0,2000")
+	if (source == 'G90'):
+		object = ephem.readdb("G90,f|J,21:13:44,48:12:27.17,0,2000")
+	if (source == 'G180'):
+		object = ephem.readdb("G180,f|J,05:43:11,29:1:20,0,2000")
+	if (source == 'Orion'):
+		object = ephem.readdb("Orion,f|J,05:35:17.3,-05:23:28,0,2000")
+	if (source == 'Rosett'):
+		object = ephem.readdb("Rosett,f|J,06:31:51,04:54:47,0,2000")
+	return object
 
 def source_azel(object, site):
 	site.date = ephem.now()
@@ -385,4 +395,7 @@ print "[SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount, SRT.p.azatstow, SRT.p.el
 print "changing only az and el parameters for the desired az-el coordinate"
 print ""
 print "To track a source use"
-print " [SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount, SRT.p.azatstow, SRT.p.elatstow] = SRT.track_source('source', 'site', SRT.p, SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount)"
+print "[SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount, SRT.p.azatstow, SRT.p.elatstow] = SRT.track_source('source', 'site', SRT.p, SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount)"
+print ""
+print "To stow antenna use:"
+print "[p.azatstow, p.elatstow, azcount, elcount, axis, aznow, elnow] = stow_antenna(p)"

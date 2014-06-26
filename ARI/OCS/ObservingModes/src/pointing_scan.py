@@ -1,43 +1,100 @@
-import SRT1_control_libV02 as SRT1
-import SRT2_control_libV02 as SRT2
-import datetime as dt
-import subprocess as sp
 import SHManager
-
+import os
 import time
+import sys
+from numpy import mean
 
-sun = SRT1.set_object('Sun')
+def az_scan(antenna, source, offsets, detector):
+	"""
+	Performs a scan of source in the Azimut direction.
+	It measures the power at the given offsets from the source.
+	The telescope tracks the source as it moves.
+	"""
 
-[az, el] = SRT1.source_azel(sun, SRT1.site)
+	print "Starting AZ scan of source %s." % source.name
 
-azoff = 0
-eloff = 0
+	scan_data = []
+	for i, o in enumerate(offsets):
+		integration = []
+		[az, el] = antenna.source_azel(source, antenna.site)
+		[az, el] = [az + o, el + 0.0]
+		[antenna.aznow, antenna.elnow, antenna.azcount, antenna.elcount, antenna.p.azatstow, antenna.p.elatstow] = \
+		     antenna.cmd_azel(az, el, antenna.azcount, antenna.elcount, antenna.aznow, antenna.elnow)
+		detector.set_file_name(folder + "/scan_az_%i.txt" % i)
+		detector.get_spectrum()
+		detector.write_spectrum()
 
-# Initialize the signal hound and talk to it via a C++ script
-#sh = sp.Popen('./sh_loop', stdin = sp.PIPE)
-#sh.stdin.write('2\n')
-#sh.stdin.write('1e6\n')
-#sh.stdin.write('1\n')
-#sh.stdin.write('1 2\n')
+	print "Done with AZ scan."
 
-sh = SHManager.SHManager()
-sh.set_bw(1e6)
+def el_scan(antenna, source, offsets, detector):
+	"""
+	Performs a scan of source in the Elevation direction.
+	It measures the power at the given offsets from the source.
+	The telescope tracks the source as it moves.
+	"""
 
-for i in range(-1, 1):
-    azoff = 0
-    eloff = i*1
-    #[az, el] = SRT1.source_azel(sun, SRT1.site)
-    az = 11.0
-    el = 6.0
-    [az, el] = [az + azoff, el + eloff]
-    [SRT1.aznow, SRT1.elnow, SRT1.azcount, SRT1.elcount, SRT1.p.azatstow, SRT1.p.elatstow] = SRT1.cmd_azel(az, el, SRT1.azcount, SRT1.elcount, SRT1.aznow, SRT1.elnow)
-    [SRT2.aznow, SRT2.elnow, SRT2.azcount, SRT2.elcount, SRT2.p.azatstow, SRT2.p.elatstow] = SRT2.cmd_azel(az, el, SRT2.azcount, SRT2.elcount, SRT2.aznow, SRT2.elnow)
-    #sh.stdin.write('4\n')
-    #sh.stdin.write('test_%i.txt\n' %i)
-    #sh.stdin.write('5\n')
-    sh.set_file_name("test_%i.txt" %i)
-    sh.get_spectrum()
-    sh.write_spectrum()
-    time.sleep(2)
+	print "Starting EL scan of source %s." % source.name
+
+	scan_data = []
+	for i, o in enumerate(offsets):
+		integration = []
+		[az, el] = antenna.source_azel(source, antenna.site)
+		[az, el] = [az + 0.0, el + o]
+		[antenna.aznow, antenna.elnow, antenna.azcount, antenna.elcount, antenna.p.azatstow, antenna.p.elatstow] = \
+		     antenna.cmd_azel(az, el, antenna.azcount, antenna.elcount, antenna.aznow, antenna.elnow)
+		detector.set_file_name(folder + "/scan_el_%i.txt" % i)
+		detector.get_spectrum()
+		detector.write_spectrum()
+
+	print "Done with EL scan."
+
+#START OF MAIN:
+if __name__ == "__main__":
+	from optparse import OptionParser
     
-#sh.terminate()
+	p = OptionParser()
+
+	p.add_option('-a', '--ant', dest='antenna', type='int', default=1,
+	    help='Which antenna to use, 1 or 2. Default is SRT1.')
+	p.add_option('-s', '--source', dest='source', type='str', default='Sun',
+	    help='Source to use as pointing calibrator. Defaults to the Sun.')
+	p.add_option('-b', '--band_width', dest='bw', type='float', default=1e6,
+	    help='Detector bandwidth in Hz. Defaults to 1 MHz.')
+	#p.add_option('-i', '--int_time', dest='inttime', type='float', default=1,
+	    #help='Integration time at each position. Defaults to 1 s.')
+	opts, args = p.parse_args(sys.argv[1:])
+
+	if args == []:
+		print 'Please specify a folder to store data.\n'
+		print 'Run with the -h flag to see all options.\n'
+		print 'Exiting.'
+		exit()
+	else:
+		folder = args[0] 
+
+	# Load the correct antenna control library
+	if opts.antenna == 1:
+		import SRT1_control_libV02 as SRT
+	else:
+		import SRT2_control_libV02 as SRT
+
+	# Set source to observe
+	source = SRT.set_object(opts.source)
+
+	# Initialize the Signal Hound
+	sh = SHManager.SHManager()
+	sh.set_bw(opts.bw)
+
+	# Check if specified folder exists
+	if not os.path.exists(folder):
+		os.makedirs(folder)
+
+	# EL scan
+	el_offsets = range(-10, 11)
+	el_scan(SRT, source, el_offsets, sh)
+
+	# AZ scan
+	az_offsets = range(-10, 11)
+	az_scan(SRT, source, az_offsets, sh)
+	
+	print "Done with pointing scan."

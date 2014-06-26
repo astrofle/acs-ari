@@ -2,13 +2,9 @@
 // Test Equipment Plus
 // Date: July 14, 2011
 
-// Revision History:
-// 7/14/11 Created.
-
-//This is a simple class to encapsulate the functionality of one Signal Hound USB-SA44B
-
 #include "CUSBSA.h"
 #include "SHLAPI.h"
+
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
@@ -16,182 +12,185 @@
 
 using namespace std;
 
-// The constructor allocates memory for a structure representing the Signal Hound device.
-CUSBSA::CUSBSA()
+// The constructor allocates memory for a 
+//   structure representing the Signal Hound device.
+CUSBSA::CUSBSA() :
+	is_initialized(false), is_configured(false), trace_len(0),
+	trace_ampl(0), trace_freq(0), last_decimation(1)
 {
-    //ctor
-
-    m_iStructSize = SHAPI_GetStructSize();
-    m_bIsInitialized = false;
-    m_bIsConfigured = false;
-    int sz = m_iStructSize * sizeof(double);
-    m_pvHoundStruct = (unsigned char *) malloc(sz);
-    //m_pvHoundStruct = new unsigned char[m_iStructSize];
-    dTraceAmpl = NULL;
-    dTraceFreq = NULL;
-    m_iTraceSize=0;
-    m_lastDecimation = 1;
+    struct_sz = SHAPI_GetStructSize();
+    sh_struct = (unsigned char*)malloc(struct_sz * sizeof(double));
 }
 
 // The destructor closes handles and frees allocated memory..
 CUSBSA::~CUSBSA()
 {
-    //dtor
-  if(m_bIsInitialized)
-    SHAPI_Close(m_pvHoundStruct);
-  free(m_pvHoundStruct);
-  // delete m_pvHoundStruct;
-  
-  if(dTraceAmpl != NULL)
-    {
-      free(dTraceAmpl);
-      free(dTraceFreq);
-    }
+	if(is_initialized)
+		SHAPI_Close(sh_struct);
+
+	free(sh_struct);
+	
+	if(trace_ampl != NULL)
+	  {
+		  free(trace_ampl);
+		  free(trace_freq);
+	  }
 }
 
 // The initialize function takes a cal table as an OPTIONAL parameter.  If the cal table
 // is absent, the device's internal table is read.  Initializes and prepares device for use.
-int CUSBSA::Initialize(unsigned char * pCalData)
+int CUSBSA::Initialize(unsigned char *pCalData)
 {
-    if(pCalData==NULL)
-    {
-        int errorval = SHAPI_Initialize(m_pvHoundStruct);
-        if(errorval==0) m_bIsInitialized = true;
-        SHAPI_CopyCalTable(m_pvHoundStruct,m_CalTable);
-        return errorval;
-    }
+	int err = 0;
 
-    memcpy(m_CalTable,pCalData,4096);
-    int errorval = SHAPI_InitializeEx(m_pvHoundStruct,pCalData);
-    if(errorval==0) m_bIsInitialized = true;
-    return errorval;
+    if(!pCalData)
+		{
+			err = SHAPI_Initialize(sh_struct);
+			if(err == 0) 
+				is_initialized = true;
+			SHAPI_CopyCalTable(sh_struct, m_CalTable);
+			return err;
+		}
+	
+    memcpy(m_CalTable, pCalData, 4096);
 
+    err = SHAPI_InitializeEx(sh_struct, pCalData);
+    if(err == 0) 
+		is_initialized = true;
+
+    return err;	
 }
 
 // The configure function sets internal clocks and selects RF / IF paths and gains.
-int CUSBSA::Configure(double attenVal, int mixerBand, int sensitivity, int decimation, int useIF2_9, int ADCclock)
+int CUSBSA::Configure(double attenVal, 
+					  int mixerBand, 
+					  int sensitivity, 
+					  int decimation, 
+					  int useIF2_9, 
+					  int ADCclock)
 {
-    m_lastDecimation = decimation;
-    if(!m_bIsConfigured)
-    {
-        m_bIsConfigured = true;
-        return SHAPI_Configure(m_pvHoundStruct, attenVal, mixerBand, sensitivity, decimation, useIF2_9, ADCclock);
-    }
+    last_decimation = decimation;
 
-    return SHAPI_ConfigureFast(m_pvHoundStruct, attenVal, mixerBand, sensitivity, decimation, useIF2_9, ADCclock);
+    if(!is_configured)
+		{
+			is_configured = true;
+			return SHAPI_Configure(sh_struct, attenVal, mixerBand, 
+								   sensitivity, decimation, useIF2_9, ADCclock);
+		}
+
+    return SHAPI_ConfigureFast(sh_struct, attenVal, mixerBand, 
+							   sensitivity, decimation, useIF2_9, ADCclock);
 }
 
 // The slow sweep function acquires a trace of data, typically less than 1 MHz span.
-int CUSBSA::SlowSweep(double startFreq, double stopFreq, int FFTSize, int avgCount, int imageHandling)
+int CUSBSA::SlowSweep(double start_freq, double stop_freq, int fft_len, 
+					  int avgCount, int image_reject)
 {
     // If never initialized, do it now.
-    if(!m_bIsInitialized)
-        if(Initialize()!=0) return -1;//Error not initialized
+    if(!is_initialized)
+        if(!Initialize()) 
+			return -1;
 
     // If never configured, configure now.
-    if(!m_bIsConfigured)
-    {
-        int bandGuess = 0; if(stopFreq >= 150.0e6) bandGuess = 1;
-        Configure(10.0, bandGuess);
-    }
+    if(!is_configured)
+		{
+			int bandGuess = 0; 
+			if(stop_freq >= 150.0e6) 
+				bandGuess = 1;
+			Configure(10.0, bandGuess);
+		}
 
-    int returnCount;
-    int i;
-    int minSize = SHAPI_GetSlowSweepCount(m_pvHoundStruct,startFreq,stopFreq,FFTSize) + 1;
+	int return_len;
+    int min_len = SHAPI_GetSlowSweepCount(sh_struct, start_freq, 
+										  stop_freq, fft_len) + 1;
 
-    if(m_iTraceSize < minSize) //We need a bigger trace buffer
-    {
-         if(dTraceAmpl != NULL)
-        {
-            free(dTraceAmpl);
-            free(dTraceFreq);
-        }
+    if(trace_len < min_len) // We need a bigger trace buffer
+		{
+			if(trace_ampl != NULL)
+				{
+					free(trace_ampl);
+					free(trace_freq);
+				}
+			
+			trace_ampl = (double*)malloc(min_len * sizeof(double));
+			trace_freq = (double*)malloc(min_len * sizeof(double));
+			trace_len = min_len;
+		}
+	
+    SHAPI_GetSlowSweep(sh_struct, trace_ampl, start_freq, stop_freq,
+					   &return_len, fft_len, avgCount, image_reject);
 
-        int sz = minSize * sizeof(double);
+    for(int i = 0; i < return_len; i++)
+        trace_freq[i] = start_freq + i * 486111.111 / fft_len / last_decimation;
 
-       // dTraceAmpl = new double[minSize];
-       // dTraceFreq = new double[minSize];
-        dTraceAmpl = (double *) malloc(sz);
-        dTraceFreq = (double *) malloc(sz);
-        m_iTraceSize = minSize;
-   }
+    m_dCalcRBW = 1.6384e6 / fft_len / last_decimation;
 
-
-    SHAPI_GetSlowSweep(m_pvHoundStruct,dTraceAmpl,startFreq,stopFreq,&returnCount,FFTSize,avgCount,imageHandling);
-//    if(returnCount > dTraceSize) cout << "size error" << dTraceSize << " < " << returnCount << endl;
-
-    for(i=0; i<returnCount; i++)
-        dTraceFreq[i] = startFreq + i * 486111.111 / FFTSize / m_lastDecimation;
-
-    m_dCalcRBW = 1.6384e6 / FFTSize / m_lastDecimation;
-
-    return returnCount;
-
+    return return_len;
 }
 
-// The fast sweep function acquires a trace of data, typically multiples of 200 KHz.
-int CUSBSA::FastSweep(double startFreq, double stopFreq, int FFTSize, int imageHandling)
+// The fast sweep function acquires a trace of data
+//   typically multiples of 200 KHz.
+int CUSBSA::FastSweep(double start, double stop, int fft_len, int image_reject)
 {
-    int returnCount;
-    int i;
-    int minSize = SHAPI_GetFastSweepCount(startFreq,stopFreq,FFTSize) + 1;
+    int return_len = 0;
+    int min_len = SHAPI_GetFastSweepCount(start, stop, fft_len) + 1;
 
-    m_dCalcRBW = 1.6384e6 / FFTSize;
-    if(FFTSize==1) m_dCalcRBW = 250.0e3;
+    m_dCalcRBW = 1.6384e6 / fft_len;
 
-    if(m_iTraceSize < minSize) //We need a bigger trace buffer
-    {
-         if(dTraceAmpl != NULL)
-        {
-            free(dTraceAmpl);
-            free(dTraceFreq);
-        }
+    if(fft_len == 1) 
+		m_dCalcRBW = 250.0e3;
 
-        int sz = minSize * sizeof(double);
-
-       // dTraceAmpl = new double[minSize];
-       // dTraceFreq = new double[minSize];
-        dTraceAmpl = (double *) malloc(sz);
-        dTraceFreq = (double *) malloc(sz);
-        m_iTraceSize = minSize;
-   }
-
-
+    if(trace_len < min_len) // We need a bigger trace buffer
+		{
+			if(trace_ampl != NULL)
+				{
+					free(trace_ampl);
+					free(trace_freq);
+				}
+						
+			trace_ampl = (double*)malloc(min_len * sizeof(double));
+			trace_freq = (double*)malloc(min_len * sizeof(double));
+			trace_len = min_len;
+		}
+	
     // If never initialized, do it now.
-    if(!m_bIsInitialized)
-        if(Initialize()!=0) return -1;//Error not initialized
-
+    if(!is_initialized)
+        if(!Initialize()) 
+			return -1;
+	
     // If never configured, configure now.
-    if((!m_bIsConfigured) || (m_lastDecimation!=1))
-    {
-        int bandGuess = 0; if(stopFreq >= 150.0e6) bandGuess = 1;
-        Configure(10.0, bandGuess);
-    }
+    if((!is_configured) || (last_decimation != 1))
+		{
+			int bandGuess = 0; 
+			if(stop >= 150.0e6) 
+				bandGuess = 1;
+			Configure(10.0, bandGuess);
+		}
+	
+    SHAPI_GetFastSweep(sh_struct, trace_ampl, start, stop,
+					   &return_len, fft_len, image_reject);
 
-    SHAPI_GetFastSweep(m_pvHoundStruct,dTraceAmpl,startFreq,stopFreq,&returnCount,FFTSize,imageHandling);
-    if(FFTSize>2)
-    {
-        for(i=0; i<returnCount; i++)
-            dTraceFreq[i] = startFreq + i * 4.0e5 / FFTSize ;
-    }
+    if(fft_len > 2)
+		for(int i = 0; i < return_len; i++)
+			trace_freq[i] = start + i * 400.0e3 / fft_len;
     else
-    {
-        for(i=0; i<returnCount; i++)
-            dTraceFreq[i] = startFreq + i * 2.0e5;
-    }
-    return returnCount;
+		for(int i = 0; i < return_len; i++)
+			trace_freq[i] = start + i * 2.0e5;
 
+    return return_len;	
 }
+
+/* For reference only, very similar to FastSweep()
 int CUSBSA::FastSweep_f(float startFreq, float stopFreq, int FFTSize, int imageHandling)
 {
     int returnCount;
-    int i;
-    int minSize = SHAPI_GetFastSweepCount(startFreq,stopFreq,FFTSize) + 1;
+    int minSize = SHAPI_GetFastSweepCount(startFreq, stopFreq, FFTSize) + 1;
 
     m_dCalcRBW = 1.6384e6 / FFTSize;
-    if(FFTSize==1) m_dCalcRBW = 250.0e3;
+    if(FFTSize == 1) 
+		m_dCalcRBW = 250.0e3;
 
-    if(m_iTraceSize < minSize) //We need a bigger trace buffer
+    if(trace_len < minSize) //We need a bigger trace buffer
     {
          if(fTraceAmpl != NULL)
         {
@@ -201,96 +200,98 @@ int CUSBSA::FastSweep_f(float startFreq, float stopFreq, int FFTSize, int imageH
 
         int sz = minSize * sizeof(float);
 
-       // dTraceAmpl = new double[minSize];
-       // dTraceFreq = new double[minSize];
         fTraceAmpl = (float *) malloc(sz);
         fTraceFreq = (float *) malloc(sz);
-        m_iTraceSize = minSize;
+        trace_len = minSize;
    }
 
 
     // If never initialized, do it now.
-    if(!m_bIsInitialized)
-        if(Initialize()!=0) return -1;//Error not initialized
+    if(!is_initialized)
+        if(!Initialize()) 
+			return -1;
 
     // If never configured, configure now.
-    if((!m_bIsConfigured) || (m_lastDecimation!=1))
+    if((is_configured) || (last_decimation != 1))
     {
         int bandGuess = 0; if(stopFreq >= 150.0e6) bandGuess = 1;
         Configure(10.0, bandGuess);
     }
 
-    SHAPI_GetFastSweep_f(m_pvHoundStruct,fTraceAmpl,startFreq,stopFreq,&returnCount,FFTSize,imageHandling);
-    if(FFTSize>2)
-    {
-        for(i=0; i<returnCount; i++)
-            fTraceFreq[i] = startFreq + i * 4.0e5 / FFTSize ;
-    }
+    SHAPI_GetFastSweep_f(sh_struct, fTraceAmpl, startFreq, stopFreq,
+						 &returnCount, FFTSize, imageHandling);
+    if(FFTSize > 2)
+		{
+			for(int i = 0; i < returnCount; i++)
+				fTraceFreq[i] = startFreq + i * 4.0e5 / FFTSize ;
+		}
     else
-    {
-        for(i=0; i<returnCount; i++)
-            fTraceFreq[i] = startFreq + i * 2.0e5;
-    }
-    return returnCount;
+		{
+			for(int i = 0; i < returnCount; i++)
+				fTraceFreq[i] = startFreq + i * 2.0e5;
+		}
 
+    return returnCount;
 }
+*/
 
 // Turns the preamplifier on or off..
-int CUSBSA::SetPreamp(int onoff)
+int CUSBSA::SetPreamp(int on_off)
 {
-    if(SHAPI_IsPreampAvailable(m_pvHoundStruct))
-        SHAPI_SetPreamp(m_pvHoundStruct,onoff);
+    if(SHAPI_IsPreampAvailable(sh_struct))
+        SHAPI_SetPreamp(sh_struct, on_off);
     else
         return 0;
-    return onoff;
+
+    return on_off;
 }
 
 void CUSBSA::SetSyncTrig(int mode)
 {
-     SHAPI_SyncTriggerMode(m_pvHoundStruct,mode);
+	SHAPI_SyncTriggerMode(sh_struct,mode);
 }
 
 int CUSBSA::External10MHz()
 {
-     return SHAPI_SelectExt10MHz(m_pvHoundStruct);
+	return SHAPI_SelectExt10MHz(sh_struct);
 }
 
-int CUSBSA::Authenticate(int vendorcode)
+int CUSBSA::Authenticate(int vendor_code)
 {
-     return SHAPI_Authenticate(m_pvHoundStruct,vendorcode);
+	return SHAPI_Authenticate(sh_struct, vendor_code);
 }
 
-int CUSBSA::GetIQDataPacket(int * pIData, int * pQData, double *centerFreq, int size)
+int CUSBSA::GetIQDataPacket(int *i_data, int *q_data, double *center_freq, int size)
 {
-     return SHAPI_GetIQDataPacket(m_pvHoundStruct, pIData, pQData, centerFreq, size);
+	return SHAPI_GetIQDataPacket(sh_struct, i_data, q_data, center_freq, size);
 }
 
-int CUSBSA::SetupLO(double * centerFreq, int mixMode)
+int CUSBSA::SetupLO(double * center_freq, int mix_mode)
 {
-     return SHAPI_SetupLO(m_pvHoundStruct,centerFreq, mixMode);
+	return SHAPI_SetupLO(sh_struct, center_freq, mix_mode);
 }
 
 int CUSBSA::StartStreaming()
 {
-     return SHAPI_StartStreamingData(m_pvHoundStruct);
+	return SHAPI_StartStreamingData(sh_struct);
 }
 
 int CUSBSA::StopStreaming()
 {
-     return SHAPI_StopStreamingData(m_pvHoundStruct);
+	return SHAPI_StopStreamingData(sh_struct);
 }
 
-int CUSBSA::GetStreamingPacket(int * pIData, int * pQData)
+int CUSBSA::GetStreamingPacket(int *i_data, int *q_data)
 {
-     return SHAPI_GetStreamingPacket(m_pvHoundStruct, pIData, pQData);
+	return SHAPI_GetStreamingPacket(sh_struct, i_data, q_data);
 }
 
 double CUSBSA::GetPhaseStep()
 {
-     return SHAPI_GetPhaseStep(m_pvHoundStruct);
+	return SHAPI_GetPhaseStep(sh_struct);
 }
 
 int CUSBSA::RunMeasurementReceiver()
 {
-     return SHAPI_RunMeasurementReceiver(m_pvHoundStruct,&m_MeasRcvr);
+	return SHAPI_RunMeasurementReceiver(sh_struct, &m_MeasRcvr);
 }

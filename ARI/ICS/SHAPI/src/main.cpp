@@ -67,14 +67,14 @@ int main()
       int max_ix = 0;
 
       count = mySignalHound.FastSweep(310.0e6, 390.0e6);
-      max = find_max(mySignalHound.dTraceAmpl, count, &max_ix);
+      max = find_max(mySignalHound.trace_ampl, count, &max_ix);
       cout << "Sweep " << i << " max = " << max;
       cout << " max index = " << max_ix << endl;
 
       usleep(50000);
       for(int i = 0; i < count; i++)
-      cout << mySignalHound.dTraceFreq[i] << " "
-           << mySignalHound.dTraceAmpl[i] << endl;
+      cout << mySignalHound.trace_freq[i] << " "
+           << mySignalHound.trace_ampl[i] << endl;
       cout << endl;
 
       cout << "size " << count << endl;
