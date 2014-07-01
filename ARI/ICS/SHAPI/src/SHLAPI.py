@@ -192,10 +192,6 @@ def SHAPI_GetFastSweep(*args):
   return _SHLAPI.SHAPI_GetFastSweep(*args)
 SHAPI_GetFastSweep = _SHLAPI.SHAPI_GetFastSweep
 
-def SHAPI_GetFastSweep_f(*args):
-  return _SHLAPI.SHAPI_GetFastSweep_f(*args)
-SHAPI_GetFastSweep_f = _SHLAPI.SHAPI_GetFastSweep_f
-
 def SHAPI_GetIQDataPacket(*args):
   return _SHLAPI.SHAPI_GetIQDataPacket(*args)
 SHAPI_GetIQDataPacket = _SHLAPI.SHAPI_GetIQDataPacket

@@ -27,14 +27,16 @@ class SHManager:
 		del(self.freq)
 
 	def init_hound(self):
+                print "Initializing the Signal Hound...",
 		val = self.sh.Initialize()
 		if val >= 100:
 			print "Could not communicate with the SH Device, make sure it is connected and try again"
 			sys.exit()
+                print "done"
 
-		print "Configuring SH ..."
+		print "Configuring SH...",
 		self.sh.Configure(0.0, 1, 1, 1, 0, 0)
-		print "... done. Hound ready for hunting!"
+		print "done. Hound ready for hunting!"
 
 	def update_freq(self):
 		_fi = self.fc - self.bw/2.0
@@ -82,8 +84,8 @@ class SHManager:
 			num_channel = self.sh.SlowSweep(self.fi, self.ff, self.FFT)
 		print "num_channel %d " %(num_channel)
 
-		pA = ctypes.cast( self.sh.trace_ampl.__long__(), ctypes.POINTER( ctypes.c_double ) )
-		pF = ctypes.cast( self.sh.trace_freq.__long__(), ctypes.POINTER( ctypes.c_double ) )
+		pA = ctypes.cast( self.sh.dTraceAmpl.__long__(), ctypes.POINTER( ctypes.c_double ) )
+		pF = ctypes.cast( self.sh.dTraceFreq.__long__(), ctypes.POINTER( ctypes.c_double ) )
 
 		self.num_channel = num_channel
 		self.amp = []

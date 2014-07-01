@@ -45,8 +45,6 @@ extern "C" int SHAPI_GetFastSweepCount(double startFreq, double stopFreq, int FF
 extern "C" int SHAPI_CyclePort(void * pV);
 extern "C" int SHAPI_GetFastSweep(void * pV, double * dBArray, double startFreq, double stopFreq,
 													  int * returnCount, int FFTSize, int imageHandling);
-extern "C" int SHAPI_GetFastSweep_f(void * pV, float * dBArray, float startFreq, float stopFreq,
-													  int * returnCount, int FFTSize, int imageHandling);
 extern "C" int SHAPI_GetIQDataPacket(void * pV,int * pIData, int * pQData, double *centerFreq, int size);
 extern "C" int SHAPI_Authenticate(void * pV,int vendorcode);
 extern "C" int SHAPI_SetupLO(void * pV,double *centerFreq, int mixMode);
