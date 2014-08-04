@@ -36,7 +36,7 @@ if __name__ == '__main__':
         folder = args[0] 
 
     # Set source to observe
-    source1 = srt1.sources.set_object('Sun')
+    source = srt1.sources.set_object('Sun')
     #source2 = srt2.sources.set_object('Sun')
     
     # Initialize the Signal Hound
@@ -49,9 +49,9 @@ if __name__ == '__main__':
         
     offsets = range(-10, 11)
     
-    az1 =  srt1.source_azel(source1, srt1.site)[0]
-    az2 =  srt2.source_azel(source2, srt2.site)[0]
+    az1 =  srt1.source_azel(source, srt1.site)[0]
+    az2 =  srt2.source_azel(source, srt2.site)[0]
     while (az1 > 0 - offsets[0]) and (az2 > 0 - offsets[0]):
-        az1 =  srt1.source_azel(source1, srt1.site)[0]
-        az2 =  srt2.source_azel(source2, srt2.site)[0]
-        az_scan_both(srt1, srt2, source1, offsets, sh, folder)
+        az1 =  srt1.source_azel(source, srt1.site)[0]
+        az2 =  srt2.source_azel(source, srt2.site)[0]
+        ps.az_scan_both(srt1, srt2, source, offsets, sh, folder)

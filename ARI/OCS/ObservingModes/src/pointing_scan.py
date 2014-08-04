@@ -37,7 +37,7 @@ def az_scan_both(ant1, ant2, source, offsets, detector, folder):
     for i, o in enumerate(offsets):
         integration = []
         # Compute source position and apply azimut offset
-        [az1, el1] = ant1.source_azel(source, anta1.site)
+        [az1, el1] = ant1.source_azel(source, ant1.site)
         [az2, el2] = ant2.source_azel(source, ant2.site)
         [az1, el1] = [az1 + o, el1 + 0.0]
         [az2, el2] = [az2 + o, el2 + 0.0]

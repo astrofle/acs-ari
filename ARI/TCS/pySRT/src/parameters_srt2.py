@@ -31,10 +31,10 @@ slew = 0 # 1 is for antenna moving until reaching commanded position
 
 #Antenna limits
 azlim1 = -4.5
-azlim2 = 355.0
+azlim2 = 359.0
 
 ellim1 = -5.5
-ellim2 = 85.0
+ellim2 = 89.0
 
 #Antenna Geometry - needed for elevation calculus
 pushrod = 1       #cassi mount, 0 for other kind of mount
