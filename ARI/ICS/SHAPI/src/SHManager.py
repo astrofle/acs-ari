@@ -2,7 +2,11 @@ import CUSBSA
 import sys
 import ctypes
 import time
+import datetime
 from numpy import mean
+
+def time_stamp(msg='', fmt='Time: %Y-%m-%d-%H-%M-%S #{msg} \r\n'):
+    return datetime.datetime.now().strftime(fmt).format(msg=msg)
 
 class SHManager:
     def __init__(self):
@@ -17,6 +21,7 @@ class SHManager:
         self.rbw = 6400
         self.decimation = 1
         self.filename = "default.txt"
+        self.acc_n = 0
         self.amp = []
         self.freq = []
         self.num_channel = 0
@@ -98,6 +103,7 @@ class SHManager:
             self.amp.append(pA[i])
             print pF[i]
             self.freq.append(pF[i])
+        self.acc_n += 1
         print "ready."
 
     def get_RBW(self):
@@ -131,6 +137,7 @@ class SHManager:
     def write_spectrum(self):
         print "Writting data to %s ..." % self.filename
         f = open(self.filename, 'w')
+        f.write( time_stamp() )
         for i in range(0, self.num_channel):
             f.write( "%0.10f    %0.10f \r\n" % (self.freq[i], self.amp[i]) )
         f.close()
