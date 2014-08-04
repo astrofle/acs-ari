@@ -51,5 +51,7 @@ if __name__ == '__main__':
     
     az1 =  srt1.source_azel(source1, srt1.site)[0]
     az2 =  srt2.source_azel(source2, srt2.site)[0]
-    while (az1 > offsets[0] and az2 > offsets[0]):
+    while (az1 > 0 - offsets[0]) and (az2 > 0 - offsets[0]):
+        az1 =  srt1.source_azel(source1, srt1.site)[0]
+        az2 =  srt2.source_azel(source2, srt2.site)[0]
         az_scan_both(srt1, srt2, source1, offsets, sh, folder)
