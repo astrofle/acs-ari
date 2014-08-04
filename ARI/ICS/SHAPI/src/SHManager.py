@@ -1,12 +1,19 @@
+#!usr/bin/env python
+
 import CUSBSA
 import sys
 import ctypes
 import time
 import datetime
-from numpy import mean
+
+from math import log, ceil
 
 def time_stamp(msg='', fmt='Time: %Y-%m-%d-%H-%M-%S #{msg} \r\n'):
     return datetime.datetime.now().strftime(fmt).format(msg=msg)
+
+def rad_head(data, az, el, freq0, nchan, fmt='%Y-%m-%d-%H-%M-%S {az} {el} {f0} {nchan} {data} \r\n'):
+    return datetime.datetime.now().strftime(fmt).format(data=" ".join([str(x) for x in data]), 
+                                                        az=az, el=el, f0=freq0, nchan=nchan)
 
 class SHManager:
     def __init__(self):
@@ -22,6 +29,7 @@ class SHManager:
         self.decimation = 1
         self.filename = "default.txt"
         self.acc_n = 0
+        self.datafile = None
         self.amp = []
         self.freq = []
         self.num_channel = 0
@@ -74,9 +82,9 @@ class SHManager:
         self.filename = _filename
 
     def set_fft(self, _fft):
-        if _fft % 2 != 0 or _fft == 0:
+        if not valid_fft_size(_fft):
             print "Invalid FFT size value of %0.f. It must be an integer power of 2." % _fft
-            _fft = 16
+            _fft = int(2**ceil(log(_fft, 2)))
             print "Will use %d instead." %_fft
         self.FFT = _fft
 
@@ -124,6 +132,19 @@ class SHManager:
         
         return _fft
 
+    def get_chw(self):
+        """
+        Gets the SH channel width.
+        """
+        if self.FFT < 512:
+            chw = int(round(4.0e5/self.FFT))
+        else:
+            chw = int(round(486111.111/self.FFT/self.decimation))
+
+        print "Using channel width of %.0f" % chw
+
+        return chw
+
     def set_chw(self, _chw):
         """
         Set the frequency separation of the output spectrum.
@@ -131,14 +152,15 @@ class SHManager:
         """
         _fft = self.chw_to_fftSize(_chw)
         self.set_fft(_fft)
+        self.get_chw()
    
-    def write_spectrum(self):
+    def write_spectrum(self, az, el):
         print "Writting data to %s ..." % self.filename
-        f = open(self.filename, 'w')
-        f.write( time_stamp() )
-        for i in range(0, self.num_channel):
-            f.write( "%0.10f    %0.10f \r\n" % (self.freq[i], self.amp[i]) )
-        f.close()
+        if not self.datafile:
+            self.datafile = open(self.filename, 'a')    
+        self.datafile.write(rad_head(self.amp, az, el, self.freq[0], self.num_channel))
+        #for i in range(0, self.num_channel):
+        #    f.write( "%0.10f    %0.10f \r\n" % (self.freq[i], self.amp[i]) )
         print "ready."
 
 def valid_fft_size(_fft):
