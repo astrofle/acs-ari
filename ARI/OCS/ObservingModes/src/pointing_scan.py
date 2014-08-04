@@ -76,7 +76,7 @@ def el_scan(antenna, source, offsets, detector):
     print "Done with EL scan."
 
 #START OF MAIN:
-    if __name__ == "__main__":
+if __name__ == "__main__":
     from optparse import OptionParser
 
     p = OptionParser()
