@@ -38,8 +38,6 @@ class SHManager:
         if val >= 100:
             print "Could not communicate with the SH Device, make sure it is connected and try again"
             sys.exit()
-                print "done"
-
         print "Configuring SH...",
         self.sh.Configure(0.0, 1, 1, 1, 0, 0)
         print "done. Hound ready for hunting!"
