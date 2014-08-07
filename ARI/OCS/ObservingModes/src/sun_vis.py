@@ -17,8 +17,6 @@ if __name__ == '__main__':
     
     p = OptionParser()
 
-    p.add_option('-a', '--ant', dest='antenna', type='int', default=1,
-        help='Which antenna to use, 1 or 2. Default is SRT1.')
     p.add_option('-s', '--source', dest='source', type='str', default='Sun',
         help='Source to use as pointing calibrator. Defaults to the Sun.')
     p.add_option('-b', '--band_width', dest='bw', type='float', default=1e6,
@@ -36,18 +34,19 @@ if __name__ == '__main__':
         folder = args[0] 
 
     # Set source to observe
-    source = srt1.sources.set_object('Sun')
+    source = srt1.sources.set_object(opts.source)
     #source2 = srt2.sources.set_object('Sun')
     
     # Initialize the Signal Hound
     sh = SHManager.SHManager()
     sh.set_bw(opts.bw)
+    sh.filename = '{0}/scan.txt'.format(folder)
 
     # Check if specified folder exists
     if not os.path.exists(folder):
         os.makedirs(folder)
         
-    offsets = range(-10, 11)
+    offsets = [0.1*i for i in range(-100, 101)]
     
     az1 =  srt1.source_azel(source, srt1.site)[0]
     az2 =  srt2.source_azel(source, srt2.site)[0]

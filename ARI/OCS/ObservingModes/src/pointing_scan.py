@@ -22,11 +22,11 @@ def az_scan(antenna, source, offsets, detector, folder):
              antenna.cmd_azel(az, el, antenna.azcount, antenna.elcount, antenna.aznow, antenna.elnow)
         detector.set_file_name(folder + "/scan_az_%i.txt" % i)
         detector.get_spectrum()
-        detector.write_spectrum()
+        detector.write_spectrum(az, el)
 
     print "Done with AZ scan."
 
-def az_scan_both(ant1, ant2, source, offsets, detector, folder):
+def az_scan_both(ant1, ant2, source, offsets, detector, folder, inttime=60):
     """
     Does an azimuth scan with both antennas.
     """
@@ -47,9 +47,12 @@ def az_scan_both(ant1, ant2, source, offsets, detector, folder):
         [ant2.aznow, ant2.elnow, ant2.azcount, ant2.elcount, ant2.p.azatstow, ant2.p.elatstow] = \
              ant2.cmd_azel(az2, el2, ant2.azcount, ant2.elcount, ant2.aznow, ant2.elnow)
         # Record
-        detector.set_file_name("{0}/scan_{1}_az_{2}.txt".format(folder, detector.acc_n, o))
-        detector.get_spectrum()
-        detector.write_spectrum()
+        timeout = time.time() + inttime
+        while True:
+            detector.get_spectrum()
+            detector.write_spectrum(az1, el1, az2, el2)
+            if time.time() > timeout:
+                break
 
     print "Done with AZ scan."
 
@@ -71,7 +74,7 @@ def el_scan(antenna, source, offsets, detector):
              antenna.cmd_azel(az, el, antenna.azcount, antenna.elcount, antenna.aznow, antenna.elnow)
         detector.set_file_name(folder + "/scan_el_%i.txt" % i)
         detector.get_spectrum()
-        detector.write_spectrum()
+        detector.write_spectrum(az, el)
 
     print "Done with EL scan."
 
