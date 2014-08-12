@@ -21,8 +21,8 @@ if __name__ == '__main__':
         help='Source to use as pointing calibrator. Defaults to the Sun.')
     p.add_option('-b', '--band_width', dest='bw', type='float', default=1e6,
         help='Detector bandwidth in Hz. Defaults to 1 MHz.')
-    #p.add_option('-i', '--int_time', dest='inttime', type='float', default=1,
-        #help='Integration time at each position. Defaults to 1 s.')
+    p.add_option('-i', '--int_time', dest='inttime', type='float', default=1,
+        help='Integration time at each position. Defaults to 1 s.')
     opts, args = p.parse_args(sys.argv[1:])
 
     if args == []:
@@ -53,4 +53,4 @@ if __name__ == '__main__':
     while (az1 > 0 - offsets[0]) and (az2 > 0 - offsets[0]):
         az1 =  srt1.source_azel(source, srt1.site)[0]
         az2 =  srt2.source_azel(source, srt2.site)[0]
-        ps.az_scan_both(srt1, srt2, source, offsets, sh, folder)
+        ps.az_scan_both(srt1, srt2, source, offsets, sh, folder, opts.inttime)

@@ -29,28 +29,32 @@ def az_scan(antenna, source, offsets, detector, folder):
 def az_scan_both(ant1, ant2, source, offsets, detector, folder, inttime=60):
     """
     Does an azimuth scan with both antennas.
+    ----------------------------------------
+    @param inttime: Integration time at each offset position
+                    in seconds.
     """
     
     print "Starting AZ scan of source %s." % source.name
 
     scan_data = []
-    for i, o in enumerate(offsets):
+    oel = 0
+    for i, oaz in enumerate(offsets):
         integration = []
         # Compute source position and apply azimut offset
         [az1, el1] = ant1.source_azel(source, ant1.site)
         [az2, el2] = ant2.source_azel(source, ant2.site)
-        [az1, el1] = [az1 + o, el1 + 0.0]
-        [az2, el2] = [az2 + o, el2 + 0.0]
+        [offaz1, offel1] = [az1 + oaz, el1 + oel]
+        [offaz2, offel2] = [az2 + oaz, el2 + oel]
         # Move antennas
         [ant1.aznow, ant1.elnow, ant1.azcount, ant1.elcount, ant1.p.azatstow, ant1.p.elatstow] = \
-             ant1.cmd_azel(az1, el1, ant1.azcount, ant1.elcount, ant1.aznow, ant1.elnow)
+             ant1.cmd_azel(offaz1, offel1, ant1.azcount, ant1.elcount, ant1.aznow, ant1.elnow)
         [ant2.aznow, ant2.elnow, ant2.azcount, ant2.elcount, ant2.p.azatstow, ant2.p.elatstow] = \
-             ant2.cmd_azel(az2, el2, ant2.azcount, ant2.elcount, ant2.aznow, ant2.elnow)
+             ant2.cmd_azel(offaz2, offel2, ant2.azcount, ant2.elcount, ant2.aznow, ant2.elnow)
         # Record
         timeout = time.time() + inttime
         while True:
             detector.get_spectrum()
-            detector.write_spectrum(az1, el1, az2, el2)
+            detector.write_spectrum(az1, el1, oaz, oel, az2, el2, oaz, oel)
             if time.time() > timeout:
                 break
 

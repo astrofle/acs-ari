@@ -11,9 +11,15 @@ from math import log, ceil
 def time_stamp(msg='', fmt='Time: %Y-%m-%d-%H-%M-%S #{msg} \r\n'):
     return datetime.datetime.now().strftime(fmt).format(msg=msg)
 
-def rad_head(data, az, el, freq0, nchan, fmt='%Y-%m-%d-%H-%M-%S {az} {el} {f0} {nchan} {data} \r\n'):
-    return datetime.datetime.now().strftime(fmt).format(data=" ".join([str(x) for x in data]), 
-                                                        az=az, el=el, f0=freq0, nchan=nchan)
+def rad_head(data, az1, el1, oaz1, oel1, az2, el2, oaz2, oel2, freq0, chw, nchan, 
+             fmt=( '%Y-%m-%d-%H-%M-%S {az1} {el1} {oaz1} {oel1} {az2} {el2} {oaz2} ' 
+                   '{oel2} {f0} {chw} {nchan} {data} \r\n' )):
+    
+    data_line = datetime.datetime.now().strftime(fmt).format(data=" ".join([str(x) for x in data]), 
+                                                             az1=az1, el1=el1, oaz1=oaz1, oel1=oel1, 
+                                                             az2=az2, el2=el2, oaz2=oaz2, oel2=oel2,
+                                                             f0=freq0, chw=chw, nchan=nchan)
+    return data_line
 
 class SHManager:
     def __init__(self):
@@ -154,11 +160,13 @@ class SHManager:
         self.set_fft(_fft)
         self.get_chw()
    
-    def write_spectrum(self, az, el):
+    def write_spectrum(self, az1, el1, oaz1, oel1, az2, el2, oaz2, oel2):
         print "Writting data to %s ..." % self.filename
         if not self.datafile:
             self.datafile = open(self.filename, 'a')    
-        self.datafile.write(rad_head(self.amp, az, el, self.freq[0], self.num_channel))
+        self.datafile.write(rad_head(self.amp, az1, el1, oaz1, oel1, 
+                                     az2, el2, oaz2, oel2, 
+                                     self.freq[0], self.get_chw(), self.num_channel))
         #for i in range(0, self.num_channel):
         #    f.write( "%0.10f    %0.10f \r\n" % (self.freq[i], self.amp[i]) )
         print "ready."
@@ -179,4 +187,3 @@ if __name__ == "__main__":
     sh.set_fc(1421.0e6)
     sh.set_file_name("script_mode.txt")
     sh.get_spectrum()
-    sh.write_spectrum()
