@@ -22,10 +22,17 @@ def rad_head(data, az1, el1, oaz1, oel1, az2, el2, oaz2, oel2, freq0, chw, nchan
     return data_line
 
 class SHManager:
-    def __init__(self):
-        self.sh = CUSBSA.CUSBSA()
+    def __init__(self, sim=False):
+        self.sim = sim
+        
+        if self.sim:
+            self.sh = None
+        else:
+            self.sh = CUSBSA.CUSBSA()
+            
         self.MAXBW = 40e6
         self.MAXFREQ = 4.4e9
+        
         self.bw = 40e6
         self.fc = 1420.4e6
         self.fi = 0.0;
@@ -109,6 +116,7 @@ class SHManager:
             num_channel = self.sh.SlowSweep(self.fi, self.ff, self.fft)
         print "num_channel %d " %(num_channel)
 
+        # 
         pA = ctypes.cast( self.sh.dTraceAmpl.__long__(), ctypes.POINTER( ctypes.c_double ) )
         pF = ctypes.cast( self.sh.dTraceFreq.__long__(), ctypes.POINTER( ctypes.c_double ) )
 
@@ -119,8 +127,8 @@ class SHManager:
         for i in range(0, num_channel):
             print "iteration %d" %i
             print pA[i]
-            self.amp.append(pA[i])
             print pF[i]
+            self.amp.append(pA[i])
             self.freq.append(pF[i])
         self.acc_num += 1
         print "ready."
