@@ -8,11 +8,11 @@ import datetime
 
 from math import log, ceil
 
-def time_stamp(msg='', fmt='Time: %Y-%m-%d-%H-%M-%S #{msg} \r\n'):
-    return datetime.datetime.now().strftime(fmt).format(msg=msg)
+def time_stamp(data, fmt='%Y-%m-%d-%H-%M-%S.%f {data} \r\n'):
+    return datetime.datetime.now().strftime(fmt).format(data=" ".join([str(x) for x in data]))
 
 def rad_head(data, az1, el1, oaz1, oel1, az2, el2, oaz2, oel2, freq0, chw, nchan, 
-             fmt=( '%Y-%m-%d-%H-%M-%S {az1} {el1} {oaz1} {oel1} {az2} {el2} {oaz2} ' 
+             fmt=( '%Y-%m-%d-%H-%M-%S.%f {az1} {el1} {oaz1} {oel1} {az2} {el2} {oaz2} ' 
                    '{oel2} {f0} {chw} {nchan} {data} \r\n' )):
     
     data_line = datetime.datetime.now().strftime(fmt).format(data=" ".join([str(x) for x in data]), 
@@ -30,11 +30,12 @@ class SHManager:
         self.fc = 1420.4e6
         self.fi = 0.0;
         self.ff = 0.0;
-        self.FFT = 256
+        self.fft = 256
         self.rbw = 6400
+        self.chw = 7500
         self.decimation = 1
         self.filename = "default.txt"
-        self.acc_n = 0
+        self.acc_num = 0
         self.datafile = None
         self.amp = []
         self.freq = []
@@ -84,8 +85,14 @@ class SHManager:
         self.update_freq()
 
     def set_file_name(self, _filename):
+        
+        if self.datafile:
+            self.datafile.close()
+        
         print "Set file name: existent output file %s will be updated to %s" % (self.filename, _filename)
+        
         self.filename = _filename
+        self.datafile = open(self.filename, 'a')
 
     def set_fft(self, _fft):
         if not valid_fft_size(_fft):
@@ -96,10 +103,10 @@ class SHManager:
 
     def get_spectrum(self): 
         print "Acquiring single spec ..."
-        if self.FFT <= 256:
-            num_channel = self.sh.FastSweep(self.fi, self.ff, self.FFT)
+        if self.fft <= 256:
+            num_channel = self.sh.FastSweep(self.fi, self.ff, self.fft)
         else:
-            num_channel = self.sh.SlowSweep(self.fi, self.ff, self.FFT)
+            num_channel = self.sh.SlowSweep(self.fi, self.ff, self.fft)
         print "num_channel %d " %(num_channel)
 
         pA = ctypes.cast( self.sh.dTraceAmpl.__long__(), ctypes.POINTER( ctypes.c_double ) )
@@ -115,14 +122,14 @@ class SHManager:
             self.amp.append(pA[i])
             print pF[i]
             self.freq.append(pF[i])
-        self.acc_n += 1
+        self.acc_num += 1
         print "ready."
 
     def get_RBW(self):
         # This is not working with the 32bit SHLAPI
         #self.rbw = self.sh.m_dCalcRBW
 
-        self.rbw = 1.6384e6/self.FFT
+        self.rbw = 1.6384e6/self.fft
         print "RBW: %2.2e" % self.rbw
 
     def chw_to_fftSize(self, _chw):
@@ -142,12 +149,12 @@ class SHManager:
         """
         Gets the SH channel width.
         """
-        if self.FFT < 512:
-            chw = int(round(4.0e5/self.FFT))
+        if self.fft < 512:
+            self.chw = int(round(4.0e5/self.fft))
         else:
-            chw = int(round(486111.111/self.FFT/self.decimation))
+            self.chw = int(round(486111.111/self.fft/self.decimation))
 
-        print "Using channel width of %.0f" % chw
+        print "Using channel width of %.0f" % self.chw
 
         return chw
 
@@ -158,17 +165,13 @@ class SHManager:
         """
         _fft = self.chw_to_fftSize(_chw)
         self.set_fft(_fft)
-        self.get_chw()
+        self.chw = self.get_chw()
    
-    def write_spectrum(self, az1, el1, oaz1, oel1, az2, el2, oaz2, oel2):
+    def write_spectrum(self):
         print "Writting data to %s ..." % self.filename
         if not self.datafile:
             self.datafile = open(self.filename, 'a')    
-        self.datafile.write(rad_head(self.amp, az1, el1, oaz1, oel1, 
-                                     az2, el2, oaz2, oel2, 
-                                     self.freq[0], self.get_chw(), self.num_channel))
-        #for i in range(0, self.num_channel):
-        #    f.write( "%0.10f    %0.10f \r\n" % (self.freq[i], self.amp[i]) )
+        self.datafile.write(time_stamp(self.amp))
         print "ready."
 
 def valid_fft_size(_fft):
