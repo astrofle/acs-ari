@@ -20,6 +20,12 @@ def rad_head(data, az1, el1, oaz1, oel1, az2, el2, oaz2, oel2, freq0, chw, nchan
                                                              az2=az2, el2=el2, oaz2=oaz2, oel2=oel2,
                                                              f0=freq0, chw=chw, nchan=nchan)
     return data_line
+    
+def format_line(head, data, fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} {data} \r\n' )):
+   
+    data_line = datetime.datetime.now().strftime(fmt).format(head=" ".join([str(h) for h in head]),
+                                                             data=" ".join([str(x) for x in data]),)
+    return data_line
 
 class SHManager:
     def __init__(self, sim=False):
@@ -48,6 +54,7 @@ class SHManager:
         self.freq = []
         self.num_channel = 0
         self.update_freq()
+        self.head = []
 
     def __del__(self):
         #clean up
@@ -114,9 +121,9 @@ class SHManager:
             num_channel = self.sh.FastSweep(self.fi, self.ff, self.fft)
         else:
             num_channel = self.sh.SlowSweep(self.fi, self.ff, self.fft)
-        print "num_channel %d " %(num_channel)
+        print "num_channel %d " % num_channel
 
-        # 
+        # 64bit CUSBSA uses different variable names for trace amplitude and frequency
         pA = ctypes.cast( self.sh.dTraceAmpl.__long__(), ctypes.POINTER( ctypes.c_double ) )
         pF = ctypes.cast( self.sh.dTraceFreq.__long__(), ctypes.POINTER( ctypes.c_double ) )
 
@@ -178,9 +185,50 @@ class SHManager:
     def write_spectrum(self):
         print "Writting data to %s ..." % self.filename
         if not self.datafile:
-            self.datafile = open(self.filename, 'a')    
-        self.datafile.write(time_stamp(self.amp))
+            self.datafile = open(self.filename, 'a')
+        self.datafile.write(format_line(self.head, self.amp))
         print "ready."
+        
+    def make_head(self, ant1=None, ant2=None, source=None):
+    
+        if source and ant1 and ant2:
+            try:
+                head = ['sou_az', source.az, 'sou_el', source.el, 
+                        'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow, 
+                        'ant1_az', ant2.aznow, 'ant2_el', ant2.elnow,
+                        'fc', self.fc, 'bw', self.bw, 
+                        'chw', self.chw, 'chnum', self.fft, 
+                        'inum', self.acc_num]
+            except AttributeError:
+                head = ['sou_az', source.az, 'sou_el', source.el, 
+                        'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow, 
+                        'ant1_az', ant2.aznow, 'ant2_el', ant2.elnow,
+                        'fc', self.fc, 'bw', self.bw, 
+                        'chw', self.chw, 'chnum', self.fft, 
+                        'inum', self.acc_num]
+                        
+        elif source and ant1:
+            try:
+                head = ['sou_az', source.az, 'sou_el', source.el, 
+                        'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
+                        'fc', self.fc, 'bw', self.bw, 
+                        'chw', self.chw, 'chnum', self.fft, 
+                        'inum', self.acc_num]
+            except AttributeError:
+                head = ['sou_az', source.az, 'sou_el', source.el, 
+                        'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
+                        'fc', self.fc, 'bw', self.bw, 
+                        'chw', self.chw, 'chnum', self.fft, 
+                        'inum', self.acc_num]
+                        
+        else:
+            head = ['fc', self.fc, 'bw', self.bw, 
+                    'chw', self.chw, 'chnum', self.fft, 
+                    'inum', self.acc_num]
+                    
+        self.head = head
+                
+        return head
 
 def valid_fft_size(_fft):
     """
