@@ -93,3 +93,9 @@ place = 'PUC'
 lat = '-33.66'
 lon = '-70.93'
 elevation = 342
+
+# Array coordinates, w.r.t. srt2
+bl = 0      # Baseline distance
+az = 0      # Baseline Azimuth
+el = 0      # Baseline elevation
+
