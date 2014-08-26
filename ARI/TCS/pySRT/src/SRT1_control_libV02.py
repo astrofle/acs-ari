@@ -9,6 +9,8 @@ import parameters_srt1 as p
 import ephem
 import sources
 
+from math import sin,cos
+
 def cmd_azel(az, el, azcount, elcount, aznow, elnow):
 	az = normalize_az(az, p.south)
 	inLimits = get_cmd_inLimits(az, el, p.azlim1, p.azlim2, p.ellim1, p.ellim2)
@@ -377,6 +379,32 @@ def track_source(source, site, p, aznow, elnow, azcount, elcount, tracktime=2/60
         if (time.time() > timeout):
             break
     return [aznow, elnow, azcount, elcount, p.azatstow, p.elatstow]
+
+#def get_xyz(p):
+    
+    #x = p.bl*np.cos(p.lat)*np.sin(p.el) - np.sin(p.lat)*np.cos(p.el)*np.cos(p.az)
+    #y = p.bl*np.cos(p.el)*np.cos(p.az)
+    #z = p.bl*np.sin(p.lat)*np.sin(p.el) + np.cos(p.lat)*np.cos(p.el)*np.cos(p.az)
+    
+#def get_uvw(p, dec, ha):
+    #x, y, z = get_xyz(p)
+    
+    #u = x*np.sin(ha) + y*np.cos(ha) + 0
+    #v = -x*np.sin(dec)*np.cos(ha) + y*np.sin(dec)*np.sin(ha) + z*np.cos(dec)
+    #w = x*np.cos(dec)*np.cos(ha) - y*np.cos(dec)*np.sin(ha) + z*np.sin(dec)
+    
+    #return (u, v, w)
+    
+def get_delay(bl, ha, dec):
+    sin = sin_tht(p.Az*math.pi/180.0, site.lat, ha, dec)
+    delay = bl/3e8*sin
+    
+    return delay
+
+def sin_tht(bl_az, lat, ha, dec):
+    return ( sin(bl_az)*cos(dec)*sin(ha) + 
+             cos(bl_az)*(cos(lat)*sin(dec) - 
+             sin(lat)*cos(dec)*cos(ha)) )
 
 def noise_on():
 	cmd = " move 7 0\n"
