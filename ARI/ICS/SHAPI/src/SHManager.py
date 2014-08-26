@@ -193,14 +193,14 @@ class SHManager:
     
         if source and ant1 and ant2:
             try:
-                head = ['sou_az', source.az, 'sou_el', source.el, 
+                head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow, 
                         'ant1_az', ant2.aznow, 'ant2_el', ant2.elnow,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.fft, 
                         'inum', self.acc_num]
             except AttributeError:
-                head = ['sou_az', source.az, 'sou_el', source.el, 
+                head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow, 
                         'ant1_az', ant2.aznow, 'ant2_el', ant2.elnow,
                         'fc', self.fc, 'bw', self.bw, 
@@ -209,13 +209,13 @@ class SHManager:
                         
         elif source and ant1:
             try:
-                head = ['sou_az', source.az, 'sou_el', source.el, 
+                head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.fft, 
                         'inum', self.acc_num]
             except AttributeError:
-                head = ['sou_az', source.az, 'sou_el', source.el, 
+                head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.fft, 
