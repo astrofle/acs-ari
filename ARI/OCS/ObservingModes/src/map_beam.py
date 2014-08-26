@@ -27,7 +27,7 @@ if __name__ == '__main__':
         print 'Please specify a folder to store data.\n'
         print 'Run with the -h flag to see all options.\n'
         print 'Exiting.'
-        exit()
+        sys.exit()
     else:
         folder = args[0] 
 
@@ -38,11 +38,11 @@ if __name__ == '__main__':
     # Initialize the Signal Hound
     sh = SHManager.SHManager()
     sh.set_bw(opts.bw)
-    sh.filename = '{0}/scan.txt'.format(folder)
+    sh.set_file_name('{0}/scan.txt'.format(folder))
 
     # Check if specified folder exists
     if not os.path.exists(folder):
         os.makedirs(folder)
     
     offsets = [(i,j) for j in range(-12, 13) for i in range(-12, 13)]
-    source_scan(srt1, source, offsets, ant2=srt2, det=sh)
+    ps.source_scan(srt2, source, offsets, det=sh)

@@ -20,7 +20,7 @@ azcountsperdeg, elcountsperdeg: number of encoder counter per degree in el and a
 azcount, elcount: number of current encoder counts
 """
 
-port = 'USB2'
+port = 'USB0'
 
 vsrt = 0.0
 comerr = 0

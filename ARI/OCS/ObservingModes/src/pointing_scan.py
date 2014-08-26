@@ -85,7 +85,6 @@ def source_scan(ant1, sou, off, ant2=None, det=None):
     azimuth and elevation, e.g., off = [(1,0),(2,0),(3,0)],
     would scan the source at off sets (1,0), (2,0) and (3,0).
     """
-    detector.set_file_name(folder + "/scan_az_%s.txt" % sou.name)
     
     for x,y in off:
         [az1, el1] = ant1.source_azel(sou, ant1.site)
@@ -99,9 +98,9 @@ def source_scan(ant1, sou, off, ant2=None, det=None):
             [ant2.aznow, ant2.elnow, ant2.azcount, ant2.elcount, ant2.p.azatstow, ant2.p.elatstow] = \
              ant2.cmd_azel(az2, el2, ant2.azcount, ant2.elcount, ant2.aznow, ant2.elnow)
         # Take data
-        detector.make_head(ant1=ant1, ant2=ant2, source=sou)
-        detector.get_spectrum()
-        detector.write_spectrum()
+        det.make_head(ant1=ant1, ant2=ant2, source=sou)
+        det.get_spectrum()
+        det.write_spectrum()
         
         
 #START OF MAIN:
