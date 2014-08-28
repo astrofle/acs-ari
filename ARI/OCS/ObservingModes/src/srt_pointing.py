@@ -16,6 +16,8 @@ if __name__ == '__main__':
     
     p = OptionParser()
 
+    p.add_option('-a', '--antenna', dest='ant', type='str', default='1',
+        help='Antenna to use. Default 1.')
     p.add_option('-s', '--source', dest='source', type='str', default='Sun',
         help='Source to use as pointing calibrator. Defaults to the Sun.')
     p.add_option('-b', '--band_width', dest='bw', type='float', default=1e6,
@@ -36,7 +38,7 @@ if __name__ == '__main__':
     if not os.path.exists(folder):
         os.makedirs(folder)
 
-    srt2 = srt.SRT('2')
+    ant = srt.SRT(opts.ant)
         
     # Set source to observe
     #source = srt1.sources.set_object(opts.source)
@@ -45,7 +47,19 @@ if __name__ == '__main__':
     # Initialize the Signal Hound
     sh = SHManager.SHManager()
     sh.set_bw(opts.bw)
-    sh.set_file_name('{0}/scan.txt'.format(folder))
-
-    offsets = [(i,j) for j in range(-12, 13) for i in range(-12, 13)]
-    source_scan(srt2, source, offsets, det=sh, itime=opts.inttime)
+    
+    # First scan in azimuth
+    sh.set_file_name('{0}/sun_AZ.txt'.format(folder))
+    offsets_l = [(i,0) for i in range(-12, -5)]
+    offsets_c = [(0.2*i,0) for i in range(-50, 50)]
+    offsets_r = [(i,0) for i in range(5, 12)]
+    offsets = offsets_l + offsets_c + offsets_r
+    source_scan(ant, source, offsets, det=sh, itime=opts.inttime)
+    
+    # Then scan in elevation
+    sh.set_file_name('{0}/sun_EL.txt'.format(folder))
+    offsets_l = [(0,j) for j in range(-12, -5)]
+    offsets_c = [(0,0.2*j) for j in range(-50, 50)]
+    offsets_r = [(0,j) for j in range(5, 12)]
+    offsets = offsets_l + offsets_c + offsets_r
+    source_scan(ant, source, offsets, det=sh, itime=opts.inttime)
