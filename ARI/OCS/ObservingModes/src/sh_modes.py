@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import time
+import ephem
     
 def source_scan(ant1, sou, off, ant2=None, det=None, itime=1):
     """

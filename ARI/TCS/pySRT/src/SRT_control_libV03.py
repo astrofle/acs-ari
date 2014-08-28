@@ -379,7 +379,9 @@ class SRT():
         site.elevation = self.p.elevation
         return site
 
-    def source_azel(self, source, t=ephem.now()):
+    def source_azel(self, source, t=None):
+        if not t:
+            t = ephem.now()
         self.site.date = t
         source.compute(self.site)
         az = math.degrees(source.az)
