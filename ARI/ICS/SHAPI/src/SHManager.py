@@ -21,7 +21,7 @@ def rad_head(data, az1, el1, oaz1, oel1, az2, el2, oaz2, oel2, freq0, chw, nchan
                                                              f0=freq0, chw=chw, nchan=nchan)
     return data_line
     
-def format_line(head, data, fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} {data} \r\n' )):
+def format_line(head, data, fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} data: {data} \r\n' )):
    
     data_line = datetime.datetime.now().strftime(fmt).format(head=" ".join([str(h) for h in head]),
                                                              data=" ".join([str(x) for x in data]),)
