@@ -7,19 +7,6 @@ import time
 import datetime
 
 from math import log, ceil
-
-def time_stamp(data, fmt='%Y-%m-%d-%H-%M-%S.%f {data} \r\n'):
-    return datetime.datetime.now().strftime(fmt).format(data=" ".join([str(x) for x in data]))
-
-def rad_head(data, az1, el1, oaz1, oel1, az2, el2, oaz2, oel2, freq0, chw, nchan, 
-             fmt=( '%Y-%m-%d-%H-%M-%S.%f {az1} {el1} {oaz1} {oel1} {az2} {el2} {oaz2} ' 
-                   '{oel2} {f0} {chw} {nchan} {data} \r\n' )):
-    
-    data_line = datetime.datetime.now().strftime(fmt).format(data=" ".join([str(x) for x in data]), 
-                                                             az1=az1, el1=el1, oaz1=oaz1, oel1=oel1, 
-                                                             az2=az2, el2=el2, oaz2=oaz2, oel2=oel2,
-                                                             f0=freq0, chw=chw, nchan=nchan)
-    return data_line
     
 def format_line(head, data, fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} data: {data} \r\n' )):
    
@@ -36,7 +23,7 @@ class SHManager:
         else:
             self.sh = CUSBSA.CUSBSA()
             
-        self.MAXBW = 40e6
+        self.MAXBW = 100e6
         self.MAXFREQ = 4.4e9
         
         self.bw = 40e6
@@ -50,15 +37,16 @@ class SHManager:
         self.filename = "default.txt"
         self.acc_num = 0
         self.datafile = None
-        self.amp = []
+        self.ampl = []
         self.freq = []
         self.num_channel = 0
         self.update_freq()
+        self.set_chw(self.chw)
         self.head = []
 
     def __del__(self):
         #clean up
-        del(self.amp)
+        del(self.ampl)
         del(self.freq)
 
     def init_hound(self):
@@ -113,7 +101,7 @@ class SHManager:
             print "Invalid FFT size value of %0.f. It must be an integer power of 2." % _fft
             _fft = int(2**ceil(log(_fft, 2)))
             print "Will use %d instead." %_fft
-        self.FFT = _fft
+        self.fft = _fft
 
     def get_spectrum(self): 
         print "Acquiring single spec ..."
@@ -128,14 +116,14 @@ class SHManager:
         pF = ctypes.cast( self.sh.dTraceFreq.__long__(), ctypes.POINTER( ctypes.c_double ) )
 
         self.num_channel = num_channel
-        self.amp = []
+        self.ampl = []
         self.freq = []
 
         for i in range(0, num_channel):
             print "iteration %d" %i
             print pA[i]
             print pF[i]
-            self.amp.append(pA[i])
+            self.ampl.append(pA[i])
             self.freq.append(pF[i])
         self.acc_num += 1
         print "ready."
@@ -183,13 +171,25 @@ class SHManager:
         self.chw = self.get_chw()
    
     def write_spectrum(self):
+        """
+        Writes a line with a spectrum to the output file.
+        """
         print "Writting data to %s ..." % self.filename
         if not self.datafile:
             self.datafile = open(self.filename, 'a')
-        self.datafile.write(format_line(self.head, self.amp))
+        self.datafile.write(format_line(self.head, self.ampl))
         print "ready."
         
     def make_head(self, ant1=None, ant2=None, source=None):
+        """
+        Creates a list with observation data.
+        The list is written at the beginning of
+        each line in the output spectra.
+        """
+        
+        minhead = ['fc', self.fc, 'bw', self.bw, 
+                   'chw', self.chw, 'chnum', self.num_channel, 
+                   'inum', self.acc_num]
     
         if source and ant1 and ant2:
             try:
@@ -197,45 +197,47 @@ class SHManager:
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow, 
                         'ant1_az', ant2.aznow, 'ant2_el', ant2.elnow,
                         'fc', self.fc, 'bw', self.bw, 
-                        'chw', self.chw, 'chnum', self.fft, 
+                        'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num]
             except AttributeError:
-                head = ['sou_az', source.az, 'sou_el', source.alt, 
-                        'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow, 
-                        'ant1_az', ant2.aznow, 'ant2_el', ant2.elnow,
-                        'fc', self.fc, 'bw', self.bw, 
-                        'chw', self.chw, 'chnum', self.fft, 
-                        'inum', self.acc_num]
-                        
+                print "Header keyword not found, using minimum header."
+                head = minhead
+
         elif source and ant1:
             try:
                 head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
                         'fc', self.fc, 'bw', self.bw, 
-                        'chw', self.chw, 'chnum', self.fft, 
+                        'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num]
             except AttributeError:
+                print "Header keyword not found, using minimum header."
+                head = minhead
+                        
+        elif ant1:
+            try:
                 head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
                         'fc', self.fc, 'bw', self.bw, 
-                        'chw', self.chw, 'chnum', self.fft, 
+                        'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num]
-                        
+            except AttributeError:
+                print "Header keyword not found, using minimum header."
+                head = minhead
+
         else:
-            head = ['fc', self.fc, 'bw', self.bw, 
-                    'chw', self.chw, 'chnum', self.fft, 
-                    'inum', self.acc_num]
-                    
+            head = minhead
+
         self.head = head
-                
+
         return head
 
-def valid_fft_size(_fft):
+def valid_fft_size(fft):
     """
     Checks that the given FFT size is 
     a power of 2 different from 0.
     """
-    num = int(_fft)
+    num = int(fft)
     return num > 0 and (num & (num - 1)) == 0
        
 if __name__ == "__main__":
