@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # First scan in azimuth
     sh.set_file_name('{0}/sun_AZ.txt'.format(folder))
     offsets_l = [(i,0) for i in range(-12, -5)]
-    offsets_c = [(0.2*i,0) for i in range(-50, 50)]
+    offsets_c = [(0.2*i,0) for i in range(-25, 25)]
     offsets_r = [(i,0) for i in range(5, 12)]
     offsets = offsets_l + offsets_c + offsets_r
     source_scan(ant, source, offsets, det=sh, itime=opts.inttime)
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     # Then scan in elevation
     sh.set_file_name('{0}/sun_EL.txt'.format(folder))
     offsets_l = [(0,j) for j in range(-12, -5)]
-    offsets_c = [(0,0.2*j) for j in range(-50, 50)]
+    offsets_c = [(0,0.2*j) for j in range(-25, 25)]
     offsets_r = [(0,j) for j in range(5, 12)]
     offsets = offsets_l + offsets_c + offsets_r
     source_scan(ant, source, offsets, det=sh, itime=opts.inttime)

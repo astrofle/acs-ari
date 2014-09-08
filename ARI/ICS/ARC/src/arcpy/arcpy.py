@@ -3,8 +3,9 @@
 This module provides functions to program and interact with a pocket correlator on a ROACH board.
 It uses the Python KATCP library along with the katcp_wrapper distributed in the corr package. 
 This is based on the script created by Jason Manley for the CASPER workshop.
-Author: Pedro Salas, July 2014.
-Modified:
+It was modified to fit the requirements of ARI and its correlator.
+Author: Jason Manley
+Modified: Pedro Salas, July 2014.
 '''
 
 from __future__ import division
@@ -18,27 +19,6 @@ import logging
 import datetime
 import valon_synth as vs
 import arc_params as arcp
-
-
-def exit_fail(log_handler=None):
-    if log_handler:
-        print 'FAILURE DETECTED. Log entries:\n', log_handler.printMessages()
-    else:
-        print 'FAILURE DETECTED.\n'
-    try:
-        fpga.stop()
-    except: pass
-    raise
-    exit()
-
-def exit_clean():
-    try:
-        fpga.stop()
-    except: pass
-    exit()
-    
-def get_time(fmt='%Y-%m-%d-%H-%M-%S.%f'):
-    return datetime.datetime.now().strftime(fmt)
     
 def format_line(head, data, fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} data: {data} \r\n' )):
    
@@ -242,7 +222,7 @@ class ARCManager():
             print 'ok\n'
         else:
             print 'ERROR connecting to server %s on port %i.\n' % (roach_ip, katcp_port)
-            exit_fail(self.log_handler)
+            self.exit_fail(self.log_handler)
         
         return fpga
         
@@ -557,3 +537,23 @@ class ARCManager():
         self.head = head
 
         return head
+        
+    def exit_clean():
+        """
+        Stops the FPGA
+        """
+        try:
+            self.fpga.stop()
+        except: pass
+        exit()
+        
+    def exit_fail(log_handler=None):
+        if log_handler:
+            print 'FAILURE DETECTED. Log entries:\n', log_handler.printMessages()
+        else:
+            print 'FAILURE DETECTED.\n'
+        try:
+            fpga.stop()
+        except: pass
+        raise
+        exit()

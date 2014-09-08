@@ -2,7 +2,7 @@ import ephem
 
 def set_source(name):
     """
-    Returns a source with object from the 
+    Returns an ephem object from the 
     source catalog.
     """
 

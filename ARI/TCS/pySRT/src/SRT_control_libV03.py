@@ -8,6 +8,8 @@ import time
 import ephem
 import sources
 
+from math import pi,sqrt,cos,sin,acos,radians,degrees
+
 class SimPort():
     
     def __init__(self):
@@ -217,9 +219,9 @@ class SRT():
         if pushrod == 0: #non cassi mount
             ellcount = ell * elscale
         else:
-            ellcount = rod1**2 + rod2**2 - 2.0 * rod1 * rod2 * math.cos((rod4 - el) * math.pi / 180.0) - rod3**2
+            ellcount = rod1**2 + rod2**2 - 2.0 * rod1 * rod2 * cos((rod4 - el) * pi / 180.0) - rod3**2
             if (ellcount >= 0.0):
-                ellcount = (-math.sqrt(ellcount) + lenzero) * rod5
+                ellcount = (-sqrt(ellcount) + lenzero) * rod5
             else:
                 ellcount = 0
         # increase in length drives to horizon
@@ -336,7 +338,7 @@ class SRT():
             ellnow = -self.elcount*0.5/self.p.rod5 + self.p.lenzero
             ellnow = self.p.rod1**2 + self.p.rod2**2 - self.p.rod3**2 - ellnow**2
             ellnow = ellnow / (2.0*self.p.rod1*self.p.rod2)
-            ellnow = -math.degrees(math.acos(ellnow)) + self.p.rod4 - self.p.ellim1
+            ellnow = -degrees(acos(ellnow)) + self.p.rod4 - self.p.ellim1
             #print ellnow
         
         #updates current elevation position
@@ -384,8 +386,8 @@ class SRT():
             t = ephem.now()
         self.site.date = t
         source.compute(self.site)
-        az = math.degrees(source.az)
-        el = math.degrees(source.alt)
+        az = degrees(source.az)
+        el = degrees(source.alt)
         return [az, el]
 
     def track_source(self, source, tracktime=2/60.):
@@ -407,6 +409,35 @@ class SRT():
     def noise_off(self):
         cmd = "  move 6 0\n"
         self.send_command(cmd)
+        
+    def get_xyz(self):
+        B = self.p.bl
+        E = radians(self.p.el)
+        A = radians(self.p.az)
+        L = radians(float(self.p.lat))
+        
+        x = B*cos(L)*sin(E) - sin(L)*cos(E)*cos(A)
+        y = B*cos(E)*cos(A)
+        z = B*sin(L)*sin(E) + cos(L)*cos(E)*cos(A)
+        
+        return (x, y, z)
+        
+    def get_uvw(self, dec, ha):
+        """
+        Return the UVW coordinates of the antenna
+        for a given declination and hour angle.
+        The coordinates are in the same units as 
+        the baseline distance in the antenna 
+        parameters.
+        Angles must be in radians
+        """
+        x, y, z = self.get_xyz()
+        
+        u = x*sin(ha) + y*cos(ha) + 0
+        v = -x*sin(dec)*cos(ha) + y*sin(dec)*sin(ha) + z*cos(dec)
+        w = x*cos(dec)*cos(ha) - y*cos(dec)*sin(ha) + z*sin(dec)
+        
+        return (u, v, w)
        
 #port = init_com(p)
 #site = set_site(p)
@@ -414,11 +445,11 @@ class SRT():
 #[p.azatstow, p.elatstow, azcount, elcount, axis, aznow, elnow] = stow_antenna(p)
 print " "
 print "To command the antenna use:"
-print "[SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount, SRT.p.azatstow, SRT.p.elatstow] = SRT.cmd_azel(az, el, SRT.azcount, SRT.elcount, SRT.aznow, SRT.elnow) "
-print "changing only az and el parameters for the desired az-el coordinate"
+print "[SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount, SRT.p.azatstow, SRT.p.elatstow] = SRT.cmd_azel(az, el) "
+print "changing only az and el parameters for the desired az-el coordinate."
 print ""
-print "To track a source use"
-print "[SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount, SRT.p.azatstow, SRT.p.elatstow] = SRT.track_source('source', 'site', SRT.p, SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount)"
-print ""
+print "To track a source use:"
+print "[SRT.aznow, SRT.elnow, SRT.azcount, SRT.elcount, SRT.p.azatstow, SRT.p.elatstow] = SRT.track_source(source)"
+print "were source is a source object."
 print "To stow antenna use:"
 print "[p.azatstow, p.elatstow, azcount, elcount, axis, aznow, elnow] = stow_antenna(p)"

@@ -88,7 +88,7 @@ print "ellim1 = " + str(ellim1) + " ellim2 = " + str(ellim2)
 #lon = '-68.9'
 #elevation = 2277
 
-# Local coordinates (talagante)
+# Local coordinates (Macul)
 place = 'PUC'
 lat = '-33.66'
 lon = '-70.93'
@@ -96,6 +96,6 @@ elevation = 342
 
 # Array coordinates, w.r.t. srt2
 bl = 0      # Baseline distance
-az = 0      # Baseline Azimuth
+az = 45      # Baseline Azimuth
 el = 0      # Baseline elevation
 

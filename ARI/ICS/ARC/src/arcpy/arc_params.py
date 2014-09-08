@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 katcp_port = 7147
 roach_ip = '146.155.121.6'
 synth_port = '/dev/valonsynth'
