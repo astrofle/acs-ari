@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import SHManager
+#import SHManager
+import arcpy
 import os
 import time
 import sys
@@ -8,7 +9,7 @@ import sources
 
 import SRT_control_libV03 as srt
 
-from sh_modes import source_scan
+from obsmodes import source_scan
 
 if __name__ == '__main__':
     
@@ -36,16 +37,20 @@ if __name__ == '__main__':
     if not os.path.exists(folder):
         os.makedirs(folder)
 
+    srt1 = srt.SRT('1')
     srt2 = srt.SRT('2')
         
     # Set source to observe
     #source = srt1.sources.set_object(opts.source)
-    source = sources.set_object(opts.source)
+    source = srt.sources.set_source(opts.source)
     
-    # Initialize the Signal Hound
-    sh = SHManager.SHManager()
-    sh.set_bw(opts.bw)
-    sh.set_file_name('{0}/scan.txt'.format(folder))
+    # Initialize the detector
+    #sh = SHManager.SHManager()
+    #sh.set_bw(opts.bw)
+    #sh.set_file_name('{0}/scan.txt'.format(folder))
+    # Initialize ARC
+    arc = arcpy.ARCManager(bw=400e6, ip='146.155.121.6', synth=True)
+    arc.set_file_name('{0}/sun_beam'.format(folder))
 
-    offsets = [(i,j) for j in range(-12, 13) for i in range(-12, 13)]
-    source_scan(srt2, source, offsets, det=sh, itime=opts.inttime)
+    offsets = [(i,j) if i%2==0 else (i,-j) for i in range(-12, 13) for j in range(-12, 13)]
+    source_scan(srt1, source, offsets, det=arc, ant2=srt2, itime=opts.inttime)

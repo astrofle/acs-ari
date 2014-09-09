@@ -20,16 +20,21 @@ import datetime
 import valon_synth as vs
 import arc_params as arcp
     
-def format_line(head, data, fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} data: {data} \r\n' )):
+def format_line(head, data, 
+                fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} data: {data} \r\n' )):
    
-    data_line = datetime.datetime.now().strftime(fmt).format(head=" ".join([str(h) for h in head]),
-                                                             data=" ".join([str(x) for x in data]),)
+    data_line = datetime.datetime.now().\
+                strftime(fmt).format(head=" ".join([str(h) for h in head]),
+                                     data=" ".join([str(x) for x in data]),)
+                                     
     return data_line
         
 
 class ARCManager():
     
-    def __init__(self, bw=100e6, chw=97656.25, fft=1024, gain=1000, acc_len=2**28/1024, log_handler=None, ip=arcp.roach_ip, synth=True):
+    def __init__(self, bw=100e6, chw=97656.25, fft=1024, gain=1000, 
+                 acc_len=2**28/1024, log_handler=None, ip=arcp.roach_ip, 
+                 synth=True):
 
         # Opens the Valon 5007 dual synth
         # SYNTH_B is the ADC clock, SYNTH_A the LO
@@ -37,31 +42,16 @@ class ARCManager():
         if synth:
             self.synth = vs.Synthesizer(arcp.synth_port)
         
-        # Sets io detector parameters
-        # Separate real from imag output
-        self.filename_abr = 'default_abr'
-        self.filename_bar = 'default_bar'
-        self.filename_abi = 'default_abi'
-        self.filename_bai = 'default_bai'
-        self.filename_aa = 'default_aa'
-        self.filename_bb = 'default_bb'
-        self.datafile_abr = None
-        self.datafile_abi = None
-        self.datafile_bar = None
-        self.datafile_bai = None
-        self.datafile_aa = None
-        self.datafile_bb = None
-        self.amp_ab = []
-        self.amp_ba = []
-        self.amp_a = []
-        self.amp_b = []
+        # Connect to ROACH
+        self.ip = ip
+        self.log_handler = self._init_log(self.ip)
+        self.fpga = self._connect_roach(arcp.katcp_port)
     
         # Sets configuration parameters while checking some
         self.head = []
-        self.ip = ip
-        self.bw = bw
-        self.set_bw(bw)
         self.fft = fft
+        self.bw = bw
+        self.set_bw(bw)        
         self.num_channel = fft # to duplicate SHManager
         self.chw = chw
         self.set_chw(chw)
@@ -77,16 +67,33 @@ class ARCManager():
         self.cdelay = 0
         
         # Writes firmware configuration to ROACH board
-        self.log_handler = self._init_log(self.ip)
-        self.fpga = self._connect_roach(arcp.katcp_port)
         self.boffile = self._config_to_boffile()
         self._set_bof_file()
         self._reset_firmware()
         self._set_fft_shift()
         self._set_acc_len(self.acc_len)
         self._set_gain()
-        self.set_coarse_delay(self, 0, self.cdelay)
-        self.set_coarse_delay(self, 1, self.cdelay)
+        self.set_coarse_delay(0, self.cdelay)
+        self.set_coarse_delay(1, self.cdelay)
+        
+        # Sets io detector parameters
+        # Separate real from imag output
+        self.filename_abr = 'default_abr'
+        self.filename_bar = 'default_bar'
+        self.filename_abi = 'default_abi'
+        self.filename_bai = 'default_bai'
+        self.filename_aa = 'default_aa'
+        self.filename_bb = 'default_bb'
+        self.datafile_abr = None
+        self.datafile_abi = None
+        self.datafile_bar = None
+        self.datafile_bai = None
+        self.datafile_aa = None
+        self.datafile_bb = None
+        self.amp_ab = numpy.empty(self.fft)
+        self.amp_ba = numpy.empty(self.fft)
+        self.amp_a = numpy.empty(self.fft)
+        self.amp_b = numpy.empty(self.fft)
         
     def _config_to_boffile(self):
         """
@@ -113,7 +120,8 @@ class ARCManager():
             Frequency in MHz.
         """
         if not self.synth:
-            print "No synthesizer on ROACH"
+            print ('No synthesizer on ROACH.'
+                   'The LO frequency can not be changed.')
         else:
             self.synth.set_frequency(vs.SYNTH_A, lofreq)
             
@@ -129,7 +137,8 @@ class ARCManager():
             Frequency in MHz.
         """
         if not self.synth:
-            print "No synthesizer on ROACH"
+            print ('No synthesizer on ROACH.'
+                   'The ADC reference frequency can not be changed.')
         else:
             self.synth.set_frequency(vs.SYNTH_B, adcfreq)
     
@@ -149,10 +158,11 @@ class ARCManager():
         
         if bw not in arcp.allowed_config.keys():
             bw = 100e6
-            print 'Bandwidth not yet implemented. Using default of %0.f MHz.' % bw
+            print ('Bandwidth not yet implemented.' 
+                   'Using default of %0.f MHz.') % bw
         self.set_ref_clck(2*self.bw/1e6)
         self.bw = bw
-        #self._update_boffile()
+        self._update_boffile()
         
     def set_chw(self, chw):
         """
@@ -172,10 +182,15 @@ class ARCManager():
         if chw not in arcp.allowed_config[self.bw]:
             fft = 1024
             chw = arcp.allowed_config[self.bw][0]
-            print 'Channel width not implemented. Using default of %0.f kHz' % chw
+            print ('Channel width not implemented.' 
+                   'Using default of %0.f kHz') % chw
         self.chw = chw
         self.fft = int(fft)
-        #self._update_boffile()
+        self.amp_ab = numpy.empty(self.fft)
+        self.amp_ba = numpy.empty(self.fft)
+        self.amp_a = numpy.empty(self.fft)
+        self.amp_b = numpy.empty(self.fft)
+        self._update_boffile()
     
     def _update_boffile(self):
         """
@@ -189,7 +204,7 @@ class ARCManager():
         
         self.boffile = self._config_to_boffile()
         print 'Changing current .bof file to %s...' % self.boffile,
-        self._set_bof_file(self.boffile)
+        self._set_bof_file()
         print '... done.'
 
     def get_chw(self):
@@ -215,13 +230,16 @@ class ARCManager():
         """
         
         print 'Connecting to server %s on port %i... ' % (self.ip, katcp_port),
-        fpga = corr.katcp_wrapper.FpgaClient(self.ip, katcp_port, timeout=10, logger=self.log_handler)
+        fpga = corr.katcp_wrapper.FpgaClient(self.ip, katcp_port, 
+                                             timeout=10, 
+                                             logger=self.log_handler)
         time.sleep(1)
         
         if fpga.is_connected():
             print 'ok\n'
         else:
-            print 'ERROR connecting to server %s on port %i.\n' % (roach_ip, katcp_port)
+            print ('ERROR connecting to server' 
+                   '%s on port %i.\n') % (arcp.roach_ip, katcp_port)
             self.exit_fail(self.log_handler)
         
         return fpga
@@ -243,7 +261,8 @@ class ARCManager():
         Resets the correlator firmware counters and triggers.
         """
         
-        print 'Resetting board, software triggering and resetting error counters...',
+        print ('Resetting board, software triggering'
+               ' and resetting error counters...'),
         self.fpga.write_int('ctrl', 0) 
         self.fpga.write_int('ctrl', 1<<17) #arm
         self.fpga.write_int('ctrl', 0) 
@@ -275,15 +294,19 @@ class ARCManager():
         
         # EQ SCALING!
         # writes only occur when the addr line changes value. 
-        # write blindly - don't bother checking if write was successful. Trust in TCP!
-        print 'Setting gains of all channels on all inputs to %i...' % self.gain,
-        self.fpga.write_int('quant0_gain', self.gain) # write the same gain for all inputs, all channels
-        self.fpga.write_int('quant1_gain', self.gain) # write the same gain for all inputs, all channels
+        # write blindly - don't bother checking if write was successful. 
+        # Trust in TCP!
+        print ('Setting gains of all channels '
+                'on all inputs to %i...') % self.gain,
+        # Use the same gain for all inputs, all channels
+        self.fpga.write_int('quant0_gain', self.gain) 
+        self.fpga.write_int('quant1_gain', self.gain)
         for chan in xrange(self.fft):
             #print '%i...'%chan,
             sys.stdout.flush()
             for input in xrange(2):
-                self.fpga.blindwrite('quant%i_addr' % input, struct.pack('>I', chan))
+                self.fpga.blindwrite('quant%i_addr' % input, 
+                                     struct.pack('>I', chan))
         print 'done'
     
     def _set_acc_len(self, acc_len):
@@ -319,7 +342,8 @@ class ARCManager():
         """
         
         print 'Configuring coarse delay...',
-        print 'applying a delay of %i clock cycles to antenna %i...' % (delay, antenna),
+        print ('applying a delay of '
+              '%i clock cycles to antenna %i...') % (delay, antenna),
         try:
             self.fpga.write_int('delay_ant%i' % antenna, delay)
             self.cdelay = delay
@@ -347,12 +371,12 @@ class ARCManager():
         elif product == 'bb':
             self.filename_bb = _filename
         elif not product:
-            self.filename_abr = "{0}_abr".format(_filename)
-            self.filename_bar = "{0}_bar".format(_filename)
-            self.filename_abi = "{0}_abi".format(_filename)
-            self.filename_bai = "{0}_bai".format(_filename)
-            self.filename_aa = "{0}_aa".format(_filename)
-            self.filename_bb = "{0}_bb".format(_filename)
+            self.filename_abr = '{0}_abr'.format(_filename)
+            self.filename_bar = '{0}_bar'.format(_filename)
+            self.filename_abi = '{0}_abi'.format(_filename)
+            self.filename_bai = '{0}_bai'.format(_filename)
+            self.filename_aa = '{0}_aa'.format(_filename)
+            self.filename_bb = '{0}_bb'.format(_filename)
     
     def get_data_cross(self, baseline='ab'):
         """
@@ -371,14 +395,22 @@ class ARCManager():
         self.acc_num = acc_num
 
         # get the data...
-        a_0r = struct.unpack('>512l', self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
-        a_1r = struct.unpack('>512l', self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
-        b_0r = struct.unpack('>512l', self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
-        b_1r = struct.unpack('>512l', self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
-        a_0i = struct.unpack('>512l', self.fpga.read('dir_x0_%s_imag'%baseline, 2048, 0))
-        a_1i = struct.unpack('>512l', self.fpga.read('dir_x1_%s_imag'%baseline, 2048, 0))
-        b_0i = struct.unpack('>512l', self.fpga.read('dir_x0_%s_imag'%baseline, 2048, 0))
-        b_1i = struct.unpack('>512l', self.fpga.read('dir_x1_%s_imag'%baseline, 2048, 0))
+        a_0r = struct.unpack('>512l', 
+                             self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
+        a_1r = struct.unpack('>512l', 
+                             self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
+        b_0r = struct.unpack('>512l', 
+                             self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
+        b_1r = struct.unpack('>512l', 
+                             self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
+        a_0i = struct.unpack('>512l', 
+                             self.fpga.read('dir_x0_%s_imag'%baseline, 2048, 0))
+        a_1i = struct.unpack('>512l', 
+                             self.fpga.read('dir_x1_%s_imag'%baseline, 2048, 0))
+        b_0i = struct.unpack('>512l', 
+                             self.fpga.read('dir_x0_%s_imag'%baseline, 2048, 0))
+        b_1i = struct.unpack('>512l', 
+                             self.fpga.read('dir_x1_%s_imag'%baseline, 2048, 0))
 
         self.amp_ab = []
         self.amp_ba = []
@@ -405,7 +437,9 @@ class ARCManager():
         
         Return
         ------
-        accumulation number, frequency, auto correlation antenna A, auto correlation antenna B
+        accumulation number, frequency, 
+        auto correlation antenna A, 
+        auto correlation antenna B
         """
         
         acc_num = self.fpga.read_uint('acc_num')
@@ -413,11 +447,15 @@ class ARCManager():
         self.acc_num = acc_num
 
         baseline = 'aa'
-        a_0 = struct.unpack('>512l', self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
-        a_1 = struct.unpack('>512l', self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
+        a_0 = struct.unpack('>512l', 
+                            self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
+        a_1 = struct.unpack('>512l', 
+                            self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
         baseline = 'bb'
-        b_0 = struct.unpack('>512l', self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
-        b_1 = struct.unpack('>512l', self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
+        b_0 = struct.unpack('>512l', 
+                            self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
+        b_1 = struct.unpack('>512l', 
+                            self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
 
         self.amp_a = []
         self.amp_b = []
@@ -501,12 +539,12 @@ class ARCManager():
             try:
                 head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow, 
-                        'ant1_az', ant2.aznow, 'ant2_el', ant2.elnow,
+                        'ant2_az', ant2.aznow, 'ant2_el', ant2.elnow,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num, 'cdelay', self.cdelay]
             except AttributeError:
-                print "Header keyword not found, using minimum header."
+                print 'Header keyword not found, using minimum header.'
                 head = minhead
 
         elif source and ant1:
@@ -517,7 +555,7 @@ class ARCManager():
                         'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num, 'cdelay', self.cdelay]
             except AttributeError:
-                print "Header keyword not found, using minimum header."
+                print 'Header keyword not found, using minimum header.'
                 head = minhead
                         
         elif ant1:
@@ -528,7 +566,7 @@ class ARCManager():
                         'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num, 'cdelay', self.cdelay]
             except AttributeError:
-                print "Header keyword not found, using minimum header."
+                print 'Header keyword not found, using minimum header.'
                 head = minhead
 
         else:
@@ -538,16 +576,16 @@ class ARCManager():
 
         return head
         
-    def exit_clean():
+    def exit_clean(self):
         """
         Stops the FPGA
         """
         try:
             self.fpga.stop()
         except: pass
-        exit()
+        sys.exit()
         
-    def exit_fail(log_handler=None):
+    def exit_fail(self, log_handler=None):
         if log_handler:
             print 'FAILURE DETECTED. Log entries:\n', log_handler.printMessages()
         else:
@@ -556,4 +594,4 @@ class ARCManager():
             fpga.stop()
         except: pass
         raise
-        exit()
+        sys.exit()

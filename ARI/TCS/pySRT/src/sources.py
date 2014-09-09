@@ -28,8 +28,8 @@ def set_source(name):
         source = ephem.readdb("Orion,f|J,05:35:17.3,-05:23:28,0,2000")
     if name == 'rosett':
         source = ephem.readdb("Rosett,f|J,06:31:51,04:54:47,0,2000")
-    else:
-        print "Source not found in catalogue."
-        source = None
+    #else:
+        #print "Source not found in catalogue."
+        #source = None
     
     return source

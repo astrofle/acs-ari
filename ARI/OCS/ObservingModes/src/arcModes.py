@@ -24,8 +24,8 @@ def track_source(ant1, ant2, source, detector, tracktime=60):
     while time.time() < timeout:
         
         # Antenna movement
-        [az1, el1] = ant1.source_azel(source, ant1.site)
-        [az2, el2] = ant2.source_azel(source, ant2.site)
+        [az1, el1] = ant1.source_azel(source)
+        [az2, el2] = ant2.source_azel(source)
         [ant1.aznow, ant1.elnow, ant1.azcount, ant1.elcount, ant1.p.azatstow, ant1.p.elatstow] = \
              ant1.cmd_azel(az1, el1)
         [ant2.aznow, ant2.elnow, ant2.azcount, ant2.elcount, ant2.p.azatstow, ant2.p.elatstow] = \
@@ -34,7 +34,10 @@ def track_source(ant1, ant2, source, detector, tracktime=60):
         # Phase correction
         ha = hour_angle(ant1.site, source)
         # the factor 0.21 converts to wavelengths 
-        u,v,w = ant1.get_uvw(source.dec, ha)/0.21 
+        u,v,w = ant1.get_uvw(source.dec, ha)
+        u = u/0.21
+        v = v/0.21
+        w = w/0.21
         # frequencies are in MHz
         tau_g = w / ((detector.fc + detector.lo_freq)*1e6) 
         delay_n = int(tau_g*detector.clck)

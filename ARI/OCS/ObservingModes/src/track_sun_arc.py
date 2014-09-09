@@ -25,7 +25,7 @@ if __name__ == '__main__':
         print 'Please specify a folder to store data.\n'
         print 'Run with the -h flag to see all options.\n'
         print 'Exiting.'
-        exit()
+        sys.exit()
     else:
         folder = args[0]
         
@@ -34,10 +34,10 @@ if __name__ == '__main__':
     srt2 = srt.SRT('2')
 
     # Set source to observe
-    source = srt1.sources.set_source(opts.source)
+    source = srt.sources.set_source(opts.source)
     
     # Initialize ARC
-    arc = arcpy.ARCManager(bw=400e6)
+    arc = arcpy.ARCManager(bw=400e6, ip='146.155.121.6', synth=True)
     #sh.set_bw(opts.bw)
     arc.set_file_name('{0}/sun_scan'.format(folder))
 
@@ -45,6 +45,8 @@ if __name__ == '__main__':
     if not os.path.exists(folder):
         os.makedirs(folder)
         
-    arcModes.track_source(srt1, srt2, source, arc, tracktime=60)
+    arcModes.track_source(srt1, srt2, source, arc, tracktime=20)
     
+    arc.exit_clean()
     
+    print "done with track"
