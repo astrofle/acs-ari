@@ -533,13 +533,20 @@ class ARCManager():
         
         minhead = ['fc', self.fc, 'bw', self.bw, 
                    'chw', self.chw, 'chnum', self.num_channel, 
-                   'inum', self.acc_num, 'cdelay', self.cdelay]
+                   'inum', self.acc_num]
     
         if source and ant1 and ant2:
+            # added exception in case we want to migrate to a common
+            # data handling module which writes headers or other data
+            # that way we can have a common head writer, or whatnot.
             try:
                 head = ['sou_az', source.az, 'sou_el', source.alt, 
-                        'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow, 
+                        'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
+                        'ant1_azoff', ant1.az_off, 'ant1_eloff', ant1.el_off,
+                        'ant1_noise', ant1.noise,
                         'ant2_az', ant2.aznow, 'ant2_el', ant2.elnow,
+                        'ant2_azoff', ant2.az_off, 'ant2_eloff', ant2.el_off,
+                        'ant2_noise', ant2.noise,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num, 'cdelay', self.cdelay]
@@ -551,6 +558,7 @@ class ARCManager():
             try:
                 head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
+                        'ant1_azoff', ant1.az_off, 'ant1_eloff', ant1.el_off,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num, 'cdelay', self.cdelay]
@@ -562,6 +570,7 @@ class ARCManager():
             try:
                 head = ['sou_az', source.az, 'sou_el', source.alt, 
                         'ant1_az', ant1.aznow, 'ant1_el', ant1.elnow,
+                        'ant1_azoff', ant1.az_off, 'ant1_eloff', ant1.el_off,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.num_channel, 
                         'inum', self.acc_num, 'cdelay', self.cdelay]

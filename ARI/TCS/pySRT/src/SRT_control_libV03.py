@@ -48,6 +48,11 @@ class SRT():
         self.site = self.set_site()
         
         [p.azatstow, p.elatstow, self.azcount, self.elcount, self.axis, self.aznow, self.elnow] = self.stow_antenna()
+        # offsets only used to make data reduction easier
+        # Might be useful in future as well
+        self.az_off = 0
+        self.el_off = 0
+        self.noise = 0
 
     def cmd_azel(self, az, el):
         az = self.normalize_az(az, self.p.south)
@@ -404,11 +409,17 @@ class SRT():
 
     def noise_on(self):
         cmd = "  move 7 0\n"
+        self.noise = 1
         self.send_command(cmd)
+        # Required to remove serial reply
+        self.get_serialAnswer()
 
     def noise_off(self):
         cmd = "  move 6 0\n"
+        self.noise = 0
         self.send_command(cmd)
+        # Required to remove serial reply
+        self.get_serialAnswer()
         
     def get_xyz(self):
         B = self.p.bl

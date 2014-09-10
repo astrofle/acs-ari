@@ -20,7 +20,7 @@ azcountsperdeg, elcountsperdeg: number of encoder counter per degree in el and a
 azcount, elcount: number of current encoder counts
 """
 
-port = 'USB0'
+port = 'USB1'
 
 vsrt = 0.0
 comerr = 0
@@ -30,10 +30,10 @@ countperstep = 50
 slew = 0 # 1 is for antenna moving until reaching commanded position
 
 #Antenna limits
-azlim1 = 1.64
+azlim1 = 0.3
 azlim2 = 359.0
 
-ellim1 = 0.1
+ellim1 = -3.1
 ellim2 = 89.0
 
 #Antenna Geometry - needed for elevation calculus
