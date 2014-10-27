@@ -35,6 +35,20 @@ class ARCManager():
     def __init__(self, bw=100e6, chw=97656.25, fft=1024, gain=1000, 
                  acc_len=2**28/1024, log_handler=None, ip=arcp.roach_ip, 
                  synth=True):
+        """
+        @param bw: Detector bandwidth
+        @param chw: detector channel spacing
+        @param fft: fft size. must be compatible with bandwidth 
+                    and channel spacing.
+        @param gain: gain factor to multiply channel amplitudes
+        @param acc_len: number of spectra to accumulate in one integration.
+        @param log_handler: log handler used to store error messages.
+        @param ip: ip of the ROACH board. 
+                   SRT control room:146.155.121.6
+                   AIUC:146.155.21.32
+        @param synth: True if the syntheziser is connected to a control PC
+                      with the USB cable. False otherwise.
+        """
 
         # Opens the Valon 5007 dual synth
         # SYNTH_B is the ADC clock, SYNTH_A the LO
@@ -51,20 +65,20 @@ class ARCManager():
         self.head = []
         self.fft = fft
         self.bw = bw
-        self.set_bw(bw)        
+        self.set_bw(bw)
         self.num_channel = fft # to duplicate SHManager
         self.chw = chw
         self.set_chw(chw)
         self.lo_freq = 1370  # LO frequency in MHz
         self.set_LO(self.lo_freq)
         self.fc = 1420 - self.lo_freq
-        self.gain = gain
         self.acc_time = 0
         self.acc_len = acc_len
         self.acc_num = 0
         self.tdump = 0
         self.clck = self.bw/4.0
         self.cdelay = 0
+        self.gain = gain
         
         # Writes firmware configuration to ROACH board
         self.boffile = self._config_to_boffile()
@@ -72,7 +86,7 @@ class ARCManager():
         self._reset_firmware()
         self._set_fft_shift()
         self._set_acc_len(self.acc_len)
-        self._set_gain()
+        self._set_gain(gain)
         self.set_coarse_delay(0, self.cdelay)
         self.set_coarse_delay(1, self.cdelay)
         
@@ -159,8 +173,8 @@ class ARCManager():
         if bw not in arcp.allowed_config.keys():
             bw = 100e6
             print ('Bandwidth not yet implemented.' 
-                   'Using default of %0.f MHz.') % bw
-        self.set_ref_clck(2*self.bw/1e6)
+                   'Using default of %0.f MHz.') % (bw/1e6)
+        self.set_ref_clck(2*bw/1e6)
         self.bw = bw
         self._update_boffile()
         
@@ -178,12 +192,12 @@ class ARCManager():
             Channel width. Must be an allowed value.
         """
         
-        fft = int(self.bw/self.chw)
+        fft = int(self.bw/chw)
         if chw not in arcp.allowed_config[self.bw]:
             fft = 1024
             chw = arcp.allowed_config[self.bw][0]
             print ('Channel width not implemented.' 
-                   'Using default of %0.f kHz') % chw
+                   'Using default of %0.f kHz') % (chw/1e3)
         self.chw = chw
         self.fft = int(fft)
         self.amp_ab = numpy.empty(self.fft)
@@ -280,7 +294,7 @@ class ARCManager():
         self.fpga.progdev(self.boffile)
         print 'done'
     
-    def _set_gain(self):
+    def _set_gain(self, gain):
         """
         Set the gain of all channels.
         
@@ -296,6 +310,7 @@ class ARCManager():
         # writes only occur when the addr line changes value. 
         # write blindly - don't bother checking if write was successful. 
         # Trust in TCP!
+        self.gain = gain
         print ('Setting gains of all channels '
                 'on all inputs to %i...') % self.gain,
         # Use the same gain for all inputs, all channels
@@ -323,6 +338,7 @@ class ARCManager():
         
         print 'Configuring accumulation period...',
         self.fpga.write_int('acc_len', acc_len)
+        self.acc_len = acc_len
         print 'done'
     
     def set_coarse_delay(self, antenna, delay):
@@ -372,11 +388,18 @@ class ARCManager():
             self.filename_bb = _filename
         elif not product:
             self.filename_abr = '{0}_abr'.format(_filename)
+            self.datafile_abr = None
             self.filename_bar = '{0}_bar'.format(_filename)
+            self.datafile_bar = None
             self.filename_abi = '{0}_abi'.format(_filename)
+            self.datafile_abi = None
             self.filename_bai = '{0}_bai'.format(_filename)
+            self.datafile_bai = None
             self.filename_aa = '{0}_aa'.format(_filename)
+            self.datafile_aa = None
             self.filename_bb = '{0}_bb'.format(_filename)
+            self.datafile_bb = None
+            
     
     def get_data_cross(self, baseline='ab'):
         """
@@ -394,28 +417,36 @@ class ARCManager():
         print 'Grabbing integration number %i' % acc_num
         self.acc_num = acc_num
 
+        # Minimum BRAM size is 2048
+        if self.fft <= 2048:
+            fft = 2048
+            sdef = 512
+        else:
+            fft = self.fft
+            sdef = self.fft//4
+            
         # get the data...
-        a_0r = struct.unpack('>512l', 
-                             self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
-        a_1r = struct.unpack('>512l', 
-                             self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
-        b_0r = struct.unpack('>512l', 
-                             self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
-        b_1r = struct.unpack('>512l', 
-                             self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
-        a_0i = struct.unpack('>512l', 
-                             self.fpga.read('dir_x0_%s_imag'%baseline, 2048, 0))
-        a_1i = struct.unpack('>512l', 
-                             self.fpga.read('dir_x1_%s_imag'%baseline, 2048, 0))
-        b_0i = struct.unpack('>512l', 
-                             self.fpga.read('dir_x0_%s_imag'%baseline, 2048, 0))
-        b_1i = struct.unpack('>512l', 
-                             self.fpga.read('dir_x1_%s_imag'%baseline, 2048, 0))
+        a_0r = struct.unpack('>{0:d}l'.format(sdef), 
+                             self.fpga.read('dir_x0_%s_real'%baseline, fft, 0))
+        a_1r = struct.unpack('>{0:d}l'.format(sdef), 
+                             self.fpga.read('dir_x1_%s_real'%baseline, fft, 0))
+        b_0r = struct.unpack('>{0:d}l'.format(sdef), 
+                             self.fpga.read('dir_x0_%s_real'%baseline, fft, 0))
+        b_1r = struct.unpack('>{0:d}l'.format(sdef), 
+                             self.fpga.read('dir_x1_%s_real'%baseline, fft, 0))
+        a_0i = struct.unpack('>{0:d}l'.format(sdef), 
+                             self.fpga.read('dir_x0_%s_imag'%baseline, fft, 0))
+        a_1i = struct.unpack('>{0:d}l'.format(sdef), 
+                             self.fpga.read('dir_x1_%s_imag'%baseline, fft, 0))
+        b_0i = struct.unpack('>{0:d}l'.format(sdef), 
+                             self.fpga.read('dir_x0_%s_imag'%baseline, fft, 0))
+        b_1i = struct.unpack('>{0:d}l'.format(sdef), 
+                             self.fpga.read('dir_x1_%s_imag'%baseline, fft, 0))
 
         self.amp_ab = []
         self.amp_ba = []
 
-        for i in xrange(self.fft//2):
+        for i in xrange(sdef):
             self.amp_ab.append(complex(a_0r[i], a_0i[i]))
             self.amp_ab.append(complex(a_1r[i], a_1i[i]))
             self.amp_ba.append(complex(b_0r[i], b_0i[i]))
@@ -446,22 +477,30 @@ class ARCManager():
         print 'Grabbing integration number %i' % acc_num
         self.acc_num = acc_num
 
+        # Minimum BRAM size is 2048
+        if self.fft <= 2048:
+            fft = 2048
+            sdef = 512
+        else:
+            fft = self.fft
+            sdef = self.fft//4
+        
         baseline = 'aa'
-        a_0 = struct.unpack('>512l', 
-                            self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
-        a_1 = struct.unpack('>512l', 
-                            self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
+        a_0 = struct.unpack('>{0:d}l'.format(sdef),
+                            self.fpga.read('dir_x0_%s_real'%baseline, fft, 0))
+        a_1 = struct.unpack('>{0:d}l'.format(sdef), 
+                            self.fpga.read('dir_x1_%s_real'%baseline, fft, 0))
         baseline = 'bb'
-        b_0 = struct.unpack('>512l', 
-                            self.fpga.read('dir_x0_%s_real'%baseline, 2048, 0))
-        b_1 = struct.unpack('>512l', 
-                            self.fpga.read('dir_x1_%s_real'%baseline, 2048, 0))
+        b_0 = struct.unpack('>{0:d}l'.format(sdef), 
+                            self.fpga.read('dir_x0_%s_real'%baseline, fft, 0))
+        b_1 = struct.unpack('>{0:d}l'.format(sdef), 
+                            self.fpga.read('dir_x1_%s_real'%baseline, fft, 0))
 
         self.amp_a = []
         self.amp_b = []
-        self.freq = []
 
-        for i in xrange(self.fft//2):
+        for i in xrange(sdef):
+            #print i
             self.amp_a.append(a_0[i])
             self.amp_a.append(a_1[i])
             self.amp_b.append(b_0[i])
@@ -479,8 +518,8 @@ class ARCManager():
         the same integration.
         """
         
-        a_n, a_amp_a, a_amp_b = self.get_data_auto()
-        c_n, c_amp_ab, c_amp_ba = self.get_data_cross('ab')
+        self.get_data_auto()
+        self.get_data_cross('ab')
 
         
     def write_spectrum(self):
@@ -504,15 +543,12 @@ class ARCManager():
         if not self.datafile_bai:
             self.datafile_bai = open(self.filename_bai, 'a')
             
-        
         self.datafile_aa.write( format_line(self.head, self.amp_a) )
         self.datafile_bb.write( format_line(self.head, self.amp_b) )
         self.datafile_abr.write( format_line(self.head, self.amp_ab.real) )
         self.datafile_abi.write( format_line(self.head, self.amp_ab.imag) )
         self.datafile_bar.write( format_line(self.head, self.amp_ba.real) )
         self.datafile_bai.write( format_line(self.head, self.amp_ba.imag) )
-
-        print "ready."
         
     def get_tdump(self):
         """
@@ -533,7 +569,7 @@ class ARCManager():
         
         minhead = ['fc', self.fc, 'bw', self.bw, 
                    'chw', self.chw, 'chnum', self.num_channel, 
-                   'inum', self.acc_num]
+                   'inum', self.acc_num, 'acclen', self.acc_len]
     
         if source and ant1 and ant2:
             # added exception in case we want to migrate to a common
@@ -549,7 +585,8 @@ class ARCManager():
                         'ant2_noise', ant2.noise,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.num_channel, 
-                        'inum', self.acc_num, 'cdelay', self.cdelay]
+                        'inum', self.acc_num, 'acclen', self.acc_len,
+                        'cdelay', self.cdelay]
             except AttributeError:
                 print 'Header keyword not found, using minimum header.'
                 head = minhead
@@ -561,7 +598,8 @@ class ARCManager():
                         'ant1_azoff', ant1.az_off, 'ant1_eloff', ant1.el_off,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.num_channel, 
-                        'inum', self.acc_num, 'cdelay', self.cdelay]
+                        'inum', self.acc_num, 'acclen', self.acc_len,
+                        'cdelay', self.cdelay]
             except AttributeError:
                 print 'Header keyword not found, using minimum header.'
                 head = minhead
@@ -573,7 +611,8 @@ class ARCManager():
                         'ant1_azoff', ant1.az_off, 'ant1_eloff', ant1.el_off,
                         'fc', self.fc, 'bw', self.bw, 
                         'chw', self.chw, 'chnum', self.num_channel, 
-                        'inum', self.acc_num, 'cdelay', self.cdelay]
+                        'inum', self.acc_num, 'acclen', self.acc_len,
+                        'cdelay', self.cdelay]
             except AttributeError:
                 print 'Header keyword not found, using minimum header.'
                 head = minhead
@@ -604,3 +643,13 @@ class ARCManager():
         except: pass
         raise
         sys.exit()
+        
+    def take_data(self):
+        """
+        Fast way to take data
+        """
+        self.get_spectrum()
+        self.make_head()
+        self.write_spectrum()
+        time.sleep(self.get_tdump())
+        print "ready."
