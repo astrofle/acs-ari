@@ -1,15 +1,17 @@
 import sys, traceback, Ice
+from time import sleep
 import Demo
 
 class PrinterI(Demo.Printer):
     def printString(self, s, current=None):
+        sleep(1)
         print s
 
 status = 0
 ic = None
 try:
     ic = Ice.initialize(sys.argv)
-    adapter = ic.createObjectAdapterWithEndpoints("SimplePrinterAdapter", "default -p 10000")
+    adapter = ic.createObjectAdapterWithEndpoints("SimplePrinterAdapter", "default -h 192.168.0.9 -p 10000")
     object = PrinterI()
     adapter.add(object, ic.stringToIdentity("SimplePrinter"))
     adapter.activate()
