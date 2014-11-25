@@ -1,5 +1,6 @@
 module Demo {
-    interface Printer {
-        void printString(string s);
-    };
+	interface Printer {
+		void printString(string s);
+	};
 };
+
