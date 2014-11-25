@@ -29,21 +29,12 @@ def get_serialAnswer(port):
 	#print cmd_r
 	return cmd_r
 
-i = 0
 while(1):
 	cmd_r = get_serialAnswer(ser)
-	print 'message received: ' + str(i)
+	print 'message received: '
 	print cmd_r
 	cmd_r[2] = cmd_r[2].replace('\n',' ')
-	cmd_r[2]
-	if cmd_r[2] == '5000 ':
-		cmd_s = "T "+ cmd_r[2] + str(cmd_r[1])+"\r"
-	else:
-		cmd_s = "M "+ cmd_r[2] + str(cmd_r[1])+"\r"
+	cmd_s = "M "+ cmd_r[2] + str(cmd_r[1])+"\r"
 	print cmd_s
-	print "waiting antenna to move"
-	i = i +1
-	time.sleep(2)
 	ser.write(cmd_s)
-	print "answer sent"
 	time.sleep(0.1)

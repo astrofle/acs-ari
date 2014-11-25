@@ -9,6 +9,9 @@ import time
 #import parametersV01 as p
 import ephem
 
+global port 
+
+print "importing SRT library"
 
 def cmd_azel(az, el, azcount, elcount, aznow, elnow):
 	az = normalize_az(az, p.south)
@@ -51,6 +54,7 @@ def slew_antenna(port, axis, az, el, azcount, elcount, azzcount, ellcount, p):
 	return [aznow, elnow, azcount, elcount, p.azatstow, p.elatstow]
 
 def stow_antenna(p):
+	global port
 	p.tostow = 1
 	azcount = 0
 	elcount = 0
@@ -77,11 +81,15 @@ def stow_antenna(p):
 	return [p.azatstow, p.elatstow, azcount, elcount, axis, aznow, elnow]
 
 def init_com(serialport):
-	port = '/dev/tty'+serialport
-	ser = serial.Serial(port, baudrate=2400, timeout = 10)
+	port1 = '/dev/'+serialport
+	try:
+		ser = serial.Serial(port1, baudrate=2400, timeout = 10)
+	except Exception, e:
+		print str(e)
 	return ser
 
-def send_command(port, cmd):
+def send_command(port1, cmd):
+	global port
 	#print "sending :"+ cmd
 	port.write(cmd)
 	return
@@ -383,8 +391,8 @@ def track_source(source, site, p, aznow, elnow, azcount, elcount):
 		time.sleep(2)
 	return [aznow, elnow, azcount, elcount, p.azatstow, p.elatstow]
 
-
-port = init_com('USB0')
+port = None
+#port = init_com('USB0')
 #print "sending antenna to stow now!!"
 #[p.azatstow, p.elatstow, azcount, elcount, axis, aznow, elnow]  = stow_antenna(p)
 #print " "
