@@ -21,6 +21,7 @@ import time
 #import parametersV01 as p
 import ephem
 import importlib
+import threading
 
 global port 
 global p
@@ -47,19 +48,20 @@ class Antenna:
 		self.lastSerialMsg = ''
 		self.lastSRTCom = ''
 		
-	def status(self):
-		print "commanded azimuth: " + str(self.az)
-		print "commanded elevation: " + str(self.el)
-		print "current azimuth: " + str(self.aznow)
-		print "current elevation: " + str(self.elnow)
-		print "next axis to move: " + str(self.axis)
-		print "sent to stow: " + str(self.tostow)
-		print "elevation at stow: " + str(self.elatstow)
-		print "azimuth at stow: " + str(self.azatstow)
-		print "slewing" + str(self.slew)
-		print "serial port: " + self.serialport
-		print "last SRT command: " + str(self.lastSRTCom)
-		print "last received Serial message: " + str(self.lastSerialMsg)
+	def status(self, disp):
+		if(disp == True):
+			print "commanded azimuth: " + str(self.az)
+			print "commanded elevation: " + str(self.el)
+			print "current azimuth: " + str(self.aznow)
+			print "current elevation: " + str(self.elnow)
+			print "next axis to move: " + str(self.axis)
+			print "sent to stow: " + str(self.tostow)
+			print "elevation at stow: " + str(self.elatstow)
+			print "azimuth at stow: " + str(self.azatstow)
+			print "slewing" + str(self.slew)
+			print "serial port: " + self.serialport
+			print "last SRT command: " + str(self.lastSRTCom)
+			print "last received Serial message: " + str(self.lastSerialMsg)
 		return self.az, self.el, self.aznow, self.elnow, self.axis, self.tostow, self.elatstow, self.azatstow, self.slew, self.serialport, str(self.lastSRTCom), str(self.lastSerialMsg)
 		
 	def init_com(self):
@@ -158,6 +160,7 @@ class Antenna:
 		return
 
 	def stow_antenna(self):
+		print "Sending Antenna to Stow"
 		self.tostow = 1
 		self.azcount = 0
 		self.elcount = 0
@@ -397,12 +400,12 @@ class Antenna:
 				[rec_count, fcount] = self.parseAnswer(cmd_r, count)
 				count_error = self.check_count(rec_count, count)
 				self.antenna_positionStatus(mm, cmd_r, fcount)
-			self.get_current_azelPosition()
-			status = status + "az: " + str(self.aznow) + " el: "+ str(self.elnow)
-			print status
-			self.check_limit()
-			self.check_end()
-			time.sleep(0.5)
+				self.get_current_azelPosition()
+				status = status + "az: " + str(self.aznow) + " el: "+ str(self.elnow)
+				print status
+				self.check_limit()
+				self.check_end()
+				time.sleep(0.5)
 		return
 
 	def load_parameters(self, pfile):
@@ -411,3 +414,12 @@ class Antenna:
 		print "loaded parameters file " + str(p)
 		return
 	
+	def azel_thread(self, az, el):
+		azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el))
+		azel_thread.start()
+		return
+		
+	def status_thread(self, disp):
+		status_thread = threading.Thread(target = self.status, args=(disp))
+		status_thread.start()
+		return

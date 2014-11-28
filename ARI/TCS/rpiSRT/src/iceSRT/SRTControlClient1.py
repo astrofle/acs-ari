@@ -1,15 +1,29 @@
 import sys, traceback, Ice
 import SRTControl
+import ephem
+import math
+import time
 
 #global variables
 global status
 global ic
 global controller
 
+planets = [ephem.Sun(),ephem.Moon(),ephem.Mercury(),ephem.Venus(),ephem.Mars(),ephem.Jupiter(),ephem.Saturn()]
 
 ic = None
 
 class MyCallback(object):
+	def __init__(self):
+		pass
+
+	def getNameCB(self, a):
+		print a
+
+	def failureCB(self, ex):
+		print "Exception is: " + str(ex)
+
+class MyCallback2(object):
 	def __init__(self):
 		pass
 
@@ -130,13 +144,13 @@ def SRTStatus():
 	status = 0
 	ic = None
 	try:
-		cb1 = MyCallback()
-		controller.begin_SRTStatus(cb1.getNameCB, cb1.failureCB);
+		cb2 = MyCallback2()
+		st = controller.begin_SRTStatus(cb2.getNameCB, cb2.failureCB);
 		print "getting SRT status"
 	except:
 		traceback.print_exc()
 		status = 1
-	return
+	return st
 
 def SRTAzEl(az, el):
 	global status
@@ -144,15 +158,51 @@ def SRTAzEl(az, el):
 	ic = None
 	try:
 		cb1 = MyCallback()
-		controller.begin_SRTAzEl(az, el, cb1.getNameCB, cb1.failureCB);
+		target = controller.begin_SRTAzEl(az, el, cb1.getNameCB, cb1.failureCB);
 		print "moving the antenna"
 	except:
 		traceback.print_exc()
 		status = 1
-	return
+	return target
 			
 
-			
+def set_site():
+	# Local coordinates (Calama)
+	place = 'calama'
+	lat = '-22.5'
+	lon = '-68.9'
+	elevation = 2277
+	site = ephem.Observer()
+	site.lon = lon
+	site.lat = lat
+	site.elevation = elevation
+	return site
+
+def source_azel(object, site):
+	site.date = ephem.now()
+	object.compute(site)
+	az = 180*object.az/math.pi
+	el = 180*object.alt/math.pi
+	return [az, el]
+
+
+def find_sources(planets, site):
+	sources = []
+	for planet in planets:
+		[az, el] = source_azel(planet, site)
+		if el > 8.0:
+			sources.append(planets[planets.index(planet)])
+	return sources
+	
+def track_source(source, site):
+	track = True
+	while(track):
+		[az, el] = source_azel(source, site)
+		target = SRTAzEl(az, el)
+		while(target.isCompleted()==False):
+			time.sleep(2)
+	return 
+	
 if ic:
 	#clean up
 	try:
@@ -160,5 +210,13 @@ if ic:
 	except:
 		traceback.print_exc()
 		status = 1
+
+
+
+
+
+
+
+
 
 

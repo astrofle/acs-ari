@@ -43,12 +43,13 @@ class SRTControlI(SRTControl.telescope):
 		return "Done!\n"
 
 	def SRTStatus(self, current = None):
-		st = self.A.status()
-		return st
+		_st = self.A.status(disp = False)
+		realStatus = SRTControl.AntennaStatus(az=_st[0], el=_st[1], aznow=_st[2], elnow=_st[3], axis=_st[4], tostow=_st[5], elatstow=_st[6], azatstow=_st[7], slew=_st[8], serialport=_st[9], lastSRTCom=_st[10], lastSerialMsg=_st[11])
+		return realStatus
 
 	def SRTAzEl(self, az, el, current = None):
-		self.A.cmd_azel(az, el)
-		return
+		self.A.azel_thread(az, el)
+		return "target"
 
 status = 0
 ic = None
