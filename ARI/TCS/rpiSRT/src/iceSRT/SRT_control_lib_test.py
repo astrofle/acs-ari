@@ -65,6 +65,7 @@ class Antenna:
 		return self.az, self.el, self.aznow, self.elnow, self.axis, self.tostow, self.elatstow, self.azatstow, self.slew, self.serialport, str(self.lastSRTCom), str(self.lastSerialMsg)
 		
 	def init_com(self):
+		#serial port USB-RS232 initializacion
 		port1 = '/dev/'+self.serialport
 		try:
 			ser = serial.Serial(port1, baudrate=2400, timeout = 10)
@@ -73,11 +74,13 @@ class Antenna:
 		return ser
 
 	def send_command(self, cmd):
+		#send command string to SRT HW via USB-RS232
 		#print "sending :"+ cmd
 		self.port.write(cmd)
 		return
 		
 	def get_serialAnswer(self):
+		#reads answer from SRT HW via USB-RS232
 		finished = 0;
 		cmd_r=''
 		while(finished == 0):
@@ -88,13 +91,14 @@ class Antenna:
 				cmd_r = cmd_r +self.port.read(self.port.inWaiting())
 			time.sleep(1)
 	
-		#parsed received answer
+		#parses received answer
 		cmd_r = cmd_r.split(' ')
-		print cmd_r
+		#print cmd_r
 		self.lastSerialMsg =  [int(time.time()), cmd_r]
 		return cmd_r
 		
 	def sim_serialAnswer(self,mm, count):
+		#SRT HW simulated answer for test
 		cmd_r = "M "+str(count)+" 0 "+str(mm)+"\r"
 		cmd_r = cmd_r.split(' ')
 		time.sleep(1)	
@@ -111,7 +115,8 @@ class Antenna:
 			#print "OK"
 			rec_count = float(cmd_r[1]) #encoder count read back from antenna controller
 			b2count = float(cmd_r[2]) #read back from antenna controller
-		#count is >5000 for stow command, fcount = 2*rec_count = 2*count and updates the current axis count whit the encoder counts during last step
+		#count is >5000 for stow command, fcount = 2*rec_count = 2*count 
+		#and updates the current axis count whit the encoder counts during last step
 		if (count < 5000):
 			fcount = count * 2 + b2count; # add extra 1/2 count from motor coast
 		else:
@@ -139,15 +144,17 @@ class Antenna:
 			print "timeout from antenna, command to stow"
 			sys.exit()
 	
-		#axis current count azcount and elcount updated with count variation from last step fcount
+		#axis current azcount and elcount updated with count variation from last step fcount
 		if (cmd_r[0] == 'M'):
 			if (self.axis == 0):
+				#Azimuth moved
 				self.azatstow = 0;
 				if (mm == 1):
 					self.azcount = self.azcount + fcount;
 				else:
 					self.azcount = self.azcount - fcount;
 			if (self.axis == 1):
+				#Elevation moved
 				self.elatstow = 0;
 				if (mm == 3):
 					self.elcount = self.elcount + fcount;
@@ -164,6 +171,7 @@ class Antenna:
 		self.tostow = 1
 		self.azcount = 0
 		self.elcount = 0
+		#Start stow on elevation
 		self.axis = 1
 		
 		fcount = 0	
@@ -384,8 +392,8 @@ class Antenna:
 	def slew_antenna(self):
 		self.slew = 1;
 		while(self.slew == 1):
-			status = ''
 			for ax in range(0,2):
+				status = ''
 				[cmd, mm, count] = self.make_SRTCommand()
 				if(count != 0):
 					self.send_command(cmd)
@@ -415,7 +423,7 @@ class Antenna:
 		return
 	
 	def azel_thread(self, az, el):
-		azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el))
+		azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el), name = 'AzEl')
 		azel_thread.start()
 		return
 		
@@ -423,3 +431,4 @@ class Antenna:
 		status_thread = threading.Thread(target = self.status, args=(disp))
 		status_thread.start()
 		return
+		
