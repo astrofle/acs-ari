@@ -84,6 +84,7 @@ class Antenna:
 		finished = 0;
 		cmd_r=''
 		while(finished == 0):
+			#print "reading serial port"
 			cmd_r = cmd_r + self.port.read(self.port.inWaiting())
 			if(cmd_r.find('\r') !=-1):
 				finished = 1
@@ -171,11 +172,21 @@ class Antenna:
 		self.tostow = 1
 		self.azcount = 0
 		self.elcount = 0
+		fcount = 0	
 		#Start stow on elevation
 		self.axis = 1
 		
-		fcount = 0	
-		mm = 2
+		#Rise Elevation to avoid moving azimuth on low elevation
+		mm = 3
+		count = 50
+		cmd = "  move "+str(mm)+" "+str(count)+"\n"
+		self.send_command(cmd)
+		cmd_r = self.get_serialAnswer()
+		self.antenna_positionStatus(mm, cmd_r, fcount)
+		
+		#Azimuth to Stow
+
+		mm = 0
 		count = 5000
 		cmd = "  move "+str(mm)+" "+str(count)+"\n"
 		
@@ -184,7 +195,8 @@ class Antenna:
 		#cmd_r = sim_serialAnswer('T', mm, count)
 		self.antenna_positionStatus(mm, cmd_r, fcount)
 	
-		mm = 0
+		#Elevation to Stow
+		mm = 2
 		cmd = "  move "+str(mm)+" "+str(count)+"\n"
 		
 		self.send_command(cmd)

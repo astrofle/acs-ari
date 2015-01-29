@@ -103,10 +103,11 @@ status = 0
 ic = None
 try:
 	ic = Ice.initialize(sys.argv)
-	adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.7 -p 10000")
+	adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.101 -p 10000")
 	object = SRTControlI()
 	adapter.add(object, ic.stringToIdentity("SRTController"))
 	adapter.activate()
+	print "SRT Server up and running!"
 	ic.waitForShutdown()
 except:
 	traceback.print_exc()
