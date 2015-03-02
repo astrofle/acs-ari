@@ -800,7 +800,7 @@ class Antenna:
 			else:
 				self.avc = self.avc + 1
 		
-		return self.spec
+		return [self.spec, self.avspec, self.avspecc, self.specd]
 	
 	def clear(self):
 		self.spec = [0]*256

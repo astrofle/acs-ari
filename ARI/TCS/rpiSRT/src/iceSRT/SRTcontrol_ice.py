@@ -131,6 +131,91 @@ if not _M_SRTControl.__dict__.has_key('AntennaStatus'):
 if not _M_SRTControl.__dict__.has_key('_t_anst'):
     _M_SRTControl._t_anst = IcePy.defineSequence('::SRTControl::anst', (), _M_SRTControl._t_AntennaStatus)
 
+if not _M_SRTControl.__dict__.has_key('specs'):
+    _M_SRTControl.specs = Ice.createTempClass()
+    class specs(object):
+        def __init__(self, spec=None, avspec=None, avspecc=None, specd=None):
+            self.spec = spec
+            self.avspec = avspec
+            self.avspecc = avspecc
+            self.specd = specd
+
+        def __hash__(self):
+            _h = 0
+            if self.spec:
+                for _i0 in self.spec:
+                    _h = 5 * _h + __builtin__.hash(_i0)
+            if self.avspec:
+                for _i1 in self.avspec:
+                    _h = 5 * _h + __builtin__.hash(_i1)
+            if self.avspecc:
+                for _i2 in self.avspecc:
+                    _h = 5 * _h + __builtin__.hash(_i2)
+            if self.specd:
+                for _i3 in self.specd:
+                    _h = 5 * _h + __builtin__.hash(_i3)
+            return _h % 0x7fffffff
+
+        def __lt__(self, other):
+            if isinstance(other, _M_SRTControl.specs):
+                return self.spec < other.spec or self.avspec < other.avspec or self.avspecc < other.avspecc or self.specd < other.specd
+            elif other == None:
+                return False
+            return NotImplemented
+
+        def __le__(self, other):
+            if isinstance(other, _M_SRTControl.specs):
+                return self.spec <= other.spec or self.avspec <= other.avspec or self.avspecc <= other.avspecc or self.specd <= other.specd
+            elif other == None:
+                return False
+            return NotImplemented
+
+        def __eq__(self, other):
+            if isinstance(other, _M_SRTControl.specs):
+                return self.spec == other.spec and self.avspec == other.avspec and self.avspecc == other.avspecc and self.specd == other.specd
+            elif other == None:
+                return False
+            return NotImplemented
+
+        def __ne__(self, other):
+            if isinstance(other, _M_SRTControl.specs):
+                return self.spec != other.spec or self.avspec != other.avspec or self.avspecc != other.avspecc or self.specd != other.specd
+            elif other == None:
+                return True
+            return NotImplemented
+
+        def __gt__(self, other):
+            if isinstance(other, _M_SRTControl.specs):
+                return self.spec > other.spec or self.avspec > other.avspec or self.avspecc > other.avspecc or self.specd > other.specd
+            elif other == None:
+                return False
+            return NotImplemented
+
+        def __ge__(self, other):
+            if isinstance(other, _M_SRTControl.specs):
+                return self.spec >= other.spec or self.avspec >= other.avspec or self.avspecc >= other.avspecc or self.specd >= other.specd
+            elif other == None:
+                return False
+            return NotImplemented
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_SRTControl._t_specs)
+
+        __repr__ = __str__
+
+    _M_SRTControl._t_specs = IcePy.defineStruct('::SRTControl::specs', specs, (), (
+        ('spec', (), _M_SRTControl._t_spectrum),
+        ('avspec', (), _M_SRTControl._t_spectrum),
+        ('avspecc', (), _M_SRTControl._t_spectrum),
+        ('specd', (), _M_SRTControl._t_spectrum)
+    ))
+
+    _M_SRTControl.specs = specs
+    del specs
+
+if not _M_SRTControl.__dict__.has_key('_t_spectrums'):
+    _M_SRTControl._t_spectrums = IcePy.defineSequence('::SRTControl::spectrums', (), _M_SRTControl._t_specs)
+
 if not _M_SRTControl.__dict__.has_key('telescope'):
     _M_SRTControl.telescope = Ice.createTempClass()
     class telescope(Ice.Object):
@@ -311,7 +396,7 @@ if not _M_SRTControl.__dict__.has_key('telescope'):
     telescope._op_SRTThreads = IcePy.Operation('SRTThreads', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (), (((), IcePy._t_string),), None, ())
     telescope._op_serverState = IcePy.Operation('serverState', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (), (((), IcePy._t_string),), None, ())
     telescope._op_SRTSetFreq = IcePy.Operation('SRTSetFreq', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (((), IcePy._t_float), ((), IcePy._t_string)), (((), IcePy._t_string),), None, ())
-    telescope._op_SRTGetSpectrum = IcePy.Operation('SRTGetSpectrum', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (), (((), _M_SRTControl._t_spectrum),), None, ())
+    telescope._op_SRTGetSpectrum = IcePy.Operation('SRTGetSpectrum', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (), (((), _M_SRTControl._t_specs),), None, ())
 
     _M_SRTControl.telescope = telescope
     del telescope
