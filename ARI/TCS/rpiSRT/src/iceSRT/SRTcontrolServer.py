@@ -79,6 +79,11 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		lastSRTCom=_st[10], lastSerialMsg=_st[11])
 		return realStatus
 
+	def SRTGetSpectrum(self, current = None):
+		_sp = self.spectra()
+		sp = SRTControl.spectrum(_sp)
+		return sp
+
 	def SRTAzEl(self, az, el, current = None):
 		try:
 			self.az = az
@@ -98,12 +103,20 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 	def serverState(self, current = None):
 		state = [self.serialport, self.antennaInit]
 		return str(state)
+	
+	def SRTSetFreq(self, freq, receiver, current = None):
+		try:
+			self.set_freq(freq, receiver)
+			return "Frequency changed"
+		except Exception, e:
+			print str(e)
+			return "Failed to change frequency"
 		
 status = 0
 ic = None
 try:
 	ic = Ice.initialize(sys.argv)
-	adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.101 -p 10000")
+	adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.6 -p 10000")
 	object = SRTControlI()
 	adapter.add(object, ic.stringToIdentity("SRTController"))
 	adapter.activate()

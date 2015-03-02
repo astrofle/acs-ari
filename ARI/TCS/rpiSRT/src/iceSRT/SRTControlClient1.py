@@ -6,12 +6,12 @@ import time
 import threading
 from time import gmtime, strftime
 strftime("%Y-%m-%d %H:%M:%S", gmtime())
+import sites
 #global variables
 global status
 global ic
 global controller
 
-planets = [ephem.Sun(),ephem.Moon(),ephem.Mercury(),ephem.Venus(),ephem.Mars(),ephem.Jupiter(),ephem.Saturn()]
 
 ic = None
 
@@ -31,8 +31,24 @@ class SRT():
 		self.lastSRTCom = ''
 		self.lastSerialMsg = ''
 		self.IsMoving = False
+		self.track = False
+		self.OnSource = False
+		self.site = sites.site
+		self.planets = sites.planets
+		self.stars = sites.stars
+		self.target = None
+		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
+		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		return 
 		
+	def find_planets(self):
+		self.planets = sites.find_planets(sites.planet_list, self.site)
+		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
+		
+	def find_stars(self):
+		self.stars = sites.find_stars(sites.star_list, self.site)
+		print str(len(self.stars)) + " observabable stars: " + str(self.stars)
+	
 	def getStatusCB(self, state):
 		#status callback
 		self.az = state.az
@@ -61,6 +77,16 @@ class SRT():
 		print "last SRT command: " + str(self.lastSRTCom)
 		print "last SRT received message: " + str(self.lastSerialMsg)	
 		print "\n"
+		return
+
+	def getTrackingStatus(self):
+		print "Antenna slewing: " + str(self.IsMoving)
+		print "Antenna tracking: " + str(self.track)
+		print "Antenna On source: " + str(self.OnSource)
+
+
+	def getSpectrumCB(self, spect):
+		self.spectrum = spect
 		return
 
 	def status(self):
@@ -115,7 +141,7 @@ class SRT():
 			initData.properties.load('IceConfig')
 			ic = Ice.initialize(sys.argv, initData)
 			# Create proxy
-			base = ic.stringToProxy("SRTController:default -h 192.168.0.7 -p 10000")
+			base = ic.stringToProxy("SRTController:default -h 192.168.0.6 -p 10000")
 			controller = SRTControl.telescopePrx.checkedCast(base)
 			controller.begin_message("connected to controller", self.genericCB, self.failureCB);
 			print "Connecting to SRTController"
@@ -204,7 +230,8 @@ class SRT():
 		ic = None
 		try:
 			target = controller.begin_SRTAzEl(az, el, self.genericCB, self.failureCB);
-			print "moving the antenna"
+			print "moving the antenna "
+			print "commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
 			self.IsMoving = True
 			self.movingThread()
 		except:
@@ -212,14 +239,40 @@ class SRT():
 			status = 1
 		return target
 		
+	def SetFreq(self, freq, receiver):
+		#Sets receiver central frequency and receiver mode (0 to 5)
+		global status
+		status = 0
+		ic = None
+		try:
+			target = controller.begin_SRTSetFreq(freq, receiver, self.genericCB, self.failureCB);
+			print "seting frequency"
+		except:
+			traceback.print_exc()
+			status = 1
+		return
+		
+	def GetSpectrum(self):
+		#Gets spectrum from receiver
+		global status
+		status = 0
+		ic = None
+		try:
+			target = controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
+			print "getting spectrum"
+		except:
+			traceback.print_exc()
+			status = 1
+		return
+			
 	def threadCB(self, a):
 		idx = a.find('AzEl')
 		if idx==-1:
-			print "Movement finished"
+			print "Movement finished!!"
 			self.IsMoving = False
 
-	def getThreads(self):
-		#Command antenna position to (az, el) coordinates	
+	def getSRTThreads(self):
+		#Get active threads from SRT	
 		global status
 		status = 0
 		ic = None
@@ -233,45 +286,35 @@ class SRT():
 		return target
 		
 	def movingThread(self):
-		moving_Thread = threading.Thread(target = self.getThreads, name='moving')
+		moving_Thread = threading.Thread(target = self.getSRTThreads, name='moving')
 		moving_Thread.start()
 
-def set_site():
-	# Local coordinates (Calama)
-	place = 'calama'
-	lat = '-22.5'
-	lon = '-68.9'
-	elevation = 2277
-	site = ephem.Observer()
-	site.lon = lon
-	site.lat = lat
-	site.elevation = elevation
-	return site
-
-def source_azel(object, site):
-	site.date = ephem.now()
-	object.compute(site)
-	az = 180*object.az/math.pi
-	el = 180*object.alt/math.pi
-	return [az, el]
-
-
-def find_sources(planets, site):
-	sources = []
-	for planet in planets:
-		[az, el] = source_azel(planet, site)
-		if el > 8.0:
-			sources.append(planets[planets.index(planet)])
-	return sources
 	
-def track_source(source, site):
-	track = True
-	while(track):
-		[az, el] = source_azel(source, site)
-		target = SRTAzEl(az, el)
-		while(target.isCompleted()==False):
-			time.sleep(2)
-	return 
+	def track_source(self, source):
+		if self.planets.has_key(source):
+			source = self.planets[source]
+		elif self.stars.has_key(source):
+			source = self.stars[source]
+		else:
+			print "Object not found or not observable"
+			return
+		self.track = True
+		self.OnSource = False
+		toSource = 0
+		while(self.track):
+			toSource = toSource + 1
+			if toSource == 2:
+				self.OnSource = True
+				toSource = 1
+			[az, el] = sites.source_azel(source, self.site)
+			self.target = self.AzEl(az, el)
+			while(self.IsMoving==True):
+				time.sleep(10)
+		return 
+		
+	def tracking(self, source):
+			tracking_Thread = threading.Thread(target = self.track_source, args =(source,), name='tracking')
+			tracking_Thread.start()
 	
 if ic:
 	#clean up

@@ -22,6 +22,7 @@ import time
 import ephem
 import importlib
 import threading
+import struct
 
 global port 
 global p
@@ -30,6 +31,7 @@ print "importing SRT library"
 
 class Antenna:
 	def __init__(self):
+		#variables for antenna control
 		self.az = 0.0
 		self.el = 0.0
 		self.aznow = 0.0
@@ -48,6 +50,45 @@ class Antenna:
 		self.lastSerialMsg = ''
 		self.lastSRTCom = ''
 		
+		# Variables for receiver
+		self.fcenter = 1420.4 # default for continuum
+		self.freqa = 1420.0
+		self.restfreq = 1420.406 # se usa para calcular la velocidad en doppler H-Line rest freq
+
+		#If not simulation fcenter = 1420.0, nfreq = 1, freqsep = 0.04, intg = 0.1
+		#If simulation fcenter = 1420.4, nfreq = 40
+		self.tstart = 0
+		self.tsys = 0.0
+		self.stopproc = 0
+		self.atten = 0
+		self.calon = 0
+		self.docal = 1
+		self.sourn = 0
+		self.track = 0
+		self.scan = 0
+		self.bsw = 0
+		self.mancal = 0
+		self.sig = 1
+		self.specd = [0]*256
+		self.spec = [0]*256
+		self.avspec = [0]*256
+		self.avspecc = [0]*256
+		self.bswav = 0.0 
+		self.bswsq = 0.0
+		self.bswlast = 0.0
+		self.bswcycles = 0.0
+		self.av = 0.0
+		self.avc = 0.0
+		self.paver = 0.0
+		self.prms =0.0
+		self.pnum = 1e-6
+		#from config file (read *.cat)
+		#receiver default initialization from *.cat 
+		#(whenever the word digital is present in the cat file)
+		#If not present no initialization is done
+
+
+
 	def status(self, disp):
 		if(disp == True):
 			print "commanded azimuth: " + str(self.az)
@@ -432,8 +473,351 @@ class Antenna:
 		global p
 		p = importlib.import_module(pfile)
 		print "loaded parameters file " + str(p)
+		if p.digital:
+			self.receiver_default = '1a'
+			self.receiver = self.receiver_default
+			self.nfreq = p.receivers[self.receiver]['nfreq']
+			self.freqsep = p.receivers[self.receiver]['freqsep']
+			self.intg = p.receivers[self.receiver]['intg']
 		return
 	
+	#####################Radiometer functions
+	def set_freq(self, new_fcenter, new_receiver):
+	# This function is temporarily limited to change fcenter and receiver/mode
+	#
+	#
+	#def set_freq(self, new_fcenter, new_nfreq, new_freqsep, new_receiver):
+	#Set central frequency and receiver parameters
+	#set freq (fcenter, nfreq, freqsep, receiver)		
+	#por comando se puede configurar el receiver
+	#if receiver = 0|0a se puede configurar: fcenter, nfreq, freqsep
+	#if receiver != 0|0a se puede configurar: fcenter, receiver
+	#Si el receiver es digital:
+	#if new receiver < 1 --> receiver = 1, 
+	#if new receiver = 5 --> nfreq = 40, freqsep = 1.0, intg = 0.52488, luego 
+	#	luego configura nfreq (nfreq_max = 500) y freqsep (freqsep_min = 1) si se ingresan
+	#if new receiver < 5 se configura uno de los modos del 1a al 4 en receivers
+		self.fcenter = new_fcenter
+		#if (new_nfreq < 1):
+		#	new_nfreq = 1
+		#if (new_nfreq > 500):
+		#	new_nfreq = 500
+		if not(p.digital):
+			self.nfreq = 40
+			self.freqsep = 0.04
+			#self.nfreq = new_nfreq
+			#self.freqsep = new_freqsep
+			self.receiver = '0a'
+		else:
+			if (int(new_receiver[0])<1):
+				new_receiver = '1'
+			self.receiver = str(new_receiver)
+			self.nfreq = p.receivers[str(new_receiver)]['nfreq']
+			self.freqsep = p.receivers[str(new_receiver)]['freqsep']
+			self.intg = p.receivers[str(new_receiver)]['intg']
+			#if (int(new_receiver)==5):
+			#	self.nfreq = 40
+			#	self.freqsep = 1.0
+			#	self.intg = 0.52488
+			#	try:
+			#		self.nfreq = new_nfreq
+			#		self.freqsep = new_freqsep
+			#	except:
+			#		pass	
+			#else:
+			#	self.nfreq = self.receivers[str(new_receiver)]['nfreq']
+			#	self.freqsep = self.receivers[str(new_receiver)]['freqsep']
+			#	self.intg = self.receivers[str(new_receiver)]['intg']
+		return
+	
+	def vane_calibration(self):
+		self.atten = 0 # attenuator to 0 (not used for digital = True)
+		pwr0 = pwr1 = trecvr = 0
+		if self.mancal == 0:
+			print "moving load on feed"
+			self.calibrator('in')
+		else:
+			print "place load on feed"
+			self.stopProc =1
+			raw_input("press any key when done")
+		self.stopProc = 0
+		self.calon = 1
+		self.fcenter
+		self.spectra()
+		self.fcenter
+		istart = 0
+		istop = self.nfreq
+		if self.receiver > 0:
+			istart = 10
+			istop = self.nfreq -10
+		for i in range(istart, istop):
+			pwr1 += self.spec[i]
+		pwr1 = float(pwr1)/(istop-istart)
+		time.sleep(1)
+		if self.mancal == 0:
+			print "moving load out of feed"
+			self.calibrator('out')
+		else:
+			print "remove load"
+			self.stopProc = 1
+			raw_input("press any key when done")
+		self.stopProc = 0
+		self.calon = 0
+		self.spectra()
+		self.fcenter
+		for i in range(istart, istop):
+			pwr0 += self.spec[i]
+		pwr0 = float(pwr0)/(istop-istart)
+		
+		if (pwr1 > pwr0 and pwr0 > 0.0):
+			trecvr = (p.tload - (pwr1/pwr0)*p.tspill)/( (pwr1/pwr0) - 1.0)
+			self.tsys = trecvr + p.tspill
+			p.calcons = ((trecvr + p.tspill)*p.calcons/ pwr0)
+			print "tsys: ", self.tsys, " K"
+			print "calcons", p.calcons
+			print "trec: :", trecvr, " K"
+			self.docal = 0
+		else:
+			print "tsys: error"
+		return
+
+	def noise_calibration(self):
+		self.atten = 0 # attenuator to 0 (not used for digital = True)
+		pwr0 = pwr1 = trecvr = 0
+		print "turning on noise diode"
+		self.calibrator('noise_on')
+		self.calon = 2
+		self.fcenter
+		self.spectra()
+		self.fcenter
+		istart = 0
+		istop = self.nfreq
+		if self.receiver > 0:
+			istart = 10
+			istop = self.nfreq -10
+		for i in range(istart, istop):
+			pwr1 += self.spec[i]
+		pwr1 = float(pwr1)/(istop-istart)
+		print "turning off noise diode"
+		self.calibrator('noise_off')
+		self.calon = 0
+		self.spectra()
+		self.fcenter
+		for i in range(istart, istop):
+			pwr0 += self.spec[i]
+		pwr0 = float(pwr0)/(istop-istart)
+		
+		if (pwr1 > pwr0 and pwr0 > 0.0 and self.noisecal > 0.0):
+			trecvr = ( self.noisecal / (pwr1/pwr0 - 1)) - p.tspill
+			self.tsys = trecvr + p.tspill
+			p.calcons = ((trecvr + p.tspill)*p.calcons/ pwr0)
+			print "tsys: ", self.tsys, " K"
+			print "calcons", p.calcons
+			print "trec: :", trecvr, " K"
+			self.docal = 0
+		else:
+			print "tsys: error"
+		return
+
+	def calibrator(self, pos):
+		if pos=='noise_on':
+			mode = 7
+			print "waiting on noise on  "
+		if pos=='noise_off':
+			mode = 6
+			print "waiting on noise off  "
+		if pos=='in':
+			mode = 5
+			print "waiting on calin  "
+		if pos=='out':
+			mode = 4
+			print "waiting on calout"
+		cmd = "  move " + str(mode) + " 0 \n"
+		self.send_command(cmd)
+		cmd_r = self.get_serialAnswer()
+		print "Done"
+		return
+	
+	def radiodg(self, freq):
+		#freq in MHz
+		self.avpower = 0
+		self.power = 0
+		self.a =0
+		j = int(freq*(1.0/0.04)+0.5)
+		mode = int(self.receiver[0]) - 1
+		if (mode < 0 or mode == 4 or mode == 5):
+			mode = 0
+		b8 = (mode)
+		b9 = (j & 0x3f)
+		b10= ((j >> 6) & 0xff)
+		b11= ((j >> 14) & 0xff)
+		msg = struct.pack('b4s4b', 0, 'freq', b11, b10, b9, b8)
+		self.freqa = (((b11*256.0 + (b10 & 0xff))*64.0 + (b9 & 0xff))*0.04 - 0.8)
+		#Enviar comando por puerto serial y esperar respuesta en variable recv
+		#simulacion#
+		self.send_command(msg)
+		receiving = True
+		while receiving:
+			if self.port.inWaiting() == 128:
+				receiving = False
+			else:
+				pass
+		data = self.port.read(self.port.inWaiting())
+		recv = struct.unpack('64H', data)
+		#####
+		for i in range(64):
+			if (i<=31):
+				k = (i+32)
+			else:
+				k = (i-32)
+			power = recv[k]
+			if (int(self.receiver[0])<5):
+				a = (i-32) * self.freqsep * 0.4
+			else:
+				a = 0
+			if p.graycorr[i] > 0.8:
+				power = power / (p.graycorr[i] * (1.0 + a * a * p.curvcorr))
+			
+			a = p.calcons * power
+			if i>0:
+				self.specd[64-i] = a
+			else:
+				self.specd[0] = a
+			if (i>=10 and i<54):
+				self.avpower += power
+		
+		self.avpower = self.avpower /44.0
+		self.a = p.calcons * self.avpower
+		print self.avpower, self.a
+		return
+		
+	def spectra(self):
+		avp = 0.0
+		if ( int(self.receiver[0]) == 0 or int(self.receiver[0]) == 5):
+			for i in range(self.nfreq):
+				freqf = self.fcenter + (i - float(self.nfreq)/2) * self.freqsep + 0.8;
+				self.radiodg(freqf)
+				self.spec[i] = self.a
+				if i == 0:
+					self.freq0 = self.freqa
+			
+			#The next routine could be move for scan and BeamSW functions
+			for i in range(self.nfreq):
+				pwr = self.spec[i]
+				if pwr>0.0:
+					avp += pwr
+				if self.sig:
+					self.avspec[i] = pwr
+				else:
+					self.avspecc[i] = pwr
+				
+				#if self.scan != 0:
+				#	self.pwr[scan-1] = self.pwr[scan-1] + pwr
+		else:
+			if int(self.receiver[0]) == 4:
+				nk = 3
+			else:
+				nk = 1
+			
+			for k in range(nk):
+				nk2 = nk/2
+				freqf = self.fcenter + (k - nk2)*0.36 + 0.8
+				self.radiodg(freqf)
+				if(k == nk2):
+					self.fcenter = self.freqa
+				
+				if(k == 0):
+					if int(self.receiver) <= 3:
+						self.freq0 = self.fcenter - 32.0*self.freqsep
+					else:
+						self.freq0 = self.fcenter - 78.0*self.freqsep
+				
+				for i in range(64):
+					pwr = self.specd[i]
+					self.spec[i+k*64] = pwr
+					
+			if int(self.receiver[0]) == 4:
+				pwr = 0.0
+				for k in range(3):
+					i = 54 + k
+					j = 64 + 8 + k
+					pwr += self.spec[i] - self.spec[j]
+					i = 54 + 64 + k
+					j = 128 + 8 + k
+					pwr += self.spec[i] - self.spec[j]					
+				slope = pwr / 276.0
+				
+				for k in range(3):
+					for i in range(64):
+						j = i + k*64
+						pwr = self.spec[j] - (i - 32)*slope
+						self.spec[j] = pwr
+			
+			for k in range(nk):
+				for i in range(64):
+					j = 1
+					n = 46*j + i
+					if k == 0:
+						if i > 55:
+							j = 0
+					if k == 1:
+						if (i < 10 or i > 55):
+							j = 0
+					if k == 2:
+						if i < 10:
+							j = 0
+					if j == 1:
+						pwr = self.spec[i + k*64]
+						self.spec[n] = pwr
+						if pwr > 0:
+							if (n >=10 and n < self.nfreq - 10):
+								avp += pwr
+								#if self.scan != 0:
+								#	self.pwr[scan-1] = self.pwr[scan-1] + pwr  
+							if self.sig:
+								self.avspec[n] = self.avspec[n] + pwr
+							else:
+								self.avspecc[n] =self.avspecc[n] + pwr
+								
+		
+			if int(self.receiver[0]) >0:
+				avp = float(avp) / (self.nfreq - 20)
+			else:
+				avp = avp / self.nfreq
+			
+			if self.bswlast > 0.0:
+				if self.sig:
+					pp = avp - self.bswlast
+				else:
+					pp = self.bswlast - avp
+				self.bswav = self.bswav + pp
+				self.bswsq = self.bswsq + pp**2
+				self.bswcycles = self.bswcycles + 1
+			
+			self.bswlast = avp
+			if self.sig:
+				self.av = self.av + 1
+			else:
+				self.avc = self.avc + 1
+		
+		return self.spec
+	
+	def clear(self):
+		self.spec = [0]*256
+		self.avspec = [0]*256
+		self.avspecc = [0]*256
+		self.bswav = 0.0 
+		self.bswsq = 0.0
+		self.bswlast = 0.0
+		self.bswcycles = 0.0
+		self.av = 0.0
+		self.avc = 0.0
+		self.paver = 0.0
+		self.prms =0.0
+		self.pnum = 1e-6
+		return
+		
+		####### Threads
 	def azel_thread(self, az, el):
 		azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el), name = 'AzEl')
 		azel_thread.start()
@@ -444,3 +828,11 @@ class Antenna:
 		status_thread.start()
 		return
 		
+	def spectra_thread(self):
+		if self.slew:
+			print "wait until antenna stops slew"
+		else:
+			spectra_thread = threading.Thread(target = self.spectra, args=[], name = 'Spectra')
+			spectra_thread.start()
+		return
+	

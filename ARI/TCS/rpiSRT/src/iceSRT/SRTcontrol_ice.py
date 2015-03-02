@@ -27,6 +27,9 @@ __name__ = 'SRTControl'
 if not _M_SRTControl.__dict__.has_key('_t_ports'):
     _M_SRTControl._t_ports = IcePy.defineSequence('::SRTControl::ports', (), IcePy._t_string)
 
+if not _M_SRTControl.__dict__.has_key('_t_spectrum'):
+    _M_SRTControl._t_spectrum = IcePy.defineSequence('::SRTControl::spectrum', (), IcePy._t_float)
+
 if not _M_SRTControl.__dict__.has_key('AntennaStatus'):
     _M_SRTControl.AntennaStatus = Ice.createTempClass()
     class AntennaStatus(object):
@@ -172,6 +175,12 @@ if not _M_SRTControl.__dict__.has_key('telescope'):
         def serverState(self, current=None):
             pass
 
+        def SRTSetFreq(self, freq, receiver, current=None):
+            pass
+
+        def SRTGetSpectrum(self, current=None):
+            pass
+
         def __str__(self):
             return IcePy.stringify(self, _M_SRTControl._t_telescope)
 
@@ -261,6 +270,24 @@ if not _M_SRTControl.__dict__.has_key('telescope'):
         def end_serverState(self, _r):
             return _M_SRTControl.telescope._op_serverState.end(self, _r)
 
+        def SRTSetFreq(self, freq, receiver, _ctx=None):
+            return _M_SRTControl.telescope._op_SRTSetFreq.invoke(self, ((freq, receiver), _ctx))
+
+        def begin_SRTSetFreq(self, freq, receiver, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTControl.telescope._op_SRTSetFreq.begin(self, ((freq, receiver), _response, _ex, _sent, _ctx))
+
+        def end_SRTSetFreq(self, _r):
+            return _M_SRTControl.telescope._op_SRTSetFreq.end(self, _r)
+
+        def SRTGetSpectrum(self, _ctx=None):
+            return _M_SRTControl.telescope._op_SRTGetSpectrum.invoke(self, ((), _ctx))
+
+        def begin_SRTGetSpectrum(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTControl.telescope._op_SRTGetSpectrum.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_SRTGetSpectrum(self, _r):
+            return _M_SRTControl.telescope._op_SRTGetSpectrum.end(self, _r)
+
         def checkedCast(proxy, facetOrCtx=None, _ctx=None):
             return _M_SRTControl.telescopePrx.ice_checkedCast(proxy, '::SRTControl::telescope', facetOrCtx, _ctx)
         checkedCast = staticmethod(checkedCast)
@@ -283,6 +310,8 @@ if not _M_SRTControl.__dict__.has_key('telescope'):
     telescope._op_SRTAzEl = IcePy.Operation('SRTAzEl', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (((), IcePy._t_float), ((), IcePy._t_float)), (((), IcePy._t_string),), None, ())
     telescope._op_SRTThreads = IcePy.Operation('SRTThreads', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (), (((), IcePy._t_string),), None, ())
     telescope._op_serverState = IcePy.Operation('serverState', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (), (((), IcePy._t_string),), None, ())
+    telescope._op_SRTSetFreq = IcePy.Operation('SRTSetFreq', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (((), IcePy._t_float), ((), IcePy._t_string)), (((), IcePy._t_string),), None, ())
+    telescope._op_SRTGetSpectrum = IcePy.Operation('SRTGetSpectrum', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (), (((), _M_SRTControl._t_spectrum),), None, ())
 
     _M_SRTControl.telescope = telescope
     del telescope
