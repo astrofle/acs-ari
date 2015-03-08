@@ -25,39 +25,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.port = None
 		self.lastSerialMsg = ''
 		self.lastSRTCom = ''
-		#radio parameters
-		# Variables for receiver
-		self.fcenter = 1420.4 # default for continuum
-		self.freqa = 1420.0
-		self.restfreq = 1420.406 # se usa para calcular la velocidad en doppler H-Line rest freq
-
-		#If not simulation fcenter = 1420.0, nfreq = 1, freqsep = 0.04, intg = 0.1
-		#If simulation fcenter = 1420.4, nfreq = 40
-		self.tstart = 0
-		self.tsys = 0.0
-		self.stopproc = 0
-		self.atten = 0
-		self.calon = 0
-		self.docal = 1
-		self.sourn = 0
-		self.track = 0
-		self.scan = 0
-		self.bsw = 0
-		self.mancal = 0
-		self.sig = 1
-		self.specd = [0]*256
-		self.spec = [0]*256
-		self.avspec = [0]*256
-		self.avspecc = [0]*256
-		self.bswav = 0.0 
-		self.bswsq = 0.0
-		self.bswlast = 0.0
-		self.bswcycles = 0.0
-		self.av = 0.0
-		self.avc = 0.0
-		self.paver = 0.0
-		self.prms =0.0
-		self.pnum = 1e-60
+		
 	def message(self, s, current = None):
 		print s
 		return s
@@ -111,7 +79,6 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		lastSRTCom=_st[10], lastSerialMsg=_st[11])
 		return realStatus
 
-
 	def SRTAzEl(self, az, el, current = None):
 		try:
 			self.az = az
@@ -131,48 +98,15 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 	def serverState(self, current = None):
 		state = [self.serialport, self.antennaInit]
 		return str(state)
-	
-	def SRTSetFreq(self, freq, receiver, current = None):
-		try:
-			self.set_freq(freq, receiver)
-			return "Frequency changed"
-		except Exception, e:
-			print str(e)
-			return "Failed to change frequency"
-	
-	def SRTDoCalibration(self, method, current = None):
-		try:
-			if method == 'vane':
-				self.vane_calibration()
-			if method == 'noise':
-				self.noise_calibration()
-			return self.calcons
-		except Exception, e:
-			print str(e)
-			return "Failed to calibrate"
-
-	def SRTGetSpectrum(self, current = None):
-		_sp = self.spectra()
-		sp = SRTControl.specs(_sp[0], _sp[1], _sp[2], _sp[3])
-		return sp					
-
-try:
-	IP =  ' '.join(sys.argv[1:])
-except:
-	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
-		
 		
 status = 0
 ic = None
 try:
-	#ic = Ice.initialize(sys.argv)
-	ic = Ice.initialize([''])
-	#adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.6 -p 10000")
-	adapter = ic.createObjectAdapterWithEndpoints("SRTController", IP)
+	ic = Ice.initialize(sys.argv)
+	adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.7 -p 10000")
 	object = SRTControlI()
 	adapter.add(object, ic.stringToIdentity("SRTController"))
 	adapter.activate()
-	print "SRT Server up and running!"
 	ic.waitForShutdown()
 except:
 	traceback.print_exc()

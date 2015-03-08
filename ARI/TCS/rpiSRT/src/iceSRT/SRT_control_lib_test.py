@@ -479,6 +479,7 @@ class Antenna:
 			self.nfreq = p.receivers[self.receiver]['nfreq']
 			self.freqsep = p.receivers[self.receiver]['freqsep']
 			self.intg = p.receivers[self.receiver]['intg']
+		self.calcons = p.calcons
 		return
 	
 	#####################Radiometer functions
@@ -572,9 +573,9 @@ class Antenna:
 		if (pwr1 > pwr0 and pwr0 > 0.0):
 			trecvr = (p.tload - (pwr1/pwr0)*p.tspill)/( (pwr1/pwr0) - 1.0)
 			self.tsys = trecvr + p.tspill
-			p.calcons = ((trecvr + p.tspill)*p.calcons/ pwr0)
+			self.calcons = ((trecvr + p.tspill)*self.calcons/ pwr0)
 			print "tsys: ", self.tsys, " K"
-			print "calcons", p.calcons
+			print "calcons", self.calcons
 			print "trec: :", trecvr, " K"
 			self.docal = 0
 		else:
@@ -607,12 +608,12 @@ class Antenna:
 			pwr0 += self.spec[i]
 		pwr0 = float(pwr0)/(istop-istart)
 		
-		if (pwr1 > pwr0 and pwr0 > 0.0 and self.noisecal > 0.0):
-			trecvr = ( self.noisecal / (pwr1/pwr0 - 1)) - p.tspill
+		if (pwr1 > pwr0 and pwr0 > 0.0 and p.noisecal > 0.0):
+			trecvr = ( p.noisecal / (pwr1/pwr0 - 1)) - p.tspill
 			self.tsys = trecvr + p.tspill
-			p.calcons = ((trecvr + p.tspill)*p.calcons/ pwr0)
+			self.calcons = ((trecvr + p.tspill)*self.calcons/ pwr0)
 			print "tsys: ", self.tsys, " K"
-			print "calcons", p.calcons
+			print "calcons", self.calcons
 			print "trec: :", trecvr, " K"
 			self.docal = 0
 		else:
@@ -678,7 +679,7 @@ class Antenna:
 			if p.graycorr[i] > 0.8:
 				power = power / (p.graycorr[i] * (1.0 + a * a * p.curvcorr))
 			
-			a = p.calcons * power
+			a = self.calcons * power
 			if i>0:
 				self.specd[64-i] = a
 			else:
@@ -687,7 +688,7 @@ class Antenna:
 				self.avpower += power
 		
 		self.avpower = self.avpower /44.0
-		self.a = p.calcons * self.avpower
+		self.a = self.calcons * self.avpower
 		print self.avpower, self.a
 		return
 		
@@ -800,7 +801,7 @@ class Antenna:
 			else:
 				self.avc = self.avc + 1
 		
-		return [self.spec, self.avspec, self.avspecc, self.specd]
+		return self.spec, self.avspec, self.avspecc, self.specd
 	
 	def clear(self):
 		self.spec = [0]*256
