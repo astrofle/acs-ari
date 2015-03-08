@@ -1,0 +1,5 @@
+slice2py SRTcontrol.ice
+cp -r SRTControl ../src/iceSRT
+cp SRTcontrol_ice.py ../src/iceSRT
+cp SRTcontrol.ice ../src/iceSRT
+

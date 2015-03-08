@@ -1,0 +1,5 @@
+slice2py ROACHcontrol.ice
+cp -r ROACHControl ../../src/iceROACH
+cp ROACHcontrol_ice.py ../../src/iceROACH
+cp ROACHcontrol.ice ../../src/iceROACH
+

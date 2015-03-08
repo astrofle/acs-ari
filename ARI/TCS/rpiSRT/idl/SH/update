@@ -1,0 +1,5 @@
+slice2py SHcontrol.ice
+cp -r SHControl ../../src/iceSH
+cp SHcontrol_ice.py ../../src/iceSH
+cp SHcontrol.ice ../../src/iceSH
+
