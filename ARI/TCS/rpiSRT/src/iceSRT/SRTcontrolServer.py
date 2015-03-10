@@ -117,9 +117,13 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			self.az = az
 			self.el = el
 			flip = self.check_flip()
+			self.normalize_az()
 			inLimits = self.get_cmd_inLimits()
-			self.azel_thread(az, el)
-			return "Commanding antenna movement"
+			if inLimits:
+				self.azel_thread(az, el)
+				return "Commanding antenna movement"
+			else:
+				return "Command out of limits!"
 		except Exception, e:
 			print str(e)
 			return "Failed to move the antenna"
@@ -157,7 +161,11 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		return sp					
 
 try:
+	if len(sys.argv)<2:
+		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
+		sys.exit()
 	IP =  ' '.join(sys.argv[1:])
+	IP = "default -h " + IP
 except:
 	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
 		

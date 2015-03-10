@@ -285,6 +285,10 @@ class Antenna:
 				az -= 360.0
 			if az < 180.0:
 				az += 360.0;
+			
+			if az > p.azlim2:
+				az -= 360.0
+			
 		self.az = az
 		return
 
@@ -304,7 +308,7 @@ class Antenna:
 			region3 = 1;
 		if ((region1 == 0) & (region2 == 0) & (region3 == 0)):
 			print "cmd out of limits"
-			sys.exit()
+			return 0
 		#	if (fstatus == 1 && track != 0):
 		#		o.stroutfile(g, "* ERROR cmd out of limits");
 		#		track = 0
@@ -413,10 +417,12 @@ class Antenna:
 		
 	def check_limit(self):
 		#determines if antenna is actually in stow position
-		if ((abs(self.aznow - p.azlim1) < 0.1) & (abs(self.elnow - p.ellim1) < 0.1)):
-			print "antenna at stow";
+		if ((abs(self.aznow - p.azlim1) < 0.2)):
 			self.azatstow = 1
+		if ((abs(self.elnow - p.ellim1) < 0.2)):
 			self.elatstow = 1
+		if (self.elatstow and self.azatstow):
+			print "antenna at stow";
 			self.slew = 0
 		return
 		
@@ -426,6 +432,12 @@ class Antenna:
 			self.slew = 0
 			print "movimiento terminado"
 			print "azcount: "+str(self.azcount)+ " elcount: " + str(self.elcount)
+		if self.aznow < p.azlim1:
+			self.aznow = p.azelim1
+			self.azcount = 0.0
+		if self.elnow < p.ellim1:
+			self.elnow = p.ellim1
+			self.elcount = 0.0
 		return
 		
 	def cmd_azel(self, az, el):

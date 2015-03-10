@@ -14,9 +14,13 @@ class SHControlI(SHControl.SignalHound):
 		return "I'm the Signal Hound, message received"
 
 try:
+	if len(sys.argv)<2:
+		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
+		sys.exit()
 	IP =  ' '.join(sys.argv[1:])
+	IP = "default -h " + IP
 except:
-	print "use SHcontrolServer.py default -h 192.168.0.6 -p 10002"
+	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
 
 status = 0
 ic = None

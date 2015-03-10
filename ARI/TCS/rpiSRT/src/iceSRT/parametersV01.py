@@ -31,8 +31,8 @@ countperstep = 50
 slew = 0 # 1 is for antenna moving until reaching commanded position
 
 #Antenna limits
-azlim1 = 0.0
-azlim2 = 355.0
+azlim1 = -90.0
+azlim2 = 265.0
 
 ellim1 = 8.0
 ellim2 = 85.0
@@ -82,6 +82,8 @@ else:
     south = 0 # North 
     if azlim2 < 360.0:
 		azlim2 = azlim2 + 360.0
+if azlim1 < 0:
+	south = 0
 
 print "azlim1 = "+ str(azlim1) + " azlim2 = "+ str(azlim2)
 print "ellim1 = "+ str(ellim1) + " ellim2 = "+ str(ellim2)
