@@ -8,12 +8,12 @@ from time import gmtime, strftime
 strftime("%Y-%m-%d %H:%M:%S", gmtime())
 import sites
 #global variables
-global status
-global ic
-global controller
+#global statusICIC
+#global ic
+#global controller
 
 
-ic = None
+#ic = None
 
 
 class SRT():
@@ -42,6 +42,7 @@ class SRT():
 		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		self.spectrum = []
+		self.ic = None
 		return 
 
 	def setIP(self, IP):
@@ -97,21 +98,21 @@ class SRT():
 		self.spectrum = spect
 		print "spectrum received"
 		return
+	
 	def docalCB(self, calcons):
 		self.calcons = calcons
 		return "calibration done"
 
 	def status(self):
 		#asynchronous status
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			controller.begin_SRTStatus(self.getStatusCB, self.failureCB);
+			self.controller.begin_SRTStatus(self.getStatusCB, self.failureCB);
 			print "getting SRT status"
 		except:
 			traceback.print_exc()
-			status = 1
+			self.status = 1
 		
 	def failureCB(self, ex):
 		#failure Callback
@@ -140,10 +141,10 @@ class SRT():
 			
 	def connect(self):
 		#client connection routine to server
-		global status
-		global ic
-		global controller
-		status = 0
+		#global statusIC
+		#global ic
+		#global controller
+		self.statusIC = 0
 		try:
 			# Reading configuration info
 			#configPath = os.environ.get("SWROOT")
@@ -151,60 +152,57 @@ class SRT():
 			initData = Ice.InitializationData()
 			initData.properties = Ice.createProperties()
 			initData.properties.load('IceConfig')
-			ic = Ice.initialize(sys.argv, initData)
+			self.ic = Ice.initialize(sys.argv, initData)
 			# Create proxy
 			#base = ic.stringToProxy("SRTController:default -h 192.168.0.6 -p 10000")
-			base = ic.stringToProxy(self.IP_string)
-			controller = SRTControl.telescopePrx.checkedCast(base)
-			controller.begin_message("connected to controller", self.genericCB, self.failureCB);
+			base = self.ic.stringToProxy(self.IP_string)
+			self.controller = SRTControl.telescopePrx.checkedCast(base)
+			self.controller.begin_message("connected to controller", self.genericCB, self.failureCB);
 			print "Connecting to SRTController"
-			controller.begin_serverState(self.serverCB, self.failureCB);
-			if not controller:
+			self.controller.begin_serverState(self.serverCB, self.failureCB);
+			if not self.controller:
 				raise RuntimeError("Invalid proxy")
 		except:
 			traceback.print_exc()
-			status = 1
-			sys.exit(status)
+			self.statusIC = 1
+			sys.exit(statusIC)
 		return
 
 	def disconnect(self):
 		#disconnection routine
-		global status
 		print "Disconnecting.."
-		if ic:
+		if self.ic:
 			try:
-				ic.destroy()
+				self.ic.destroy()
 			except:
 				traceback.print_exc()
-				status = 1
+				self.statusIC = 1
 				sys.exit(status)
 		return
 
 	def GetSerialPorts(self):
 		#obtain available USB ports with USB-RS232 converters at Raspberry Pi  SRT controller
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			controller.begin_SRTGetSerialPorts(self.genericCB, self.failureCB);
+			self.controller.begin_SRTGetSerialPorts(self.genericCB, self.failureCB);
 			print "Obtaining available serial ports"
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return
 	
 	def SetSerialPort(self, port):
 		#sets USB port at Raspberry Pi to control the SRT hardware, this port must match
 		#the physical configuration for the R-Pi SRT connection.
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			controller.begin_SRTSetSerialPort(port, self.genericCB, self.failureCB);
+			self.controller.begin_SRTSetSerialPort(port, self.genericCB, self.failureCB);
 			print "Setting serial port"
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return
 	
 	def Init(self, parameters):
@@ -212,70 +210,65 @@ class SRT():
 		#and send the SRT antenna to stow position as system initialization
 		#encoders and position coordinates are initialised.
 		#This routine is mandatory when the system is started
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			controller.begin_SRTinit(parameters, self.genericCB, self.failureCB);
+			self.controller.begin_SRTinit(parameters, self.genericCB, self.failureCB);
 			print "loading parameters file and sending antenna to stow"
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return
 			
 	def Stow(self):
 		#commands SRT antenna to stow position
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			controller.begin_SRTStow(self.genericCB, self.failureCB);
+			self.controller.begin_SRTStow(self.genericCB, self.failureCB);
 			print "sending antenna to stow"
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return
 
 	def AzEl(self, az, el):
 		#Command antenna position to (az, el) coordinates	
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			target = controller.begin_SRTAzEl(az, el, self.genericCB, self.failureCB);
+			target = self.controller.begin_SRTAzEl(az, el, self.genericCB, self.failureCB);
 			print "moving the antenna "
 			print "commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
 			self.IsMoving = True
 			self.movingThread()
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return target
 		
 	def SetFreq(self, freq, receiver):
 		#Sets receiver central frequency and receiver mode (0 to 5)
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			target = controller.begin_SRTSetFreq(freq, receiver, self.genericCB, self.failureCB);
+			target = self.controller.begin_SRTSetFreq(freq, receiver, self.genericCB, self.failureCB);
 			print "seting frequency"
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return
 		
 	def GetSpectrum(self):
 		#Gets spectrum from receiver
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			target = controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
+			target = self.controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
 			print "getting spectrum"
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return
 			
 	def threadCB(self, a):
@@ -286,16 +279,15 @@ class SRT():
 
 	def getSRTThreads(self):
 		#Get active threads from SRT	
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
 			while(self.IsMoving):
-				target = controller.begin_SRTThreads(self.threadCB, self.failureCB);
+				target = self.controller.begin_SRTThreads(self.threadCB, self.failureCB);
 				time.sleep(1.0)
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return target
 		
 	def movingThread(self):
@@ -331,25 +323,24 @@ class SRT():
 			
 	def do_calibration(self, method):
 		#Call for receiver calibration
-		global status
-		status = 0
-		ic = None
+		self.statusIC = 0
+		self.ic = None
 		try:
-			target = controller.begin_SRTDoCalibration(method, self.docalCB, self.failureCB)
+			target = self.controller.begin_SRTDoCalibration(method, self.docalCB, self.failureCB)
 			print "calibrating receiver"
 		except:
 			traceback.print_exc()
-			status = 1
+			self.statusIC = 1
 		return
 
-	
-if ic:
-	#clean up
-	try:
-		ic.destroy()
-	except:
-		traceback.print_exc()
-		status = 1
+	def clean(self):
+		if self.ic:
+		#clean up
+			try:
+				self.ic.destroy()
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
 
 
 
