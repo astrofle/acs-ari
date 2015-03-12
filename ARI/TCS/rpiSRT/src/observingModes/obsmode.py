@@ -34,7 +34,7 @@ class ARI_obsmodes():
 		self.srt2.connect()
 		time.sleep(2)
 		
-	def SingleDishSRT(self, SRT_antenna):
+	def SingleDishSRT(self, SRT_antenna, source):
 		print "This is the Single Dish SRT Observing mode"
 		self.srt1 =  self.connect(self.ARI_nodes[SRT_antenna])
 		statusIC = 0
@@ -45,6 +45,10 @@ class ARI_obsmodes():
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
+		
+		try:
+			self.srt1.begin_tracking(self.genericCB, self.failureCB)
+			print "Going to source", source
 		return
 	
 

@@ -7,7 +7,7 @@ print "call find_sources(source_list, site) for a list of observable objects"
 sites = {
 		'calama':{'lat': '-22.5', 'lon':'-68.9', 'elevation':2277},
 		'San Joaquin':{'lat': '-33.499991', 'lon':'-70.611403', 'elevation':400},
-		'Santa Martina':{'lat': '-33.268726', 'lon':'-70.531504', 'elevation':1000},
+		'Santa Martina':{'lat': '-33.268726', 'lon':'-70.531504', 'elevation':1400},
 }
 
 
@@ -54,7 +54,7 @@ def source_azel(object, site):
 
 
 # Local coordinates
-place = 'San Joaquin'
+place = 'Santa Martina'
 lat = sites[place]['lat']
 lon = sites[place]['lon']
 elevation = sites[place]['elevation']
