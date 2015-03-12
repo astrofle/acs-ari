@@ -106,7 +106,7 @@ class ARI_obsmodes():
 			#configPath = configPath + "/config/LCU-config"
 			initData = Ice.InitializationData()
 			initData.properties = Ice.createProperties()
-			initData.properties.load('IceConfig')
+			#initData.properties.load('IceConfig')
 			ic = Ice.initialize(sys.argv, initData)
 			# Create proxy
 			#base = ic.stringToProxy("SRTController:default -h 192.168.0.6 -p 10000")

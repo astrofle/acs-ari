@@ -13,11 +13,13 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def __init__(self):
 		self.serialport = 'ttyUSB0'
 		self.parameters = 'parametersV01'
-		self.IP = 'default -h localhost -p 10010'
+		self.IP = 'default -h localhost -p 10011'
 		self.antennaIP = '192.168.3.102 -p 10000'
 		self.planets = sites.planets
 		self.stars = sites.stars		
-	
+		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
+		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
+		
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
 		self.connect()
@@ -41,7 +43,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		
 status = 0
 ic = None
-IP = 'default -h localhost -p 10010'
+IP = 'default -h localhost -p 10011'
 
 try:
 	#ic = Ice.initialize(sys.argv)
