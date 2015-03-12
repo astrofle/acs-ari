@@ -23,7 +23,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.Init(self.parameters)
 		return "Antenna initialized and in stow position"
 	
-	def tracking(self, s, current = None):
+	def trackSource(self, s, current = None):
 		self.tracking(s)
 		return "Tracking source"
 

@@ -49,7 +49,7 @@ class ARI_obsmodes():
 	
 	def SD_track(self, source):		
 		try:
-			self.srt1.begin_tracking(source, self.genericCB, self.failureCB)
+			self.srt1.begin_trackSource(source, self.genericCB, self.failureCB)
 			print "Going to source", source
 		except:
 			traceback.print_exc()
