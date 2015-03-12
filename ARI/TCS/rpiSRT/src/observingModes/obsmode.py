@@ -48,7 +48,7 @@ class ARI_obsmodes():
 		try:
 			self.srt1.begin_tracking(self.genericCB, self.failureCB)
 			print "Going to source", source
-
+		
 	def DoubleSingleDishSRT(self):
 		print "This is the Double Single Dish SRT Observing mode"
 		self.SRTAntennas()
