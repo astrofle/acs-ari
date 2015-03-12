@@ -560,7 +560,7 @@ class Antenna:
 		self.fcenter
 		istart = 0
 		istop = self.nfreq
-		if self.receiver > 0:
+		if int(self.receiver[0]) > 0:
 			istart = 10
 			istop = self.nfreq -10
 		for i in range(istart, istop):
@@ -605,7 +605,7 @@ class Antenna:
 		self.fcenter
 		istart = 0
 		istop = self.nfreq
-		if self.receiver > 0:
+		if int(self.receiver[0]) > 0:
 			istart = 10
 			istop = self.nfreq -10
 		for i in range(istart, istop):
@@ -740,7 +740,7 @@ class Antenna:
 					self.fcenter = self.freqa
 				
 				if(k == 0):
-					if int(self.receiver) <= 3:
+					if int(self.receiver[0]) <= 3:
 						self.freq0 = self.fcenter - 32.0*self.freqsep
 					else:
 						self.freq0 = self.fcenter - 78.0*self.freqsep
