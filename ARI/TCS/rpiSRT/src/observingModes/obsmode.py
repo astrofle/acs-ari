@@ -44,20 +44,15 @@ class ARI_obsmodes():
 			print "initializing antenna"
 		except:
 			traceback.print_exc()
-			self.statusIC = 1
-		
+			self.statusIC = 1		
 		try:
 			self.srt1.begin_tracking(self.genericCB, self.failureCB)
 			print "Going to source", source
-	
-	
-
 
 	def DoubleSingleDishSRT(self):
 		print "This is the Double Single Dish SRT Observing mode"
 		self.SRTAntennas()
-	
-				
+					
 	def ARI_SH(self):
 		print "This is the ARI - Signal Hound Observing mode"
 		self.SRTAntennas()
