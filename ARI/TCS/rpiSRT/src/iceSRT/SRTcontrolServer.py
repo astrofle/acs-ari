@@ -58,6 +58,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.paver = 0.0
 		self.prms =0.0
 		self.pnum = 1e-60
+		self.receiving = False
 	def message(self, s, current = None):
 		print s
 		return s
