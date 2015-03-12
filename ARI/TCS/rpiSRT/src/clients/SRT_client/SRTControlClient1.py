@@ -165,7 +165,7 @@ class SRT():
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
-			sys.exit(statusIC)
+			sys.exit(self.statusIC)
 		return
 
 	def disconnect(self):

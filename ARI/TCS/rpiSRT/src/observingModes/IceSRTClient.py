@@ -1,5 +1,5 @@
 import sys, traceback, Ice
-sys.path.insert(0,'../SRT_client/')
+sys.path.insert(0,'../clients/SRT_client/')
 
 from time import sleep
 import SRTClient
@@ -14,7 +14,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.serialport = 'ttyUSB0'
 		self.parameters = 'parametersV01'
 		self.IP = 'default -h localhost -p 10010'
-		self.antennaIP = '192.168.0.6 -p 10000'
+		self.antennaIP = '192.168.3.102 -p 10000'
 	
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
