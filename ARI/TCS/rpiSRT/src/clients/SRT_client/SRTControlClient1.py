@@ -311,7 +311,7 @@ class SRT():
 		spectra_Thread.start()
 	
 	def track_source(self, source):
-		self.spectra_Thread()
+		self.spectraThread()
 		time.sleep(10)
 		if self.planets.has_key(source):
 			source = self.planets[source]
