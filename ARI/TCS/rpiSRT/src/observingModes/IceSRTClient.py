@@ -7,7 +7,7 @@ import SRTControlClient1 as SRTControl
 import threading
 import os
 import socket
-
+import sites
 
 class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def __init__(self):
@@ -15,6 +15,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.parameters = 'parametersV01'
 		self.IP = 'default -h localhost -p 10010'
 		self.antennaIP = '192.168.3.102 -p 10000'
+		self.planets = sites.planets
+		self.stars = sites.stars		
 	
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
