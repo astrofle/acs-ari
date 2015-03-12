@@ -15,6 +15,7 @@ class ARI_obsmodes():
 		self.stars = sites.stars
 		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
+		self.setup = 0
 
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -40,13 +41,15 @@ class ARI_obsmodes():
 		statusIC = 0
 		ic = None
 		try:
-			self.srt1.begin_setup(self.genericCB, self.failureCB);
+			self.srt1.begin_setup(self.setupCB, self.failureCB);
 			print "initializing antenna"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1		
 		try:
-			self.srt1.begin_tracking(self.genericCB, self.failureCB)
+			while(not self.setup):
+				time.sleep(1)
+			self.srt1.begin_tracking(source, self.genericCB, self.failureCB)
 			print "Going to source", source
 		except:
 			traceback.print_exc()
@@ -129,6 +132,12 @@ class ARI_obsmodes():
 	def genericCB(self, a):
 		#generic callback
 		print a
+		return	
+
+	def setupCB(self, a):
+		#generic callback
+		print a
+		self.setup = 1
 		return	
 
 
