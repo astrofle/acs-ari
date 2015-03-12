@@ -49,7 +49,7 @@ class ARI_obsmodes():
 		try:
 			self.srt1.begin_tracking(self.genericCB, self.failureCB)
 			print "Going to source", source
-		return
+	
 	
 
 
