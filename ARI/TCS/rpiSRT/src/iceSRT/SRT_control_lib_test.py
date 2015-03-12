@@ -82,6 +82,7 @@ class Antenna:
 		self.paver = 0.0
 		self.prms =0.0
 		self.pnum = 1e-6
+		self.receiving = False
 		#from config file (read *.cat)
 		#receiver default initialization from *.cat 
 		#(whenever the word digital is present in the cat file)
@@ -124,6 +125,7 @@ class Antenna:
 		#reads answer from SRT HW via USB-RS232
 		finished = 0;
 		cmd_r=''
+		timeout = time.time() + 60
 		while(finished == 0):
 			#print "reading serial port"
 			cmd_r = cmd_r + self.port.read(self.port.inWaiting())
@@ -131,6 +133,9 @@ class Antenna:
 				finished = 1
 			else:
 				cmd_r = cmd_r +self.port.read(self.port.inWaiting())
+			if time.time() > timeout:
+				print "Serial port time out"
+				finished = 1
 			time.sleep(1)
 	
 		#parses received answer
@@ -247,6 +252,7 @@ class Antenna:
 		
 		self.az = 0.0
 		self.el = 0.0
+		self.slew = 0
 		self.lastSRTCom = 'stow'
 		print "Antenna stowed, az: "+ str(self.aznow) +" el: "+str(self.elnow)+ " azcount: "+ str(self.azcount)+ " elcount: "+ str(self.elcount)
 		return 
@@ -669,10 +675,10 @@ class Antenna:
 		#Enviar comando por puerto serial y esperar respuesta en variable recv
 		#simulacion#
 		self.send_command(msg)
-		receiving = True
-		while receiving:
+		self.receiving = True
+		while self.receiving:
 			if self.port.inWaiting() == 128:
-				receiving = False
+				self.receiving = False
 			else:
 				pass
 		data = self.port.read(self.port.inWaiting())
@@ -832,8 +838,11 @@ class Antenna:
 		
 		####### Threads
 	def azel_thread(self, az, el):
-		azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el), name = 'AzEl')
-		azel_thread.start()
+		if self.slew ==0:
+			azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el), name = 'AzEl')
+			azel_thread.start()
+		else:
+			print "Wait antenna to reach commanded position"
 		return
 		
 	def status_thread(self, disp):
@@ -844,6 +853,8 @@ class Antenna:
 	def spectra_thread(self):
 		if self.slew:
 			print "wait until antenna stops slew"
+		elif self.receiving:
+			print "wait until spectrum is received"
 		else:
 			spectra_thread = threading.Thread(target = self.spectra, args=[], name = 'Spectra')
 			spectra_thread.start()
