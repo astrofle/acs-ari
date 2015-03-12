@@ -43,6 +43,8 @@ class SRT():
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		self.spectrum = []
 		self.ic = None
+		self.getspectrum = True
+		
 		return 
 
 	def setIP(self, IP):
@@ -97,6 +99,7 @@ class SRT():
 	def getSpectrumCB(self, spect):
 		self.spectrum = spect
 		print "spectrum received"
+		self.spectra = 0
 		return
 	
 	def docalCB(self, calcons):
@@ -219,6 +222,7 @@ class SRT():
 			traceback.print_exc()
 			self.statusIC = 1
 		return
+		
 			
 	def Stow(self):
 		#commands SRT antenna to stow position
@@ -263,12 +267,16 @@ class SRT():
 		#Gets spectrum from receiver
 		self.statusIC = 0
 		self.ic = None
-		try:
-			target = self.controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
-			print "getting spectrum"
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		while(self.getspectrum):
+			try:
+				if self.spectra == 0:
+					target = self.controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
+					print "getting spectrum"
+					self.spectra = 1
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+			time.sleep(1)
 		return
 			
 	def threadCB(self, a):
@@ -276,13 +284,17 @@ class SRT():
 		if idx==-1:
 			print "Movement finished!!"
 			self.IsMoving = False
+		idx2 = a.find('spectra')
+		if idx2==-1:
+			print "Spectra finished!!"
+			self.spectra = 0
 
 	def getSRTThreads(self):
 		#Get active threads from SRT	
 		self.statusIC = 0
 		self.ic = None
 		try:
-			while(self.IsMoving):
+			while(self.IsMoving or self.spectra):
 				target = self.controller.begin_SRTThreads(self.threadCB, self.failureCB);
 				time.sleep(1.0)
 		except:
@@ -294,8 +306,13 @@ class SRT():
 		moving_Thread = threading.Thread(target = self.getSRTThreads, name='moving')
 		moving_Thread.start()
 
+	def spectraThread(self):
+		spectra_Thread = threading.Thread(target = self.GetSpectrum, name='spectra')
+		spectra_Thread.start()
 	
 	def track_source(self, source):
+		self.spectra_Thread()
+		time.sleep(10)
 		if self.planets.has_key(source):
 			source = self.planets[source]
 		elif self.stars.has_key(source):
@@ -303,6 +320,7 @@ class SRT():
 		else:
 			print "Object not found or not observable"
 			return
+		
 		self.track = True
 		self.OnSource = False
 		toSource = 0

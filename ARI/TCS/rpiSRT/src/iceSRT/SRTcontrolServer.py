@@ -156,9 +156,12 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			return "Failed to calibrate"
 
 	def SRTGetSpectrum(self, current = None):
-		_sp = self.spectra()
-		sp = SRTControl.specs(_sp[0], _sp[1], _sp[2], _sp[3])
-		return sp					
+		self.spectra_thread()
+		#return "obtaining spectrum"
+		#_sp = self.spectra()
+		sp = SRTControl.specs(self.specd, self.spec, self.avspec, self.avspecc)
+		return sp
+						
 
 try:
 	if len(sys.argv)<2:
