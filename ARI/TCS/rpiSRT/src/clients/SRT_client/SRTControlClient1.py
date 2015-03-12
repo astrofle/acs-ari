@@ -44,7 +44,7 @@ class SRT():
 		self.spectrum = []
 		self.ic = None
 		self.getspectrum = True
-		
+		self.spectra = 0
 		return 
 
 	def setIP(self, IP):
