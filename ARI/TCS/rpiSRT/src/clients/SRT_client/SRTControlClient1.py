@@ -44,13 +44,10 @@ class SRT():
 		self.spectrum = []
 		self.ic = None
 		self.getspectrum = True
-		self.spectra = 0
+		self.spectra = False
+		self.portInUse = False
+		self.spectrumStarted = False
 		return 
-
-	def setIP(self, IP):
-		self.IP = IP
-		self.IP_string = "SRTController:default -h " + self.IP
-		return
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -60,6 +57,12 @@ class SRT():
 		self.stars = sites.find_stars(sites.star_list, self.site)
 		print str(len(self.stars)) + " observabable stars: " + str(self.stars)
 	
+	def getTrackingStatus(self):
+		print "Antenna slewing: " + str(self.IsMoving)
+		print "Antenna tracking: " + str(self.track)
+		print "Antenna On source: " + str(self.OnSource)
+
+	####### Ice Callbacks ###################
 	def getStatusCB(self, state):
 		#status callback
 		self.az = state.az
@@ -89,37 +92,24 @@ class SRT():
 		print "last SRT received message: " + str(self.lastSerialMsg)	
 		print "\n"
 		return
-
-	def getTrackingStatus(self):
-		print "Antenna slewing: " + str(self.IsMoving)
-		print "Antenna tracking: " + str(self.track)
-		print "Antenna On source: " + str(self.OnSource)
-
-
-	def getSpectrumCB(self, spect):
-		self.spectrum = spect
-		print "spectrum received"
-		self.spectra = 0
-		return
 	
 	def docalCB(self, calcons):
+		#call by do_calibration
 		self.calcons = calcons
 		return "calibration done"
-
-	def status(self):
-		#asynchronous status
-		self.statusIC = 0
-		self.ic = None
-		try:
-			self.controller.begin_SRTStatus(self.getStatusCB, self.failureCB);
-			print "getting SRT status"
-		except:
-			traceback.print_exc()
-			self.status = 1
+	
+	def stowCB(self, a):
+		#call by Init and Stow
+		print "Antenna Stowed"
+		self.tostow = 1
+		self.IsMoving = False
+		self.portInUse = False
+		return
 		
 	def failureCB(self, ex):
 		#failure Callback
 		print "Exception is: " + str(ex)
+		self.portInUse = False
 		return
 		
 	def genericCB(self, a):
@@ -141,7 +131,15 @@ class SRT():
 			
 			print "Serial Port: " + str(serialPort)
 			print "Antenna Initialised (sent to stow): " + str(antennaInit)
-			
+
+	######## Control functions #######################
+	def setIP(self, IP):
+		#set IP before connecting to SRT server
+		# format: 'xxx.yyy.z.n -p mmmmm'
+		self.IP = IP
+		self.IP_string = "SRTController:default -h " + self.IP
+		return
+
 	def connect(self):
 		#client connection routine to server
 		#global statusIC
@@ -183,6 +181,17 @@ class SRT():
 				sys.exit(status)
 		return
 
+	def status(self):
+		#asynchronous status
+		self.statusIC = 0
+		self.ic = None
+		try:
+			self.controller.begin_SRTStatus(self.getStatusCB, self.failureCB);
+			print "getting SRT status"
+		except:
+			traceback.print_exc()
+			self.status = 1
+
 	def GetSerialPorts(self):
 		#obtain available USB ports with USB-RS232 converters at Raspberry Pi  SRT controller
 		self.statusIC = 0
@@ -215,12 +224,17 @@ class SRT():
 		#This routine is mandatory when the system is started
 		self.statusIC = 0
 		self.ic = None
-		try:
-			self.controller.begin_SRTinit(parameters, self.genericCB, self.failureCB);
-			print "loading parameters file and sending antenna to stow"
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		if not self.portInUse:
+			try:
+				self.portInUse = True
+				self.IsMoving = True
+				self.controller.begin_SRTinit(parameters, self.stowCB, self.failureCB);
+				print "loading parameters file and sending antenna to stow"
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			print "Wait until initializacion is finished"
 		return
 		
 			
@@ -228,29 +242,71 @@ class SRT():
 		#commands SRT antenna to stow position
 		self.statusIC = 0
 		self.ic = None
-		try:
-			self.controller.begin_SRTStow(self.genericCB, self.failureCB);
-			print "sending antenna to stow"
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		if not self.portInUse:
+			try:
+				self.portInUse = True
+				self.IsMoving = True
+				self.controller.begin_SRTStow(self.stowCB, self.failureCB);
+				print "sending antenna to stow"
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			print "Wait until stow is finished"
 		return
 
+	#Antenna Movement ##########
 	def AzEl(self, az, el):
 		#Command antenna position to (az, el) coordinates	
 		self.statusIC = 0
 		self.ic = None
+		target = 0
+		if not self.portInUse:		
+			try:
+				self.portInUse = True
+				target = self.controller.begin_SRTAzEl(az, el, self.genericCB, self.failureCB);
+				print "moving the antenna "
+				print "commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
+				self.IsMoving = True
+				self.movingThread()
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			print "wait until serial port is available or antenna end movement"
+		return target
+
+	def movingThread(self):
+		moving_Thread = threading.Thread(target = self.getSRTThreads, name='moving')
+		moving_Thread.start()
+
+	def getSRTThreads(self):
+		#Get active threads from SRT	
+		self.statusIC = 0
+		self.ic = None
+		target = 0
 		try:
-			target = self.controller.begin_SRTAzEl(az, el, self.genericCB, self.failureCB);
-			print "moving the antenna "
-			print "commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
-			self.IsMoving = True
-			self.movingThread()
+			while(self.IsMoving or self.spectra):
+				target = self.controller.begin_SRTThreads(self.threadCB, self.failureCB);
+				time.sleep(1.0)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 		return target
-		
+
+	def threadCB(self, a):
+		idx = a.find('AzEl')
+		if (self.IsMoving and idx==-1):
+			print "Movement finished!!"
+			self.IsMoving = False
+			self.portInUse = False
+		idx2 = a.find('spectra')
+		if (self.spectra and idx2==-1):
+			print "Spectra finished!!"
+			self.spectra = False
+			self.portInUse = False
+	
+	# Receiver control	
 	def SetFreq(self, freq, receiver):
 		#Sets receiver central frequency and receiver mode (0 to 5)
 		self.statusIC = 0
@@ -262,54 +318,55 @@ class SRT():
 			traceback.print_exc()
 			self.statusIC = 1
 		return
-		
+
+	def StopSpectrum(self):
+		self.getspectrum = 0
+		self.spectrumStarted = False
+	
 	def GetSpectrum(self):
+		target = 0
+		if self.spectrumStarted:
+			print "this is already started"
+			return target
+		if (not self.IsMoving):
+			target = self.spectraThread()
+			print "getting spectrum"
+		else:
+			print "wait until antenna stop movement"
+		return target
+
+	def spectraThread(self):
+		spectra_Thread = threading.Thread(target = self.SRTGetSpectrum, name='spectra')
+		spectra_Thread.start()
+		
+	def SRTGetSpectrum(self):
 		#Gets spectrum from receiver
 		self.statusIC = 0
 		self.ic = None
+		self.spectrumStarted = True
 		while(self.getspectrum):
-			try:
-				if self.spectra == 0:
-					target = self.controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
-					print "getting spectrum"
-					self.spectra = 1
-			except:
-				traceback.print_exc()
-				self.statusIC = 1
+			if not self.portInUse:
+				try:
+					if not self.spectra:
+						self.portInUse = True
+						self.spectra = True
+						target = self.controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
+				except:
+					traceback.print_exc()
+					self.statusIC = 1
 			time.sleep(1)
 		return
-			
-	def threadCB(self, a):
-		idx = a.find('AzEl')
-		if idx==-1:
-			print "Movement finished!!"
-			self.IsMoving = False
-		idx2 = a.find('spectra')
-		if idx2==-1:
-			print "Spectra finished!!"
-			self.spectra = 0
 
-	def getSRTThreads(self):
-		#Get active threads from SRT	
-		self.statusIC = 0
-		self.ic = None
-		try:
-			while(self.IsMoving or self.spectra):
-				target = self.controller.begin_SRTThreads(self.threadCB, self.failureCB);
-				time.sleep(1.0)
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
-		return target
+	def getSpectrumCB(self, spect):
+		#call by getSpectrum
+		self.spectrum = spect
+		print "spectrum received"
+		self.spectra = False
+		self.portInUse = False
+		return
 		
-	def movingThread(self):
-		moving_Thread = threading.Thread(target = self.getSRTThreads, name='moving')
-		moving_Thread.start()
-
-	def spectraThread(self):
-		spectra_Thread = threading.Thread(target = self.GetSpectrum, name='spectra')
-		spectra_Thread.start()
-	
+	######## Thread functions	
+		
 	def track_source(self, source):
 		self.spectraThread()
 		time.sleep(10)

@@ -157,6 +157,7 @@ class Antenna:
 		#This function is not used for antenna stow.
 		if ((cmd_r[0] !="M") & (cmd_r[0] !="T")):
 			print "error, comandar a stow position"
+			print cmd_r
 			sys.exit()
 		else:
 			#print "OK"
@@ -675,13 +676,15 @@ class Antenna:
 		#Enviar comando por puerto serial y esperar respuesta en variable recv
 		#simulacion#
 		self.send_command(msg)
+		print "freq request enviado"
 		self.receiving = True
 		while self.receiving:
-			if self.port.inWaiting() == 128:
+			if self.port.inWaiting() >= 128:
 				self.receiving = False
 			else:
 				pass
-		data = self.port.read(self.port.inWaiting())
+		data = self.port.read(128)
+		print "recibido"
 		recv = struct.unpack('64H', data)
 		#####
 		for i in range(64):
@@ -838,6 +841,8 @@ class Antenna:
 		
 		####### Threads
 	def azel_thread(self, az, el):
+		while(self.receiving):
+			time.sleep(0.1)
 		if self.slew ==0:
 			azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el), name = 'AzEl')
 			azel_thread.start()
