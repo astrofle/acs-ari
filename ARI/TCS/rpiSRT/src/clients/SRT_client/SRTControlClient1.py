@@ -326,7 +326,7 @@ class SRT():
 	
 	def GetSpectrum(self):
 		target = 0
-		srt.getspectrum = 1
+		self.getspectrum = 1
 		if self.spectrumStarted:
 			print "this is already started"
 			return target
