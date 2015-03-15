@@ -370,8 +370,8 @@ class SRT():
 	######## Thread functions	
 		
 	def track_source(self, source):
-		self.spectraThread()
-		time.sleep(10)
+		self.GetSpectrum()
+		time.sleep(3)
 		if self.planets.has_key(source):
 			source = self.planets[source]
 		elif self.stars.has_key(source):
