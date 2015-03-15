@@ -322,9 +322,11 @@ class SRT():
 	def StopSpectrum(self):
 		self.getspectrum = 0
 		self.spectrumStarted = False
+		
 	
 	def GetSpectrum(self):
 		target = 0
+		srt.getspectrum = 1
 		if self.spectrumStarted:
 			print "this is already started"
 			return target
