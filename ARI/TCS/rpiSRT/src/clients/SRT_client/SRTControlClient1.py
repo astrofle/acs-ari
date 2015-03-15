@@ -388,10 +388,10 @@ class SRT():
 			if toSource == 2:
 				self.OnSource = True
 				toSource = 1
-			[az, el] = sites.source_azel(source, self.site)
-			self.target = self.AzEl(az, el)
-			while(self.IsMoving==True):
-				time.sleep(10)
+			if (not self.IsMoving and not self.portInUse):
+				[az, el] = sites.source_azel(source, self.site)
+				self.target = self.AzEl(az, el)
+			time.sleep(2)
 		return 
 		
 	def tracking(self, source):
