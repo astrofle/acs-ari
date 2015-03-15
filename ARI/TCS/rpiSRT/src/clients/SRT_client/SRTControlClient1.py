@@ -390,7 +390,8 @@ class SRT():
 				toSource = 1
 			if (not self.IsMoving and not self.portInUse):
 				[az, el] = sites.source_azel(source, self.site)
-				self.target = self.AzEl(az, el)
+				if ((abs(az - self.aznow)>0.1) or (abs(el - self.elnow)>0.1)):
+					self.target = self.AzEl(az, el)
 			time.sleep(2)
 		return 
 		
