@@ -33,7 +33,7 @@ def find_planets(planets, site):
 	sources = {}
 	for planet in planets:
 		[az, el] = source_azel(planets[planet], site)
-		if el > 8.0:
+		if el > 15.0:
 			sources[planet] = planets[planet]
 	return sources
 
@@ -41,7 +41,7 @@ def find_stars(stars, site):
 	sources = {}
 	for star in stars:
 		[az, el] = source_azel(ephem.star(star), site)
-		if el > 8.0:
+		if el > 15.0:
 			sources[star] = ephem.star(star)
 	return sources
 

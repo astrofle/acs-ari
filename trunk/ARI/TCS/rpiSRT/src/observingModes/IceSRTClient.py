@@ -13,8 +13,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def __init__(self):
 		self.serialport = 'ttyUSB0'
 		self.parameters = 'parametersV01'
-		self.IP = 'default -h localhost -p 10011'
-		self.antennaIP = '192.168.3.102 -p 10000'
+		self.IP = 'default -h localhost -p 10010'
+		self.antennaIP = '192.168.3.101 -p 10000'
 		self.site = sites.site
 		self.planets = sites.planets
 		self.stars = sites.stars		
@@ -53,8 +53,10 @@ ARI_nodes = {'SRT1':{'client':'localhost -p 10010','antenna':'192.168.3.101 -p 1
 	
 status = 0
 ic = None
+
 #IP = 'default -h localhost -p 10011'
 IP = 'default -h '+ARI_nodes[sys.argv[1]]['client']
+
 
 try:
 	#ic = Ice.initialize(sys.argv)

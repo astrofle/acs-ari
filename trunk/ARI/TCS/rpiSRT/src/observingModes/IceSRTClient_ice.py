@@ -47,7 +47,7 @@ if not _M_SRTClient.__dict__.has_key('Client'):
         def setup(self, current=None):
             pass
 
-        def tracking(self, s, current=None):
+        def trackSource(self, s, current=None):
             pass
 
         def __str__(self):
@@ -76,14 +76,14 @@ if not _M_SRTClient.__dict__.has_key('Client'):
         def end_setup(self, _r):
             return _M_SRTClient.Client._op_setup.end(self, _r)
 
-        def tracking(self, s, _ctx=None):
-            return _M_SRTClient.Client._op_tracking.invoke(self, ((s, ), _ctx))
+        def trackSource(self, s, _ctx=None):
+            return _M_SRTClient.Client._op_trackSource.invoke(self, ((s, ), _ctx))
 
-        def begin_tracking(self, s, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_SRTClient.Client._op_tracking.begin(self, ((s, ), _response, _ex, _sent, _ctx))
+        def begin_trackSource(self, s, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_trackSource.begin(self, ((s, ), _response, _ex, _sent, _ctx))
 
-        def end_tracking(self, _r):
-            return _M_SRTClient.Client._op_tracking.end(self, _r)
+        def end_trackSource(self, _r):
+            return _M_SRTClient.Client._op_trackSource.end(self, _r)
 
         def checkedCast(proxy, facetOrCtx=None, _ctx=None):
             return _M_SRTClient.ClientPrx.ice_checkedCast(proxy, '::SRTClient::Client', facetOrCtx, _ctx)
@@ -100,7 +100,7 @@ if not _M_SRTClient.__dict__.has_key('Client'):
 
     Client._op_message = IcePy.Operation('message', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (((), IcePy._t_string),), (((), IcePy._t_string),), None, ())
     Client._op_setup = IcePy.Operation('setup', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (), (((), IcePy._t_string),), None, ())
-    Client._op_tracking = IcePy.Operation('tracking', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (((), IcePy._t_string),), (((), IcePy._t_string),), None, ())
+    Client._op_trackSource = IcePy.Operation('trackSource', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, (), (((), IcePy._t_string),), (((), IcePy._t_string),), None, ())
 
     _M_SRTClient.Client = Client
     del Client
