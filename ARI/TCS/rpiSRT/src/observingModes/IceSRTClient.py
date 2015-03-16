@@ -24,11 +24,28 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.spectra = 0
 		self.portInUse = False
 		self.spectrumStarted = False
-				
+		self.az = 0.0
+		self.el = 0.0
+		self.aznow = 0.0
+		self.elnow = 0.0
+		self.axis = 0
+		self.tostow = 0
+		self.elatstow = 0
+		self.azatstow = 0
+		self.slew = 0
+		self.serialport = ''
+		self.lastSRTCom = ''
+		self.lastSerialMsg = ''
+		self.IsMoving = False
+		self.track = False
+		self.OnSource = False
+		self.target = None
+		self.spectrum = []
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
 		self.connect()
 		self.SetSerialPort(self.serialport)
+		print "sending antenna to Stow"
 		self.Init(self.parameters)
 		return "Antenna initialized and in stow position"
 	
