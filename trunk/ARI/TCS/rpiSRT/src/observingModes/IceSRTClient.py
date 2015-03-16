@@ -22,7 +22,9 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		self.getspectrum = True
 		self.spectra = 0
-		
+		self.portInUse = False
+		self.spectrumStarted = False
+				
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
 		self.connect()
