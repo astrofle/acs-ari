@@ -52,7 +52,15 @@ def source_azel(object, site):
 	el = 180*object.alt/math.pi
 	return [az, el]
 
-
+def radec2azel(object, site):
+	galactic_center = ephem.Galactic(0, 0)	
+	eq = ephem.Equatorial(galactic_center)
+	body = ephem.FixedBody()
+	body._ra = eq.ra
+	body._dec = eq.dec
+	body._epoch = eq.epoch
+	return body
+	
 # Local coordinates
 place = 'Santa Martina'
 lat = sites[place]['lat']
