@@ -33,7 +33,6 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.elatstow = 0
 		self.azatstow = 0
 		self.slew = 0
-		self.serialport = ''
 		self.lastSRTCom = ''
 		self.lastSerialMsg = ''
 		self.IsMoving = False
