@@ -9,7 +9,7 @@ strftime("%Y-%m-%d %H:%M:%S", gmtime())
 import sites
 import matplotlib
 #matplotlib.use('QT4Agg')
-import matplotlib.pyplot as plt
+from pylab import *
 
 #global variables
 #global statusICIC
@@ -435,13 +435,12 @@ class SRT():
 		#plot loop
 		#the plot routine is intented to maximize plot speed
 		#idea from 
+		plot(self.sprectrum.spec)
+		show(block=False)
 		while(self.rGraph):
-			self.line.set_ydata(self.spectrum.spec)
-			self.ax.draw_artist(self.ax.patch)
-			self.ax.draw_artist(self.line)
-			self.fig.canvas.update()
-			self.fig.canvas.flush_events()
-			time.sleep(1)
+			plot(self.spectrum.spec)
+			show(block=False)
+			time.sleep(2)
 
 	def initGraph(self):
 		self.fig, self.ax = plt.subplots()
