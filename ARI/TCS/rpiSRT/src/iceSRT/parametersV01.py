@@ -88,17 +88,12 @@ if azlim1 < 0:
 print "azlim1 = "+ str(azlim1) + " azlim2 = "+ str(azlim2)
 print "ellim1 = "+ str(ellim1) + " ellim2 = "+ str(ellim2)
 
-# Local coordinates (Calama)
-place = 'calama'
-lat = '-22.5'
-lon = '-68.9'
-elevation = 2277
 
 #Radio parameters
 curvcorr =0.0
-calcons = 0.1 # gain correction constant to put power in units of K */
+calcons = 1.0 # gain correction constant to put power in units of K */
 tload = 300.0
-noisecal = 200.0
+noisecal = 380.0
 tspill = 20.0
 beamw = 7.0
 pscale = 400.0
