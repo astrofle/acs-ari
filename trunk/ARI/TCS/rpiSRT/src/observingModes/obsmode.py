@@ -13,8 +13,10 @@ class ARI_obsmodes():
 		self.site = sites.site
 		self.planets = sites.planets
 		self.stars = sites.stars
+		self.SRTsources = sites.SRTsources
 		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
+		print str(len(self.SRTsources))+ " observable stars: " + str(self.SRTsources.keys())
 		self.setup = 0
 
 	def find_planets(self):
