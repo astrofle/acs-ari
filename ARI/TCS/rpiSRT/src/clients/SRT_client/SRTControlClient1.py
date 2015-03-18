@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 #global statusICIC
 #global ic
 #global controller
-
+import numpy as np
 
 #ic = None
 
@@ -443,7 +443,7 @@ class SRT():
 			self.fig.canvas.flush_events()
 			time.sleep(1)
 
-	def initGraph(self, freq1, freq2):
+	def initGraph(self):
 		self.fig, self.ax = plt.subplots()
 		self.line, = self.ax.plot(np.zeros(256))
 		self.ax.set_autoscale_on(False)
