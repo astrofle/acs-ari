@@ -16,7 +16,7 @@ from pylab import *
 #global ic
 #global controller
 import numpy as np
-
+import csv 
 #ic = None
 
 
@@ -372,11 +372,27 @@ class SRT():
 		print "spectrum received"
 		self.spectra = False
 		self.portInUse = False
+		fspec = open('fspec.csv','w')
+		fspecW = csv.writer(fspec)
+		fspecd = open('fspecd.csv','w')
+		fspecdW = csv.writer(fspecd)
+		favspec = open('favspec.csv','w')
+		favspecW = csv.writer(favspec)
+		favspecc = open('favspecc.csv','w')
+		favspeccW = csv.writer(favspecc)
+		fspecW.writerow(spect.spec)
+		fspecdW.writerow(spect.specd)
+		favspecW.writerow(spect.avspec)
+		favspeccW.writerow(spect.avspecc)
+		fspec.close()
+		fspecd.close()
+		favspec.close()
+		favspecc.close()
 		return
 		
 	######## Thread functions	
 		
-	def track_source(self, source):
+	def track_source(self, source): 
 		self.GetSpectrum()
 		time.sleep(3)
 		if self.planets.has_key(source):
