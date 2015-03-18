@@ -83,6 +83,7 @@ class Antenna:
 		self.prms =0.0
 		self.pnum = 1e-6
 		self.receiving = False
+		self.waitingSp = False
 		#from config file (read *.cat)
 		#receiver default initialization from *.cat 
 		#(whenever the word digital is present in the cat file)
@@ -821,7 +822,7 @@ class Antenna:
 				self.av = self.av + 1
 			else:
 				self.avc = self.avc + 1
-		
+		self.waitingSp = False
 		return self.spec, self.avspec, self.avspecc, self.specd
 	
 	def clear(self):
@@ -861,6 +862,7 @@ class Antenna:
 		elif self.receiving:
 			print "wait until spectrum is received"
 		else:
+			self.waitingSp = True
 			spectra_thread = threading.Thread(target = self.spectra, args=[], name = 'Spectra')
 			spectra_thread.start()
 		return
