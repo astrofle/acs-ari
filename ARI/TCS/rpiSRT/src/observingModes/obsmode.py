@@ -26,6 +26,11 @@ class ARI_obsmodes():
 	def find_stars(self):
 		self.stars = sites.find_stars(sites.star_list, self.site)
 		print str(len(self.stars)) + " observabable stars: " + str(self.stars)
+		
+	
+	def find_SRTsources(self):
+		self.SRTsources = sites.find_SRTsources(sites.SRT_sources_list, self.site)
+		print str(len(self.SRTsources)) + " observabable SRT sources: " + str(self.SRTsources)		
 
 	def SRTAntennas(self):
 		self.srt1 = SRT() # control for a single antenna

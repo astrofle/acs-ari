@@ -42,6 +42,7 @@ class SRT():
 		self.target = None
 		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
+		print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())
 		self.spectrum = []
 		self.ic = None
 		self.getspectrum = True
