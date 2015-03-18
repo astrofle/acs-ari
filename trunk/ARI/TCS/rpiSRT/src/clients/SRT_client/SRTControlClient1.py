@@ -7,6 +7,10 @@ import threading
 from time import gmtime, strftime
 strftime("%Y-%m-%d %H:%M:%S", gmtime())
 import sites
+import matplotlib
+matplotlib.use('QT4Agg')
+import matplotlib.pyplot as plt
+
 #global variables
 #global statusICIC
 #global ic
@@ -49,6 +53,7 @@ class SRT():
 		self.spectra = False
 		self.portInUse = False
 		self.spectrumStarted = False
+		self.rGraph = True
 		return 
 		
 	def find_planets(self):
@@ -420,6 +425,32 @@ class SRT():
 			traceback.print_exc()
 			self.statusIC = 1
 		return
+		
+	def graph_thread(self):
+		#plot thread
+		graph_thread = threading.Thread(target = self.graph)
+		graph_thread.start()
+
+	def graph(self):
+		#plot loop
+		#the plot routine is intented to maximize plot speed
+		#idea from 
+		while(self.rGraph):
+			self.line.set_ydata(self.spectrum.spec)
+			self.ax.draw_artist(self.ax.patch)
+			self.ax.draw_artist(self.line)
+			self.fig.canvas.update()
+			self.fig.canvas.flush_events()
+			time.sleep(1)
+
+	def initGraph(self, freq1, freq2):
+		self.fig, self.ax = plt.subplots()
+		self.line, = self.ax.plot(np.zeros(256))
+		self.ax.set_autoscale_on(False)
+		self.line.set_xdata(range(256))
+		#self.ax.set_yscale('log')
+		plt.grid(True)
+		plt.show(block=False)
 
 	def clean(self):
 		if self.ic:
