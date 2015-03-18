@@ -59,6 +59,8 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.prms =0.0
 		self.pnum = 1e-60
 		self.receiving = False
+		self.waitingSp = False
+		
 	def message(self, s, current = None):
 		print s
 		return s
@@ -160,6 +162,8 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.spectra_thread()
 		#return "obtaining spectrum"
 		#_sp = self.spectra()
+		while(self.waitingSp):
+			time.sleep(0.2)
 		sp = SRTControl.specs(self.specd, self.spec, self.avspec, self.avspecc)
 		return sp
 						
