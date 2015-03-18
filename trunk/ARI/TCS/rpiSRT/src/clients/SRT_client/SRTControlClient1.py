@@ -8,7 +8,7 @@ from time import gmtime, strftime
 strftime("%Y-%m-%d %H:%M:%S", gmtime())
 import sites
 import matplotlib
-matplotlib.use('QT4Agg')
+#matplotlib.use('QT4Agg')
 import matplotlib.pyplot as plt
 
 #global variables
