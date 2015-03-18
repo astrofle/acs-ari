@@ -163,7 +163,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		#return "obtaining spectrum"
 		#_sp = self.spectra()
 		while(self.waitingSp):
-			time.sleep(0.2)
+			sleep(0.2)
 		sp = SRTControl.specs(self.specd, self.spec, self.avspec, self.avspecc)
 		return sp
 						
