@@ -167,6 +167,9 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		sp = SRTControl.specs(self.specd, self.spec, self.avspec, self.avspecc)
 		return sp
 						
+	def SRTClear(self, current = None):
+		self.clear()
+		return "Clear Done!"
 
 try:
 	if len(sys.argv)<2:
