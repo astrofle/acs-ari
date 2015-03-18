@@ -126,7 +126,7 @@ class Antenna:
 		#reads answer from SRT HW via USB-RS232
 		finished = 0;
 		cmd_r=''
-		timeout = time.time() + 60
+		timeout = time.time() + 120
 		while(finished == 0):
 			#print "reading serial port"
 			cmd_r = cmd_r + self.port.read(self.port.inWaiting())
