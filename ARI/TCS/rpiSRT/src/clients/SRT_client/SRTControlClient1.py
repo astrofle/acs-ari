@@ -435,7 +435,7 @@ class SRT():
 		#plot loop
 		#the plot routine is intented to maximize plot speed
 		#idea from 
-		plot(self.sprectrum.spec)
+		plot(self.spectrum.spec)
 		show(block=False)
 		while(self.rGraph):
 			plot(self.spectrum.spec)
