@@ -38,6 +38,7 @@ class SRT():
 		self.site = sites.site
 		self.planets = sites.planets
 		self.stars = sites.stars
+		self.SRTsources = sites.SRTsources
 		self.target = None
 		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
@@ -374,8 +375,13 @@ class SRT():
 		time.sleep(3)
 		if self.planets.has_key(source):
 			source = self.planets[source]
+			radec = 0
 		elif self.stars.has_key(source):
 			source = self.stars[source]
+			radec = 0
+		elif self.SRTsources.has_key(source):
+			source = self.SRTsources[source]
+			radec = 1
 		else:
 			print "Object not found or not observable"
 			return
@@ -389,7 +395,10 @@ class SRT():
 				self.OnSource = True
 				toSource = 1
 			if (not self.IsMoving and not self.portInUse):
-				[az, el] = sites.source_azel(source, self.site)
+				if radec:
+					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
+				else:
+					[az, el] = sites.source_azel(source, self.site)
 				if ((abs(az - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
 					self.target = self.AzEl(az, el)
 			time.sleep(2)
