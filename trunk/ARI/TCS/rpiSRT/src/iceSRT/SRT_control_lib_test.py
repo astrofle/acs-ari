@@ -828,7 +828,10 @@ class Antenna:
 			else:
 				self.avc = self.avc + 1
 		self.waitingSp = False
-		return self.spec, self.avspec/(self.av+1e-6), self.avspecc/(self.avc+1e-6), self.specd
+		
+		avspecs = [x / (self.av+1e-6) for x in self.avspec]
+		avspeccs = [x / (self.avc+1e-6) for x in self.avspecc]
+		return self.spec, avspecs, avspeccs, self.specd
 	
 	def clear(self):
 		self.spec = [0]*256
