@@ -54,6 +54,7 @@ class SRT():
 		self.portInUse = False
 		self.spectrumStarted = False
 		self.rGraph = True
+		self.statusDisp = False
 		return 
 		
 	def find_planets(self):
@@ -84,20 +85,21 @@ class SRT():
 		self.serialport = state.serialport
 		self.lastSRTCom = state.lastSRTCom
 		self.lastSerialMsg = state.lastSerialMsg
-		print "SRT antenna Status " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
-		print "Commanded azimuth: " + str(self.az)
-		print "Commanded elevation: " + str(self.el)
-		print "Actual azimuth: " + str(self.aznow)
-		print "Actual Elevation: " + str(self.elnow)
-		print "Slewing antenna: " + str(self.slew)
-		print "Next axis to move: " + str(self.axis)
-		print "Commanded to stow: " + str(self.tostow)
-		print "elevation axis at stow: " + str(self.elatstow)
-		print "azimuth axis at stow position: " + str(self.azatstow)
-		print "Controller Serial Port: " + str(self.serialport)
-		print "last SRT command: " + str(self.lastSRTCom)
-		print "last SRT received message: " + str(self.lastSerialMsg)	
-		print "\n"
+		if self.statusDisp:
+			print "SRT antenna Status " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
+			print "Commanded azimuth: " + str(self.az)
+			print "Commanded elevation: " + str(self.el)
+			print "Actual azimuth: " + str(self.aznow)
+			print "Actual Elevation: " + str(self.elnow)
+			print "Slewing antenna: " + str(self.slew)
+			print "Next axis to move: " + str(self.axis)
+			print "Commanded to stow: " + str(self.tostow)
+			print "elevation axis at stow: " + str(self.elatstow)
+			print "azimuth axis at stow position: " + str(self.azatstow)
+			print "Controller Serial Port: " + str(self.serialport)
+			print "last SRT command: " + str(self.lastSRTCom)
+			print "last SRT received message: " + str(self.lastSerialMsg)	
+			print "\n"
 		return
 	
 	def docalCB(self, calcons):
@@ -188,10 +190,11 @@ class SRT():
 				sys.exit(status)
 		return
 
-	def status(self):
+	def status(self,disp):
 		#asynchronous status
 		self.statusIC = 0
 		self.ic = None
+		self.statusDisp = disp
 		try:
 			self.controller.begin_SRTStatus(self.getStatusCB, self.failureCB);
 			print "getting SRT status"
@@ -307,6 +310,7 @@ class SRT():
 			print "Movement finished!!"
 			self.IsMoving = False
 			self.portInUse = False
+			self.status(False)
 		idx2 = a.find('spectra')
 		if (self.spectra and idx2==-1):
 			print "Spectra finished!!"
@@ -422,6 +426,7 @@ class SRT():
 				else:
 					[az, el] = sites.source_azel(source, self.site)
 				if ((abs(az - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
+					print az, self.aznow, el, self.elnow
 					self.target = self.AzEl(az, el)
 			time.sleep(2)
 		return 
