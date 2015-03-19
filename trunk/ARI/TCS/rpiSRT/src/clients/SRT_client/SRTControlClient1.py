@@ -438,6 +438,11 @@ class SRT():
 		
 	def StopTrack(self):
 		self.track = False
+		
+	def Stop(self):
+		self.StopSpectrum()
+		self.StopTrack()
+		
 			
 	def do_calibration(self, method):
 		#Call for receiver calibration
