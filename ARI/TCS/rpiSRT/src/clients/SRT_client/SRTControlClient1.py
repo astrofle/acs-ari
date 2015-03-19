@@ -467,6 +467,18 @@ class SRT():
 		plt.grid(True)
 		plt.show(block=False)
 
+	def clear(self):
+		#Call for receiver calibration
+		self.statusIC = 0
+		self.ic = None
+		try:
+			target = self.controller.begin_SRTClear(self.genericCB, self.failureCB)
+			print "clearing spectrum"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+		return
+
 	def clean(self):
 		if self.ic:
 		#clean up
