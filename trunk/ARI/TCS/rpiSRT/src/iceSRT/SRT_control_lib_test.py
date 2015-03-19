@@ -825,8 +825,10 @@ class Antenna:
 			self.bswlast = avp
 			if self.sig:
 				self.av = self.av + 1
+				print self.av
 			else:
 				self.avc = self.avc + 1
+				print self.avc
 		self.waitingSp = False
 		
 		avspecs = [x / (self.av+1e-6) for x in self.avspec]
