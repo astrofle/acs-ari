@@ -333,7 +333,7 @@ class SRT():
 	def StopSpectrum(self):
 		self.getspectrum = 0
 		self.spectrumStarted = False
-		
+	
 	
 	def GetSpectrum(self):
 		target = 0
@@ -434,6 +434,9 @@ class SRT():
 	def tracking(self, source):
 		tracking_Thread = threading.Thread(target = self.track_source, args =(source,), name='tracking')
 		tracking_Thread.start()
+		
+	def StopTrack(self):
+		self.track = False
 			
 	def do_calibration(self, method):
 		#Call for receiver calibration
