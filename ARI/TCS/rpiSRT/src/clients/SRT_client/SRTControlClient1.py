@@ -425,7 +425,11 @@ class SRT():
 					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
 				else:
 					[az, el] = sites.source_azel(source, self.site)
-				naz = self.normalize_az(az)
+				#Implementar para traer azlim2 desde parametersV01
+				if az > 270:
+					naz = az - 360
+				else:
+					naz = az
 				if ((abs(naz - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
 					print naz, self.aznow, el, self.elnow
 					self.target = self.AzEl(az, el)
@@ -501,24 +505,7 @@ class SRT():
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
-
-
-	def normalize_az(self):
-	# azimuth value scaling
-	# Fold AZ into reasonable range 
-		az = self.az % 360
-	# put az in range 180 to 540 
-		if p.south == 0:
-			az = az + 360.0;   
-			if az > 540.0:
-				az -= 360.0
-			if az < 180.0:
-				az += 360.0;
-			
-			if az > p.azlim2:
-				az -= 360.0
-			
-		return az
+		return
 
 
 
