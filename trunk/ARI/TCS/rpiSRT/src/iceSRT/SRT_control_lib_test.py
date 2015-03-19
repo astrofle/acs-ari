@@ -718,6 +718,7 @@ class Antenna:
 		avp = 0.0
 		if ( int(self.receiver[0]) == 0 or int(self.receiver[0]) == 5):
 			for i in range(self.nfreq):
+				print i
 				freqf = self.fcenter + (i - float(self.nfreq)/2) * self.freqsep + 0.8;
 				self.radiodg(freqf)
 				self.spec[i] = self.a
