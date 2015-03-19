@@ -49,6 +49,8 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.spec = [0]*256
 		self.avspec = [0]*256
 		self.avspecc = [0]*256
+		self.avspecs = [0]*256
+		self.avspeccs= [0]*256
 		self.bswav = 0.0 
 		self.bswsq = 0.0
 		self.bswlast = 0.0
