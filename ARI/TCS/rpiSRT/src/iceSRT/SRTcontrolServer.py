@@ -166,7 +166,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		#_sp = self.spectra()
 		while(self.waitingSp):
 			sleep(0.2)
-		sp = SRTControl.specs(self.specd, self.spec, self.avspec, self.avspecc)
+		sp = SRTControl.specs(self.specd, self.spec, self.avspecs, self.avspeccs)
 		return sp
 						
 	def SRTClear(self, current = None):
