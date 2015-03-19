@@ -834,8 +834,8 @@ class Antenna:
 		self.avspecs = [x / (self.av+1e-6) for x in self.avspec]
 		self.avspeccs = [x / (self.avc+1e-6) for x in self.avspecc]
 		print "av:", self.av, "avc:", self.avc
-		print "avspec", max(self.avspec), max(avspecs)
-		print "avspecc", max(self.avspecc), max(avspeccs)
+		print "avspec", max(self.avspec), max(self.avspecs)
+		print "avspecc", max(self.avspecc), max(self.avspeccs)
 		return self.spec, self.avspecs, self.avspeccs, self.specd
 	
 	def clear(self):
