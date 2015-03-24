@@ -19,8 +19,7 @@ class ObsBase():
 		self.SRTsources = sites.SRTsources
 		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
-		print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())
-		self.setup = 0	
+		print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())	
 
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -100,11 +99,9 @@ class ObsBase():
 		return	
 
 
-class SRTSingleDish(ObsBase):
-	def __init__(self):
-		pass		
-	def setup(self, SRTantenna):
-		self.srt1 = self.connect(self.ARI_nodes[SRTantenna])
+class SRTSingleDish(ObsBase):		
+	def setup(self, antenna):
+		self.srt1 = self.connect(self.ARI_nodes[antenna])
 		statusIC = 0
 		ic = None
 		try:

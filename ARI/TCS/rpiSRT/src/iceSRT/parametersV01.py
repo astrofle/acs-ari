@@ -37,7 +37,10 @@ azlim2 = 265.0
 ellim1 = 8.0
 ellim2 = 85.0
 
-
+#pointing corrections
+azoff = 0.0  #ajustar para pointing optimo
+eloff = 0.0  #estos valores se suman al par Az,El en la rutina de calculo de cuenta
+			  #de encoder get_azzcount, get_ellcount
 
 #Antenna Geometry - needed for elevation calculus
 pushrod = 1 #cassi mount, 0 for other kind of mount

@@ -86,6 +86,8 @@ class Antenna:
 		self.pnum = 1e-6
 		self.receiving = False
 		self.waitingSp = False
+		self.eloff = 0.0
+		self.azoff = 0.0
 		#from config file (read *.cat)
 		#receiver default initialization from *.cat 
 		#(whenever the word digital is present in the cat file)
@@ -346,7 +348,7 @@ class Antenna:
 	
 	def get_azzcount(self):
 		#computes relative antenna movement starting from antenna limits (real movement amount)
-		azz = self.az - p.azlim1;
+		azz = self.az - p.azlim1 + self.azoff;
 		#print "azz: " + str(azz) 
 		azscale = p.azcounts_per_deg
 		#computes target number of counts on azimuth for commanded movement
@@ -356,7 +358,7 @@ class Antenna:
 		return
 		
 	def get_ellcount(self):
-		ell = self.el - p.ellim1;
+		ell = self.el - p.ellim1 + self.eloff;
 		#print "ell: " + str(ell)
 		elscale = p.elcounts_per_deg
 		#computes target number of counts on elevation for commanded movement
@@ -488,12 +490,14 @@ class Antenna:
 				print status
 				self.check_limit()
 				self.check_end()
-				time.sleep(0.5)
+				time.sleep(0.1)
 		return
 
 	def load_parameters(self, pfile):
 		global p
 		p = importlib.import_module(pfile)
+		self.azoff = p.azoff
+		self.eloff = p.eloff
 		print "loaded parameters file " + str(p)
 		if p.digital:
 			self.receiver_default = '1a'
