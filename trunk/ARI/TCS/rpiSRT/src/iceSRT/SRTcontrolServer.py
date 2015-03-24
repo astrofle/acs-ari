@@ -62,7 +62,9 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.pnum = 1e-60
 		self.receiving = False
 		self.waitingSp = False
-		
+		self.eloff = 0.0
+		self.azoff = 0.0
+	
 	def message(self, s, current = None):
 		print s
 		return s
@@ -172,6 +174,11 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 	def SRTClear(self, current = None):
 		self.clear()
 		return "Clear Done!"
+
+	def SRTSet_azeloff(self, azoff, eloff):
+		self.azoff = azoff
+		self.eloff = eloff
+		return "Corrections updated"
 
 try:
 	if len(sys.argv)<2:

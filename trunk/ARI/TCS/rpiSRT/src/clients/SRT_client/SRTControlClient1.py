@@ -113,6 +113,7 @@ class SRT():
 		self.tostow = 1
 		self.IsMoving = False
 		self.portInUse = False
+		self.status(False)
 		return
 		
 	def failureCB(self, ex):
