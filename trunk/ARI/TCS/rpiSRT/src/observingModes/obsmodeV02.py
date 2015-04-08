@@ -95,7 +95,7 @@ class ObsBase():
 	def setupCB(self, a):
 		#generic callback
 		print a
-		self.setup = 1
+		print "Setup finished"
 		return	
 
 

@@ -42,6 +42,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.OnSource = False
 		self.target = None
 		self.spectrum = []
+		self.initialized = False
 		
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
@@ -49,6 +50,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.SetSerialPort(self.serialport)
 		print "sending antenna to Stow"
 		self.Init(self.parameters)
+		while(not self.initialized):
+			sleep(1)
 		return "Antenna initialized and in stow position"
 	
 	def trackSource(self, s, current = None):
