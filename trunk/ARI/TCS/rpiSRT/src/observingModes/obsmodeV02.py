@@ -108,7 +108,7 @@ class SRTSingleDish(ObsBase):
 		statusIC = 0
 		ic = None
 		try:
-			self.srt1.begin_setup(self.setupCB, self.failureCB);
+			self.begin_setup(self.setupCB, self.failureCB);
 			print "initializing antenna"
 		except:
 			traceback.print_exc()
@@ -119,7 +119,7 @@ class SRTSingleDish(ObsBase):
 		statusIC = 0
 		ic = None
 		try:
-			self.srt1.begin_trackSource(self.trackCB, self.failureCB);
+			self.begin_trackSource(self.trackCB, self.failureCB);
 			print "Going to Source"
 		except:
 			traceback.print_exc()
