@@ -110,6 +110,7 @@ class SRT():
 	def stowCB(self, a):
 		#call by Init and Stow
 		print "Antenna Stowed"
+		self.initialized = True
 		self.tostow = 1
 		self.IsMoving = False
 		self.portInUse = False
@@ -237,6 +238,7 @@ class SRT():
 		self.ic = None
 		if not self.portInUse:
 			try:
+				self.initialized = False
 				self.portInUse = True
 				self.IsMoving = True
 				self.controller.begin_SRTinit(parameters, self.stowCB, self.failureCB);
