@@ -185,7 +185,7 @@ try:
 		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
 		sys.exit()
 	IP =  ' '.join(sys.argv[1:])
-	IP = "default -h " + IP
+	IP = "default -h localhost " + IP
 except:
 	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
 		
