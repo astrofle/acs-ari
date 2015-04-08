@@ -64,10 +64,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 #except:
 #	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
 
-ARI_nodes = {'SRT1':{'client':'localhost -p 10010','antenna':'192.168.3.101 -p 10000'},
-			'SRT2':{'client':'localhost -p 10011', 'antenna':'192.168.3.102 -p 10000'},
-			'SH':'localhost -p 10012',
-			'ROACH':'localhost -p 10013',
+ARI_nodes = {'SRT1':{'client':'localhost -p 10011','antenna':'192.168.3.101 -p 10000'},
+			'SRT2':{'client':'localhost -p 10012', 'antenna':'192.168.3.102 -p 10000'},
+			'SH':'localhost -p 10013',
+			'ROACH':'localhost -p 10014',
 			}		
 	
 status = 0
