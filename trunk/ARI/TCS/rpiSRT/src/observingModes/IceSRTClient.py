@@ -56,6 +56,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	
 	def trackSource(self, s, current = None):
 		self.tracking(s)
+		while(not self.OnSource):
+			sleep(1)
 		return "Tracking source"
 
 #try:

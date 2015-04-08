@@ -115,4 +115,18 @@ class SRTSingleDish(ObsBase):
 			self.statusIC = 1
 
 
-
+	def trackSource(self, target):
+		statusIC = 0
+		ic = None
+		try:
+			self.srt1.begin_trackSource(self.trackCB, self.failureCB);
+			print "Going to Source"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1	
+	
+	def trackCB(self,a):
+		print a
+		print "On Target"
+			
+	
