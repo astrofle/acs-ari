@@ -8,10 +8,10 @@ import sites
 
 class ObsBase():
 	def __init__(self):
-		self.ARI_nodes = {'SRT1':'localhost -p 10010',
-			'SRT2':'localhost -p 10011',
-			'SH':'localhost -p 10012',
-			'ROACH':'localhost -p 10013'
+		self.ARI_nodes = {'SRT1':'localhost -p 10011',
+			'SRT2':'localhost -p 10012',
+			'SH':'localhost -p 10013',
+			'ROACH':'localhost -p 10014'
 			}
 		self.site = sites.site
 		self.planets = sites.planets
@@ -99,7 +99,10 @@ class ObsBase():
 		return	
 
 
-class SRTSingleDish(ObsBase):		
+class SRTSingleDish(ObsBase):
+	def __init__(self):
+		ObsBase.__init__(self)
+			
 	def setup(self, antenna):
 		self.srt1 = self.connect(self.ARI_nodes[antenna])
 		statusIC = 0
