@@ -317,7 +317,7 @@ class SRT():
 			self.toSource = self.toSource + 1
 			if self.toSource == 2:
 				self.OnSource = True
-				self.toSource = 1
+				self.GetSpectrum()
 		idx2 = a.find('spectra')
 		if (self.spectra and idx2==-1):
 			print "Spectra finished!!"
@@ -399,6 +399,8 @@ class SRT():
 		fspecd.close()
 		favspec.close()
 		favspecc.close()
+		if self.toSource == 1:
+			self.StopSpectrum()
 		return
 		
 	######## Thread functions	
@@ -434,6 +436,7 @@ class SRT():
 				else:
 					naz = az
 				if ((abs(naz - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
+					self.toSource = 1
 					print naz, self.aznow, el, self.elnow
 					self.target = self.AzEl(az, el)
 			time.sleep(2)

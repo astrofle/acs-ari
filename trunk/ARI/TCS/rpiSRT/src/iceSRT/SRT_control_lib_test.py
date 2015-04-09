@@ -442,6 +442,7 @@ class Antenna:
 		#determines if antenna reached to commanded position
 		if ((abs(self.aznow - self.az) <= 0.2) & (abs(self.elnow - self.el) <= 0.2)):
 			self.slew = 0
+			self.OnTarget = True
 			print "movimiento terminado"
 			print "azcount: "+str(self.azcount)+ " elcount: " + str(self.elcount)
 		if self.aznow < p.azlim1:
@@ -453,6 +454,7 @@ class Antenna:
 		return
 		
 	def cmd_azel(self, az, el):
+		self.OnTarget = False
 		self.az = az
 		self.el = el
 		self.normalize_az()
