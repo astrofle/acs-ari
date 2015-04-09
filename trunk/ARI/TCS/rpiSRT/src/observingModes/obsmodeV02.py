@@ -139,7 +139,7 @@ class SRTSingleDish(ObsBase):
 			traceback.print_exc()
 			self.statusIC = 1		
 	
-	def trackCB(self, a):
+	def stoptrackCB(self, a):
 		print a
 		print "Antenna Stopped"
 	
