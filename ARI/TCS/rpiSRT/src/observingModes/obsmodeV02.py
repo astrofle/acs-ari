@@ -104,7 +104,7 @@ class SRTSingleDish(ObsBase):
 		ObsBase.__init__(self)
 			
 	def setup(self, antenna):
-		self.srt1 = self.connect(self.ARI_nodes[antenna])
+		self.connect(self.ARI_nodes[antenna])
 		statusIC = 0
 		ic = None
 		try:
@@ -116,7 +116,6 @@ class SRTSingleDish(ObsBase):
 
 
 	def trackSource(self, target):
-		self.connect(self.ARI_nodes[antenna])
 		statusIC = 0
 		ic = None
 		try:
