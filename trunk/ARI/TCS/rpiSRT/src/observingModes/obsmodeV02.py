@@ -70,8 +70,8 @@ class ObsBase():
 			#base = ic.stringToProxy("SRTController:default -h 192.168.0.6 -p 10000")
 			IP_string = "SRTClient:default -h " + IP
 			base = ic.stringToProxy(IP_string)
-			controller = SRTClient.ClientPrx.checkedCast(base)
-			controller.begin_message("connected to client", self.genericCB, self.failureCB);
+			self.controller = SRTClient.ClientPrx.checkedCast(base)
+			self.controller.begin_message("connected to client", self.genericCB, self.failureCB);
 			print "Connecting to SRTClient"
 			#self.controller.begin_serverState(self.serverCB, self.failureCB);
 			if not controller:
@@ -80,7 +80,7 @@ class ObsBase():
 			traceback.print_exc()
 			self.statusIC = 1
 			sys.exit(statusIC)
-		return controller
+		return
 		
 	def failureCB(self, ex):
 		#failure Callback
@@ -108,7 +108,7 @@ class SRTSingleDish(ObsBase):
 		statusIC = 0
 		ic = None
 		try:
-			self.begin_setup(self.setupCB, self.failureCB);
+			self.controller.begin_setup(self.setupCB, self.failureCB);
 			print "initializing antenna"
 		except:
 			traceback.print_exc()
@@ -116,17 +116,18 @@ class SRTSingleDish(ObsBase):
 
 
 	def trackSource(self, target):
+		self.connect(self.ARI_nodes[antenna])
 		statusIC = 0
 		ic = None
 		try:
-			self.begin_trackSource(self.trackCB, self.failureCB);
-			print "Going to Source"
+			self.controller.begin_tracking(target, self.trackCB, self.failureCB);
+			print "moving antenna to target"
 		except:
 			traceback.print_exc()
-			self.statusIC = 1	
+			self.statusIC = 1		
 	
-	def trackCB(self,a):
+	def trackCB(a):
 		print a
-		print "On Target"
-			
+		print "Antenna on source"
+		
 	
