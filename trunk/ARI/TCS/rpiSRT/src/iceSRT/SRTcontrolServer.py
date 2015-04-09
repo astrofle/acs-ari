@@ -132,7 +132,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 				print "Commanding antenna movement"
 				while(not self.OnTarget):
 					time.sleep(1)
-				return "Antenna reached (az,el)
+				return "Antenna reached (az,el)"
 			else:
 				return "Command out of limits!"
 		except Exception, e:
