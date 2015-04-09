@@ -446,6 +446,7 @@ class SRT():
 	def StopTrack(self):
 		self.track = False
 		self.OnSource = False
+		self.toSource = 0
 		
 	def Stop(self):
 		self.StopSpectrum()
