@@ -25,6 +25,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.port = None
 		self.lastSerialMsg = ''
 		self.lastSRTCom = ''
+		self.OnTarget = False
 		#radio parameters
 		# Variables for receiver
 		self.fcenter = 1420.4 # default for continuum
@@ -128,7 +129,10 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			inLimits = self.get_cmd_inLimits()
 			if inLimits:
 				self.azel_thread(az, el)
-				return "Commanding antenna movement"
+				print "Commanding antenna movement"
+				while(not self.OnTarget):
+					time.sleep(1)
+				return "Antenna reached (az,el)
 			else:
 				return "Command out of limits!"
 		except Exception, e:
