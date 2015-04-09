@@ -125,7 +125,7 @@ class SRTSingleDish(ObsBase):
 			traceback.print_exc()
 			self.statusIC = 1		
 	
-	def trackCB(a):
+	def trackCB(self, a):
 		print a
 		print "Antenna on source"
 		
