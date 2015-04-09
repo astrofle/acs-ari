@@ -314,7 +314,7 @@ class SRT():
 			self.IsMoving = False
 			self.portInUse = False
 			self.status(False)
-			self.toSource = toSource + 1
+			self.toSource = self.toSource + 1
 			if self.toSource == 2:
 				self.OnSource = True
 				self.toSource = 1
