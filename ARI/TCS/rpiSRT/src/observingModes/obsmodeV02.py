@@ -74,7 +74,7 @@ class ObsBase():
 			self.controller.begin_message("connected to client", self.genericCB, self.failureCB);
 			print "Connecting to SRTClient"
 			#self.controller.begin_serverState(self.serverCB, self.failureCB);
-			if not controller:
+			if not self.controller:
 				raise RuntimeError("Invalid proxy")
 		except:
 			traceback.print_exc()
