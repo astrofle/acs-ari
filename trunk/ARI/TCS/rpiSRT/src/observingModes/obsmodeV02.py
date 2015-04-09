@@ -129,4 +129,17 @@ class SRTSingleDish(ObsBase):
 		print a
 		print "Antenna on source"
 		
+	def stopTrack(self):
+		statusIC = 0
+		ic = None
+		try:
+			self.controller.begin_stopTrack(self.stoptrackCB, self.failureCB);
+			print "moving antenna to target"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1		
+	
+	def trackCB(self, a):
+		print a
+		print "Antenna Stopped"
 	

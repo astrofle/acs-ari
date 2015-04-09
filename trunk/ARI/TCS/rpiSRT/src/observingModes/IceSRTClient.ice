@@ -3,5 +3,6 @@ module SRTClient{
 		void message(string s, out string r);
 		void setup(out string r);
 		void trackSource(string s, out string r);
+		void stopTrack(out string r);
 	};
 };
