@@ -40,6 +40,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.IsMoving = False
 		self.track = False
 		self.OnSource = False
+		self.toSource = 0
 		self.target = None
 		self.spectrum = []
 		self.initialized = False
