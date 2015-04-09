@@ -314,6 +314,10 @@ class SRT():
 			self.IsMoving = False
 			self.portInUse = False
 			self.status(False)
+			self.toSource = toSource + 1
+			if self.toSource == 2:
+				self.OnSource = True
+				self.toSource = 1
 		idx2 = a.find('spectra')
 		if (self.spectra and idx2==-1):
 			print "Spectra finished!!"
@@ -417,12 +421,8 @@ class SRT():
 		
 		self.track = True
 		self.OnSource = False
-		toSource = 0
+		self.toSource = 0
 		while(self.track):
-			toSource = toSource + 1
-			if toSource == 2:
-				self.OnSource = True
-				toSource = 1
 			if (not self.IsMoving and not self.portInUse):
 				if radec:
 					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
