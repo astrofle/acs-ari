@@ -59,6 +59,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		while(not self.OnSource):
 			sleep(1)
 		return "Tracking source"
+	
+	def stopTrack(self, current = None):
+		self.Stop()
+		return "Track Stopped"
 
 #try:
 #	if len(sys.argv)<2:
