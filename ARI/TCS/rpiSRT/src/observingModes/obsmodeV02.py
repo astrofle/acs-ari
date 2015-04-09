@@ -119,7 +119,7 @@ class SRTSingleDish(ObsBase):
 		statusIC = 0
 		ic = None
 		try:
-			self.controller.begin_tracking(target, self.trackCB, self.failureCB);
+			self.controller.begin_trackSource(target, self.trackCB, self.failureCB);
 			print "moving antenna to target"
 		except:
 			traceback.print_exc()
