@@ -65,6 +65,11 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.Stop()
 		return "Track Stopped"
 
+	def message(self, s, current = None):
+		print s
+		return s
+
+
 #try:
 #	if len(sys.argv)<2:
 #		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
@@ -74,8 +79,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 #except:
 #	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
 
-ARI_nodes = {'SRT1':{'client':'localhost -p 10011','antenna':'192.168.3.101 -p 10000'},
-			'SRT2':{'client':'localhost -p 10012', 'antenna':'192.168.3.102 -p 10000'},
+ARI_nodes = {'SRT1':{'client':'localhost -p 10011','antenna':'192.168.0.6 -p 10000'},
+			'SRT2':{'client':'localhost -p 10012', 'antenna':'192.168.0.6 -p 10001'},
 			'SH':'localhost -p 10013',
 			'ROACH':'localhost -p 10014',
 			}		
