@@ -54,7 +54,7 @@ def find_planets(planets, site):
 	sources = {}
 	for planet in planets:
 		[az, el] = source_azel(planets[planet], site)
-		print planet, az, el
+		#print planet, az, el
 		if el > 15.0:
 			sources[planet] = planets[planet]
 	return sources
@@ -63,7 +63,7 @@ def find_stars(stars, site):
 	sources = {}
 	for star in stars:
 		[az, el] = source_azel(ephem.star(star), site)
-		print star, az, el
+		#print star, az, el
 		if el > 15.0:
 			sources[star] = ephem.star(star)
 	return sources
@@ -72,7 +72,7 @@ def find_SRTsources(SRTsources, site):
 	sources = {}
 	for source in SRTsources:
 		[az, el] = radec2azel(SRTsources[source]['ra'], SRTsources[source]['dec'], site)
-		print source, az, el
+		#print source, az, el
 		if el> 15.0:
 			sources[source] = SRTsources[source]
 	return sources
