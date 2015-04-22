@@ -1,0 +1,19 @@
+{
+  "name": "simple-client",
+  "version": "0.0.0",
+  "description": "simple client for ICE",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "xtend": "~4.0.0",
+    "csurf": "~1.8.0",
+    "forms": "~1.1.1",
+    "express": "~4.12.3",
+    "jade": "~1.9.2",
+    "express-stormpath": "~1.0.4"
+  }
+}
