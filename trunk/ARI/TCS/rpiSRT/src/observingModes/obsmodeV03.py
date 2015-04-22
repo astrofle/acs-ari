@@ -139,7 +139,7 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				self.ARI_controllers[node].begin_stopTrack(self.stoptrackCB, self.failureCB);
+				self.ARI_controllers[node].begin_stopTrack(self.stopTrackCB, self.failureCB);
 				print "Stopping Antenna " + node
 		except:
 			traceback.print_exc()
