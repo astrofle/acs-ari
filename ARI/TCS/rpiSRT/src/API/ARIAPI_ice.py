@@ -1,6 +1,6 @@
 # **********************************************************************
 #
-# Copyright (c) 2003-2013 ZeroC, Inc. All rights reserved.
+# Copyright (c) 2003-2014 ZeroC, Inc. All rights reserved.
 #
 # This copy of Ice is licensed to you under the terms described in the
 # ICE_LICENSE file included in this distribution.
@@ -41,6 +41,9 @@ if 'API' not in _M_ARIAPI.__dict__:
             return '::ARIAPI::API'
         ice_staticId = staticmethod(ice_staticId)
 
+        def sayHello(self, current=None):
+            pass
+
         def testConn(self, s, current=None):
             pass
 
@@ -72,6 +75,15 @@ if 'API' not in _M_ARIAPI.__dict__:
 
     _M_ARIAPI.APIPrx = Ice.createTempClass()
     class APIPrx(Ice.ObjectPrx):
+
+        def sayHello(self, _ctx=None):
+            return _M_ARIAPI.API._op_sayHello.invoke(self, ((), _ctx))
+
+        def begin_sayHello(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_sayHello.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_sayHello(self, _r):
+            return _M_ARIAPI.API._op_sayHello.end(self, _r)
 
         def testConn(self, s, _ctx=None):
             return _M_ARIAPI.API._op_testConn.invoke(self, ((s, ), _ctx))
@@ -158,6 +170,7 @@ if 'API' not in _M_ARIAPI.__dict__:
     _M_ARIAPI._t_API = IcePy.defineClass('::ARIAPI::API', API, -1, (), True, False, None, (), ())
     API._ice_type = _M_ARIAPI._t_API
 
+    API._op_sayHello = IcePy.Operation('sayHello', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), None, ())
     API._op_testConn = IcePy.Operation('testConn', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), IcePy._t_string, False, 0),), None, ())
     API._op_ChooseObservingMode = IcePy.Operation('ChooseObservingMode', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0), ((), IcePy._t_string, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
     API._op_Connect = IcePy.Operation('Connect', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())

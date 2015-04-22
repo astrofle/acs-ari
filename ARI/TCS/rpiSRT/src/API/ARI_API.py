@@ -5,6 +5,12 @@ import ARIAPI
 class API():
 	def __init__(self):
 		pass
+         
+        def sayHello(self):
+                msg = "por fin"
+                print ">>>>>>>>>>>>>>>>>>>>>>>>> hello " +  msg
+                print ">>>>>>>>>>>>>>>>>>>>>>>>> hello " +  msg
+                print ">>>>>>>>>>>>>>>>>>>>>>>>> hello " +  msg
 	
 	def connect(self, IP):
 		#client connection routine to server
