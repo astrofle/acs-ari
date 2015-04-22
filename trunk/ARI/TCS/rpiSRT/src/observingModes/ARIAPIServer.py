@@ -2,14 +2,14 @@ import sys, traceback, Ice
 sys.path.insert(0,'../clients/SRT_client/')
 
 from time import sleep
-import SRTGUI
-import obsmodeV03_GUItest as SRTobsMode
+import ARIAPI
+import obsmodeV03_APItest as ARIobsMode
 import threading
 import os
 import socket
 import sites
 
-class SRTGUII(SRTGUI.GUI):
+class ARIAPII(ARIAPI.API):
 	def __init__(self):
 		self.ARI_nodes = {'SRT1':'localhost -p 10011',
 			'SRT2':'localhost -p 10012',
@@ -76,7 +76,7 @@ class SRTGUII(SRTGUI.GUI):
 				msg = "ARI ROACH Mode chosen"
 		else:
 			msg = "error in parameters"	
-		print msg	
+		print msg
 		return msg
 		
 	def Connect(self, current = None):
@@ -133,11 +133,11 @@ try:
 	#ic = Ice.initialize(sys.argv)
 	ic = Ice.initialize([''])
 	#adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.6 -p 10000")
-	adapter = ic.createObjectAdapterWithEndpoints("SRTGUI", IP)
-	object = SRTGUII()
-	adapter.add(object, ic.stringToIdentity("SRTGUI"))
+	adapter = ic.createObjectAdapterWithEndpoints("ARIAPI", IP)
+	object = ARIAPII()
+	adapter.add(object, ic.stringToIdentity("ARIAPI"))
 	adapter.activate()
-	print "SRT ICE GUI server up and running!"
+	print "ARI ICE API server up and running!"
 	ic.waitForShutdown()
 except:
 	traceback.print_exc()

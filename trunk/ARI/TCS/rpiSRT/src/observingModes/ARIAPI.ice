@@ -1,5 +1,5 @@
-module SRTGUI{
-	interface GUI{
+module ARIAPI{
+	interface API{
 		void testConn(string s, out string r);
 		void ChooseObservingMode(string s1, string s2, out string r);
 		void Connect(out string r);
