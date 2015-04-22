@@ -111,7 +111,7 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				self.controller.begin_setup(self.setupCB, self.failureCB);
+				self.ARI_controllers[node].begin_setup(self.setupCB, self.failureCB);
 				print "initializing antenna " + node
 		except:
 			traceback.print_exc()
@@ -122,7 +122,7 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:				
-				self.controller.begin_trackSource(target, self.trackCB, self.failureCB);
+				self.ARI_controllers[node].begin_trackSource(target, self.trackCB, self.failureCB);
 				print "moving antenna" + node + " to target"
 			self.tracking
 		except:
@@ -139,7 +139,7 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				self.controller.begin_stopTrack(self.stoptrackCB, self.failureCB);
+				self.ARI_controllers[node].begin_stopTrack(self.stoptrackCB, self.failureCB);
 				print "Stopping Antenna " + node
 		except:
 			traceback.print_exc()
