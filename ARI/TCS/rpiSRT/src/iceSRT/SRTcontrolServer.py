@@ -131,7 +131,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 				self.azel_thread(az, el)
 				print "Commanding antenna movement"
 				while(not self.OnTarget):
-					time.sleep(1)
+					sleep(1)
 				return "Antenna reached (az,el)"
 			else:
 				return "Command out of limits!"
