@@ -115,19 +115,19 @@ class ARIAPII(ARIAPI.API):
 		return sources
 
 
-#try:
-#	if len(sys.argv)<2:
-#		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
-#		sys.exit()
-#	IP =  ' '.join(sys.argv[1:])
-#	IP = "default -h " + IP
-#except:
-#	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
+try:
+	if len(sys.argv)<2:
+		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
+		sys.exit()
+	IP =  ' '.join(sys.argv[1:])
+	IP = "default -h " + IP
+except:
+	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
 
 status = 0
 ic = None
-IP = 'default -h 192.168.0.6 -p 10015'
-#IP = 'default -h '+ARI_nodes[sys.argv[1]]['client']
+#IP = 'default -h 192.168.0.6 -p 10015'
+IP = 'default -h '+ IP
 
 try:
 	#ic = Ice.initialize(sys.argv)
