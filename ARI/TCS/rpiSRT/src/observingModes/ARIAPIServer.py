@@ -62,17 +62,17 @@ class ARIAPII(ARIAPI.API):
 	def ChooseObservingMode(self, s1, s2, current = None):
 		if (s1 == "SD"):
 			if (s2 == "Double"):
-				self.obsMode = SRTobsMode.SRTDoubleSingleDish()
+				self.obsMode = ARIobsMode.SRTDoubleSingleDish()
 				msg = "Double Single Dish Mode chosen"
 			else:
-				self.obsMode = SRTobsMode.SRTSingleDish(s2)
+				self.obsMode = aRIobsMode.SRTSingleDish(s2)
 				msg = "Single Dish Mode chosen with " + s2
 		elif (s1 == "ARI"):
 			if (s2 == "SH"):
-				self.obsMode = SRTobsMode.ARI_SignalHound()
+				self.obsMode = AIRobsMode.ARI_SignalHound()
 				msg = "ARI Signal Hound Mode chosen"
 			elif (s2 == "ROACH"):
-				self.obsMode = SRTobsMode.ARI_ROACH()
+				self.obsMode = AIRobsMode.ARI_ROACH()
 				msg = "ARI ROACH Mode chosen"
 		else:
 			msg = "error in parameters"	
