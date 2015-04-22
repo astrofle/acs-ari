@@ -1,5 +1,5 @@
 import sys, traceback, Ice
-sys.path.insert(0,'../clients/SRT_client/')
+#sys.path.insert(0,'../clients/SRT_client/')
 
 from time import sleep
 import ARIAPI
@@ -33,6 +33,8 @@ class ARIAPII(ARIAPI.API):
 		self.tracking = False
 		self.OnSource = False
 		self.Target = ""
+        def sayHello(self, current=None):
+                print ">>>>>>>>>>>>>>>>>>>>>>>.. say Hello"
 		
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
@@ -65,14 +67,14 @@ class ARIAPII(ARIAPI.API):
 				self.obsMode = ARIobsMode.SRTDoubleSingleDish()
 				msg = "Double Single Dish Mode chosen"
 			else:
-				self.obsMode = ARIobsMode.SRTSingleDish(s2)
+				self.obsMode = aRIobsMode.SRTSingleDish(s2)
 				msg = "Single Dish Mode chosen with " + s2
 		elif (s1 == "ARI"):
 			if (s2 == "SH"):
-				self.obsMode = ARIobsMode.ARI_SignalHound()
+				self.obsMode = AIRobsMode.ARI_SignalHound()
 				msg = "ARI Signal Hound Mode chosen"
 			elif (s2 == "ROACH"):
-				self.obsMode = ARIobsMode.ARI_ROACH()
+				self.obsMode = AIRobsMode.ARI_ROACH()
 				msg = "ARI ROACH Mode chosen"
 		else:
 			msg = "error in parameters"	
@@ -115,27 +117,29 @@ class ARIAPII(ARIAPI.API):
 		return sources
 
 
-try:
-	if len(sys.argv)<2:
-		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
-		sys.exit()
-	IP =  ' '.join(sys.argv[1:])
-	IP = "default -h " + IP
-except:
-	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
-
+#try:
+#	if len(sys.argv)<2:
+#		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
+#		sys.exit()
+#	IP =  ' '.join(sys.argv[1:])
+#	IP = "default -h " + IP
+#except:
+#	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
+#
 status = 0
 ic = None
 #IP = 'default -h 192.168.0.6 -p 10015'
-IP = 'default -h '+ IP
+#IP = 'default -h '+ IP
 
 try:
-	#ic = Ice.initialize(sys.argv)
-	ic = Ice.initialize([''])
+	ic = Ice.initialize(sys.argv)
+	#ic = Ice.initialize([''])
 	#adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.6 -p 10000")
-	adapter = ic.createObjectAdapterWithEndpoints("ARIAPI", IP)
+        hostname = "192.168.1.111"
+        endpoint = "tcp -h %s -p 10000:udp -h %s -p 10000:ws -h %s -p 10002" % (hostname, hostname, hostname)
+	adapter = ic.createObjectAdapterWithEndpoints("API", endpoint)
 	object = ARIAPII()
-	adapter.add(object, ic.stringToIdentity("ARIAPI"))
+	adapter.add(object, ic.stringToIdentity("API"))
 	adapter.activate()
 	print "ARI ICE API server up and running!"
 	ic.waitForShutdown()

@@ -1,5 +1,6 @@
 module ARIAPI{
 	interface API{
+                void sayHello();
 		void testConn(string s, out string r);
 		void ChooseObservingMode(string s1, string s2, out string r);
 		void Connect(out string r);
