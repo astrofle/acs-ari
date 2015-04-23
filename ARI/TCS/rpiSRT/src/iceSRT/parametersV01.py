@@ -75,8 +75,8 @@ tostow = 0
 
 ## corrections due to azimuth and elevation axis tilt, tilt is zero by default in other case azcor and elcor are calculated by antiltaz and antilel function in geom library
 ## as no tilt is measured no tilt corrections are included
-azcor = 0 
-elcor = 0
+azcor = 0. 
+elcor = 0.
 
 #verifies azimuth limits and antenna orientation 
 if ((azlim2 > azlim1) & (azlim2 < 360.0)):
