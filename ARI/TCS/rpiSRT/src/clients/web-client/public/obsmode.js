@@ -11,6 +11,7 @@ function connect() {
 
 $(document).ready(function() {
   console.log("llegue");
+  connect();
 
   $("#btGetStatus").click( function(event) {
     event.preventDefault();
