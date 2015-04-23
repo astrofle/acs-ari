@@ -3,7 +3,7 @@ sys.path.insert(0,'../clients/SRT_client/')
 
 from time import sleep
 import ARIAPI
-import obsmodeV03_APItest as ARIobsMode
+import obsmodeV03 as ARIobsMode
 import threading
 import os
 import socket
