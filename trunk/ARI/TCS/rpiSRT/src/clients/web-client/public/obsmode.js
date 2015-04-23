@@ -11,7 +11,6 @@ function connect() {
 
 $(document).ready(function() {
   console.log("llegue");
-  connect();
 
   $("#btGetStatus").click( function(event) {
     event.preventDefault();
@@ -22,7 +21,7 @@ $(document).ready(function() {
     console.log("endpoint = " + endpoint);
     var proxy = communicator.stringToProxy(endpoint);
     var obj = ARIAPI.APIPrx.uncheckedCast(proxy);
-    API.sayHello().then(
+    obj.sayHello().then(
         function() { console.log("sayHello done!"); }
     ).exception(
         function(ex) { console.log("something went wrong!"); }
