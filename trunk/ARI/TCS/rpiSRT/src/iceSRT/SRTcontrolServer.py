@@ -65,7 +65,8 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.waitingSp = False
 		self.eloff = 0.0
 		self.azoff = 0.0
-	
+		self.name = os.uname()[1] #Antenna name
+		
 	def message(self, s, current = None):
 		print s
 		return s
@@ -128,8 +129,8 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			self.normalize_az()
 			inLimits = self.get_cmd_inLimits()
 			if inLimits:
-				self.azel_thread(az, el)
-				print "Commanding antenna movement"
+				self.azel_thread(az+ self.azoff, el+self.azoff)
+				print "Commanding antenna movement with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
 				while(not self.OnTarget):
 					sleep(1)
 				return "Antenna reached (az,el)"

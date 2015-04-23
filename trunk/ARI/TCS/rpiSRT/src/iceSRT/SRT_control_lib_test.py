@@ -92,11 +92,12 @@ class Antenna:
 		#receiver default initialization from *.cat 
 		#(whenever the word digital is present in the cat file)
 		#If not present no initialization is done
-
+		self.name = os.uname()[1] #Antenna name
 
 
 	def status(self, disp):
 		if(disp == True):
+			print "Antenna: " + self.name
 			print "commanded azimuth: " + str(self.az)
 			print "commanded elevation: " + str(self.el)
 			print "current azimuth: " + str(self.aznow)
@@ -672,6 +673,7 @@ class Antenna:
 		self.avpower = 0
 		self.power = 0
 		self.a =0
+		self.sampleStamp = []
 		j = int(freq*(1.0/0.04)+0.5)
 		mode = int(self.receiver[0]) - 1
 		if (mode < 0 or mode == 4 or mode == 5):
@@ -698,6 +700,7 @@ class Antenna:
 				pass
 		data = self.port.read(128)
 		print "recibido"
+		self.sampleStamp = [time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.aznow, self.elnow]
 		recv = struct.unpack('64H', data)
 		#####
 		for i in range(64):
@@ -845,6 +848,7 @@ class Antenna:
 		return self.spec, self.avspecs, self.avspeccs, self.specd
 	
 	def clear(self):
+		#CLEAR SPECTRUM DATA
 		self.spec = [0]*256
 		self.avspec = [0]*256
 		self.avspecc = [0]*256
