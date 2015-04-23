@@ -34,25 +34,25 @@ class ARIAPII(ARIAPI.API):
 		self.OnSource = False
 		self.Target = ""
 		
-	def setup(self, current = None):
-		self.setIP(self.antennaIP)
-		self.connect()
-		self.SetSerialPort(self.serialport)
-		print "sending antenna to Stow"
-		self.Init(self.parameters)
-		while(not self.initialized):
-			sleep(1)
-		return "Antenna initialized and in stow position"
+	#def setup(self, current = None):
+	#	self.setIP(self.antennaIP)
+	#	self.connect()
+	#	self.SetSerialPort(self.serialport)
+	#	print "sending antenna to Stow"
+	#	self.Init(self.parameters)
+	#	while(not self.initialized):
+	#		sleep(1)
+	#	return "Antenna initialized and in stow position"
 	
-	def trackSource(self, s, current = None):
-		self.tracking(s)
-		while(not self.OnSource):
-			sleep(1)
-		return "Tracking source"
+	#def trackSource(self, s, current = None):
+	#	self.tracking(s)
+	#	while(not self.OnSource):
+	#		sleep(1)
+	#	return "Tracking source"
 	
-	def stopTrack(self, current = None):
-		self.Stop()
-		return "Track Stopped"
+	#def stopTrack(self, current = None):
+	#	self.Stop()
+	#	return "Track Stopped"
 
 	def testConn(self, s, current = None):
 		print s
