@@ -71,6 +71,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return s
 		
 	def getSpectrum(self, current = None):
+		self.GetSpectrum()
 		return self.spectrum
 
 
