@@ -38,6 +38,7 @@ class SRT():
 		self.lastSerialMsg = ''
 		self.IsMoving = False
 		self.track = False
+		self.toSource = 0
 		self.OnSource = False
 		self.site = sites.site
 		self.planets = sites.planets
