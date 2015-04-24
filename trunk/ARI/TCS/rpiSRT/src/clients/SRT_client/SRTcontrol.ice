@@ -21,6 +21,7 @@ module SRTControl{
 	sequence<AntennaStatus> anst;
 
 	struct specs{
+		sequence sampleStamp;
 		spectrum spec;
 		spectrum avspec;
 		spectrum avspecc;
