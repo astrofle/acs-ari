@@ -64,6 +64,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	
 	def stopTrack(self, current = None):
 		self.Stop()
+		print "Stopping antenna and spectrum read"
 		return "Track Stopped"
 
 	def message(self, s, current = None):
@@ -71,6 +72,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return s
 		
 	def getSpectrum(self, current = None):
+		_sp = SRTClient.specs(self.spectrum.sampleStamp , self.spectrum.specd, self.spectrum.spec, self.spectrum.avspec, self.spectrum.avspecc)
 		return self.spectrum
 
 
