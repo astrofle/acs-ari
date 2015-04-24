@@ -701,7 +701,6 @@ class Antenna:
 				pass
 		data = self.port.read(128)
 		print "recibido"
-		self.sampleStamp = [self.name, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.aznow, self.elnow]
 		recv = struct.unpack('64H', data)
 		#####
 		for i in range(64):
@@ -728,6 +727,7 @@ class Antenna:
 		self.avpower = self.avpower /44.0 
 		self.a = self.calcons * self.avpower
 		print self.avpower, self.a
+		self.sampleStamp = [self.name, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.aznow, self.elnow, self.a]
 		return
 		
 	def spectra(self):
@@ -841,7 +841,11 @@ class Antenna:
 			else:
 				self.avc = self.avc + 1
 		self.waitingSp = False
-		
+		self.sampleStamp.append(self.freq0)
+		self.sampleStamp.append(self.av)
+		self.sampleStamp.append(self.avc)
+		self.sampleStamp.append(self.freqsep)
+		self.sampleStamp.append(self.nfreq)
 		self.avspecs = [x / (self.av+1e-6) for x in self.avspec]
 		self.avspeccs = [x / (self.avc+1e-6) for x in self.avspecc]
 		print "av:", self.av, "avc:", self.avc
