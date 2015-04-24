@@ -28,9 +28,8 @@ module SRTControl{
 		float elnow;
 		};
 
-
 	struct specs{
-		stamps sampleStamp;
+		stamp sampleStamp;
 		spectrum spec;
 		spectrum avspec;
 		spectrum avspecc;
