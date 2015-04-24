@@ -60,7 +60,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 			self.initialized = True
 		while(not self.initialized):
 			sleep(1)
-		return "Antenna initialized and in stow position"
+		return "Antenna initialized"
 	
 	def trackSource(self, s, current = None):
 		self.tracking(s)
@@ -78,6 +78,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return s
 		
 	def getSpectrum(self, current = None):
+		print "Getting new spectrum"
 		while(self.spectra):
 			sleep(0.5)
 		print self.name + " New spectrum acquired"
