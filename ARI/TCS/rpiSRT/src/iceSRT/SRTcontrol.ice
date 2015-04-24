@@ -43,6 +43,7 @@ module SRTControl{
 		void SRTGetSpectrum(out specs sp);
 		void SRTDoCalibration(string method, out float r);
 		void SRTGetName(out string r);
+		void SRTClear(out string r);
 	};
 };
 
