@@ -24,6 +24,105 @@ import Ice, IcePy
 _M_SRTClient = Ice.openModule('SRTClient')
 __name__ = 'SRTClient'
 
+if '_t_spectrum' not in _M_SRTClient.__dict__:
+    _M_SRTClient._t_spectrum = IcePy.defineSequence('::SRTClient::spectrum', (), IcePy._t_float)
+
+if 'stamp' not in _M_SRTClient.__dict__:
+    _M_SRTClient.stamp = Ice.createTempClass()
+    class stamp(object):
+        def __init__(self, name='', timdate='', aznow=0.0, elnow=0.0):
+            self.name = name
+            self.timdate = timdate
+            self.aznow = aznow
+            self.elnow = elnow
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_SRTClient.stamp):
+                return NotImplemented
+            else:
+                if self.name != other.name:
+                    return False
+                if self.timdate != other.timdate:
+                    return False
+                if self.aznow != other.aznow:
+                    return False
+                if self.elnow != other.elnow:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_SRTClient._t_stamp)
+
+        __repr__ = __str__
+
+    _M_SRTClient._t_stamp = IcePy.defineStruct('::SRTClient::stamp', stamp, (), (
+        ('name', (), IcePy._t_string),
+        ('timdate', (), IcePy._t_string),
+        ('aznow', (), IcePy._t_float),
+        ('elnow', (), IcePy._t_float)
+    ))
+
+    _M_SRTClient.stamp = stamp
+    del stamp
+
+if 'specs' not in _M_SRTClient.__dict__:
+    _M_SRTClient.specs = Ice.createTempClass()
+    class specs(object):
+        def __init__(self, sampleStamp=Ice._struct_marker, spec=None, avspec=None, avspecc=None, specd=None):
+            if sampleStamp is Ice._struct_marker:
+                self.sampleStamp = _M_SRTClient.stamp()
+            else:
+                self.sampleStamp = sampleStamp
+            self.spec = spec
+            self.avspec = avspec
+            self.avspecc = avspecc
+            self.specd = specd
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_SRTClient.specs):
+                return NotImplemented
+            else:
+                if self.sampleStamp != other.sampleStamp:
+                    return False
+                if self.spec != other.spec:
+                    return False
+                if self.avspec != other.avspec:
+                    return False
+                if self.avspecc != other.avspecc:
+                    return False
+                if self.specd != other.specd:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_SRTClient._t_specs)
+
+        __repr__ = __str__
+
+    _M_SRTClient._t_specs = IcePy.defineStruct('::SRTClient::specs', specs, (), (
+        ('sampleStamp', (), _M_SRTClient._t_stamp),
+        ('spec', (), _M_SRTClient._t_spectrum),
+        ('avspec', (), _M_SRTClient._t_spectrum),
+        ('avspecc', (), _M_SRTClient._t_spectrum),
+        ('specd', (), _M_SRTClient._t_spectrum)
+    ))
+
+    _M_SRTClient.specs = specs
+    del specs
+
+if '_t_spectrums' not in _M_SRTClient.__dict__:
+    _M_SRTClient._t_spectrums = IcePy.defineSequence('::SRTClient::spectrums', (), _M_SRTClient._t_specs)
+
 if 'Client' not in _M_SRTClient.__dict__:
     _M_SRTClient.Client = Ice.createTempClass()
     class Client(Ice.Object):
@@ -112,7 +211,7 @@ if 'Client' not in _M_SRTClient.__dict__:
 
     Client._op_message = IcePy.Operation('message', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), IcePy._t_string, False, 0),), None, ())
     Client._op_setup = IcePy.Operation('setup', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
-    Client._op_trackSource = IcePy.Operation('trackSource', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_trackSource = IcePy.Operation('trackSource', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), _M_SRTClient._t_specs, False, 0),), None, ())
     Client._op_stopTrack = IcePy.Operation('stopTrack', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
 
     _M_SRTClient.Client = Client

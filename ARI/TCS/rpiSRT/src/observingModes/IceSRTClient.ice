@@ -22,7 +22,8 @@ module SRTClient{
 	interface Client{
 		void message(string s, out string r);
 		void setup(out string r);
-		void trackSource(string s, out specs sp);
+		void trackSource(string s, out string s);
 		void stopTrack(out string r);
+		void getSpectrum(out specs sp);
 	};
 };

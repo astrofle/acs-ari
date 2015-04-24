@@ -32,7 +32,7 @@ class ObsBase():
 		self.tracking = False
 		self.OnSource = False
 		self.Target = ""
-		self.spectrum = []
+		self.spectrum = SRTclient.specs()
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
