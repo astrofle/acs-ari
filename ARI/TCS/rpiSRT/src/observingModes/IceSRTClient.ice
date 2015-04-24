@@ -1,4 +1,6 @@
 module SRTClient{
+	sequence<float> spectrum;
+
 	struct stamp
 	    {
 		string name;
