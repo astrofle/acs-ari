@@ -20,8 +20,16 @@ module SRTControl{
 
 	sequence<AntennaStatus> anst;
 
+self.sampleStamp = [self.name, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.aznow, self.elnow]
+	struct stamp{
+		string name;
+		string timdate;
+		floaf aznow;
+		float elnow;
+		}
+
 	struct specs{
-		sequence sampleStamp;
+		stamp sampleStamp;
 		spectrum spec;
 		spectrum avspec;
 		spectrum avspecc;
