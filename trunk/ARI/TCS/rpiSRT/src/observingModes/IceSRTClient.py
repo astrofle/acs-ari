@@ -42,8 +42,9 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.OnSource = False
 		self.toSource = 0
 		self.target = None
-		self.spectrum = []
+		self.spectrum = SRTClient.specs()
 		self.initialized = False
+		self.name =''
 		
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
@@ -59,7 +60,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.tracking(s)
 		while(not self.OnSource):
 			sleep(1)
-		return self.spectrum
+		return self.name + " Antenna On Source and Tracking"
 	
 	def stopTrack(self, current = None):
 		self.Stop()
@@ -68,6 +69,9 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def message(self, s, current = None):
 		print s
 		return s
+		
+	def getSpectrum(self, current = None):
+		return self.spectrum
 
 
 #try:
