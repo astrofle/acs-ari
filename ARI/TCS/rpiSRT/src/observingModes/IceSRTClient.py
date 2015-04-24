@@ -72,7 +72,9 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return s
 		
 	def getSpectrum(self, current = None):
+		primt self.spectrum
 		_sp = SRTClient.specs(self.spectrum.sampleStamp , self.spectrum.specd, self.spectrum.spec, self.spectrum.avspec, self.spectrum.avspecc)
+		print "Hello!!!"
 		print _sp
 		return _sp
 
