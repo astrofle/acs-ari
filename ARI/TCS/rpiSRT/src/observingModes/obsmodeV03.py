@@ -32,6 +32,7 @@ class ObsBase():
 		self.tracking = False
 		self.OnSource = False
 		self.Target = ""
+		self.spectrum = []
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -133,6 +134,9 @@ class ObsBase():
 		print a
 		print "Antenna on source"
 		self.OnSource
+		#call by getSpectrum
+		self.spectrum = spect
+		print  self.name + " spectrum received"
 		
 	def stopTrack(self):
 		statusIC = 0
