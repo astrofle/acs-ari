@@ -20,12 +20,15 @@ module SRTControl{
 
 	sequence<AntennaStatus> anst;
 
-	struct stamp{
+	struct stamp
+	    {
 		string name;
 		string timdate;
 		float aznow;
 		float elnow;
 		};
+
+    sequence<stamp> stamps;
 
 	struct specs{
 		stamp sampleStamp;
