@@ -56,6 +56,7 @@ class SRT():
 		self.spectrumStarted = False
 		self.rGraph = True
 		self.statusDisp = False
+		self.name = ''
 		return 
 		
 	def find_planets(self):
@@ -129,7 +130,8 @@ class SRT():
 			print a
 
 	def getNameCB(self, a):
-			print a
+			print "connected to " + a
+			self.name = a
 
 	def serverCB(self, a):
 		#generic callback
@@ -516,7 +518,17 @@ class SRT():
 				self.statusIC = 1
 		return
 
-
+	def getName(self):
+		#Call for antenna name
+		self.statusIC = 0
+		self.ic = None
+		try:
+			target = self.controller.begin_SRTGetName(self.getNameCB, self.failureCB)
+			print "clearing spectrum"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+		return
 
 
 
