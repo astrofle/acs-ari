@@ -1,14 +1,6 @@
 module SRTClient{
 	sequence<float> spectrum;
-
-	struct stamp
-	    {
-		string name;
-		string timdate;
-		float aznow;
-		float elnow;
-		};
-
+	
 	struct stamp
 	    {
 		string name;
