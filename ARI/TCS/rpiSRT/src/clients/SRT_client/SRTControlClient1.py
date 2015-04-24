@@ -88,7 +88,7 @@ class SRT():
 		self.lastSRTCom = state.lastSRTCom
 		self.lastSerialMsg = state.lastSerialMsg
 		if self.statusDisp:
-		    print "Antenna name: " + self.name
+			print "Antenna name: " + self.name
 			print "SRT antenna Status " + strftime("%Y-%m-%d %H:%M:%S", gmtime())
 			print "Commanded azimuth: " + str(self.az)
 			print "Commanded elevation: " + str(self.el)
