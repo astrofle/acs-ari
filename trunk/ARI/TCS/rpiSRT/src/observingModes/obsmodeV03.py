@@ -157,7 +157,7 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
-				print "Stopping Antenna " + node
+				print "Getting spectrum"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
