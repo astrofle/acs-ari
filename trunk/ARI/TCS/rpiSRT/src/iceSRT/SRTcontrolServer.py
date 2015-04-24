@@ -184,6 +184,10 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.azoff = azoff
 		self.eloff = eloff
 		return "Corrections updated"
+	
+	def SRTGetName(self):
+		print "I am " + self.name
+		return self.name
 
 try:
 	if len(sys.argv)<2:
