@@ -15,6 +15,14 @@ module SRTClient{
 		float freqsep;
 		};
 		
+	struct specs{
+		stamp sampleStamp;
+		spectrum spec;
+		spectrum avspec;
+		spectrum avspecc;
+		spectrum specd;
+		};
+
 	sequence<specs> spectrums;
 
 	interface Client{
