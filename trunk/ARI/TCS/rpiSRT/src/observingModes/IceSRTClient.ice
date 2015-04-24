@@ -15,12 +15,12 @@ module SRTClient{
 		string timdate;
 		float aznow;
 		float elnow;
-		float temperature
-		float freq0
-		int av
-		int avc
-		int nfreq
-		float freqsep
+		float temperature;
+		float freq0;
+		int av;
+		int avc;
+		int nfreq;
+		float freqsep;
 		};
 		
 	sequence<specs> spectrums;
