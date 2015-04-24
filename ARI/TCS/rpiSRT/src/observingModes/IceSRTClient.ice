@@ -9,14 +9,20 @@ module SRTClient{
 		float elnow;
 		};
 
-	struct specs{
-		stamp sampleStamp;
-		spectrum spec;
-		spectrum avspec;
-		spectrum avspecc;
-		spectrum specd;
-	};
-	
+	struct stamp
+	    {
+		string name;
+		string timdate;
+		float aznow;
+		float elnow;
+		float temperature
+		float freq0
+		int av
+		int avc
+		int nfreq
+		float freqsep
+		};
+		
 	sequence<specs> spectrums;
 
 	interface Client{
