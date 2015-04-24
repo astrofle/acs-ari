@@ -31,7 +31,7 @@ module SRTControl{
     sequence<stamp> stamps;
 
 	struct specs{
-		stamp sampleStamp;
+		stamps sampleStamp;
 		spectrum spec;
 		spectrum avspec;
 		spectrum avspecc;
