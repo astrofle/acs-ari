@@ -59,7 +59,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.tracking(s)
 		while(not self.OnSource):
 			sleep(1)
-		return "Tracking source"
+		return self.spectrum
 	
 	def stopTrack(self, current = None):
 		self.Stop()
