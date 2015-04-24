@@ -157,13 +157,14 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
-				print "Getting spectrum"
+				print node + "Getting spectrum"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 		
 	def spectrumCB(self, sp):
 		self.spectrum = sp
+		print sp.sampleStamp.name + " Spectrum Obtained"
 		return
 
 
