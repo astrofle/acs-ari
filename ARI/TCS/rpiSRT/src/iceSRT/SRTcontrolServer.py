@@ -66,6 +66,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.eloff = 0.0
 		self.azoff = 0.0
 		self.name = os.uname()[1] #Antenna name
+		self.sampleStamp = []
 		
 	def message(self, s, current = None):
 		print s
@@ -173,7 +174,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		#_sp = self.spectra()
 		while(self.waitingSp):
 			sleep(0.2)
-		sp = SRTControl.specs(self.specd, self.spec, self.avspecs, self.avspeccs)
+		sp = SRTControl.specs(self.sampleStamp, self.specd, self.spec, self.avspecs, self.avspeccs)
 		return sp
 						
 	def SRTClear(self, current = None):
