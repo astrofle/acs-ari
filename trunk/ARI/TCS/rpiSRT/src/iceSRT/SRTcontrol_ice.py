@@ -108,10 +108,57 @@ if 'AntennaStatus' not in _M_SRTControl.__dict__:
 if '_t_anst' not in _M_SRTControl.__dict__:
     _M_SRTControl._t_anst = IcePy.defineSequence('::SRTControl::anst', (), _M_SRTControl._t_AntennaStatus)
 
+if 'stamp' not in _M_SRTControl.__dict__:
+    _M_SRTControl.stamp = Ice.createTempClass()
+    class stamp(object):
+        def __init__(self, name='', timdate='', aznow=0.0, elnow=0.0):
+            self.name = name
+            self.timdate = timdate
+            self.aznow = aznow
+            self.elnow = elnow
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_SRTControl.stamp):
+                return NotImplemented
+            else:
+                if self.name != other.name:
+                    return False
+                if self.timdate != other.timdate:
+                    return False
+                if self.aznow != other.aznow:
+                    return False
+                if self.elnow != other.elnow:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_SRTControl._t_stamp)
+
+        __repr__ = __str__
+
+    _M_SRTControl._t_stamp = IcePy.defineStruct('::SRTControl::stamp', stamp, (), (
+        ('name', (), IcePy._t_string),
+        ('timdate', (), IcePy._t_string),
+        ('aznow', (), IcePy._t_float),
+        ('elnow', (), IcePy._t_float)
+    ))
+
+    _M_SRTControl.stamp = stamp
+    del stamp
+
 if 'specs' not in _M_SRTControl.__dict__:
     _M_SRTControl.specs = Ice.createTempClass()
     class specs(object):
-        def __init__(self, spec=None, avspec=None, avspecc=None, specd=None):
+        def __init__(self, sampleStamp=Ice._struct_marker, spec=None, avspec=None, avspecc=None, specd=None):
+            if sampleStamp is Ice._struct_marker:
+                self.sampleStamp = _M_SRTControl.stamp()
+            else:
+                self.sampleStamp = sampleStamp
             self.spec = spec
             self.avspec = avspec
             self.avspecc = avspecc
@@ -123,6 +170,8 @@ if 'specs' not in _M_SRTControl.__dict__:
             elif not isinstance(other, _M_SRTControl.specs):
                 return NotImplemented
             else:
+                if self.sampleStamp != other.sampleStamp:
+                    return False
                 if self.spec != other.spec:
                     return False
                 if self.avspec != other.avspec:
@@ -142,6 +191,7 @@ if 'specs' not in _M_SRTControl.__dict__:
         __repr__ = __str__
 
     _M_SRTControl._t_specs = IcePy.defineStruct('::SRTControl::specs', specs, (), (
+        ('sampleStamp', (), _M_SRTControl._t_stamp),
         ('spec', (), _M_SRTControl._t_spectrum),
         ('avspec', (), _M_SRTControl._t_spectrum),
         ('avspecc', (), _M_SRTControl._t_spectrum),
@@ -205,6 +255,12 @@ if 'telescope' not in _M_SRTControl.__dict__:
             pass
 
         def SRTDoCalibration(self, method, current=None):
+            pass
+
+        def SRTGetName(self, current=None):
+            pass
+
+        def SRTClear(self, current=None):
             pass
 
         def __str__(self):
@@ -323,6 +379,24 @@ if 'telescope' not in _M_SRTControl.__dict__:
         def end_SRTDoCalibration(self, _r):
             return _M_SRTControl.telescope._op_SRTDoCalibration.end(self, _r)
 
+        def SRTGetName(self, _ctx=None):
+            return _M_SRTControl.telescope._op_SRTGetName.invoke(self, ((), _ctx))
+
+        def begin_SRTGetName(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTControl.telescope._op_SRTGetName.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_SRTGetName(self, _r):
+            return _M_SRTControl.telescope._op_SRTGetName.end(self, _r)
+
+        def SRTClear(self, _ctx=None):
+            return _M_SRTControl.telescope._op_SRTClear.invoke(self, ((), _ctx))
+
+        def begin_SRTClear(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTControl.telescope._op_SRTClear.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_SRTClear(self, _r):
+            return _M_SRTControl.telescope._op_SRTClear.end(self, _r)
+
         def checkedCast(proxy, facetOrCtx=None, _ctx=None):
             return _M_SRTControl.telescopePrx.ice_checkedCast(proxy, '::SRTControl::telescope', facetOrCtx, _ctx)
         checkedCast = staticmethod(checkedCast)
@@ -348,6 +422,8 @@ if 'telescope' not in _M_SRTControl.__dict__:
     telescope._op_SRTSetFreq = IcePy.Operation('SRTSetFreq', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0), ((), IcePy._t_string, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
     telescope._op_SRTGetSpectrum = IcePy.Operation('SRTGetSpectrum', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_SRTControl._t_specs, False, 0),), None, ())
     telescope._op_SRTDoCalibration = IcePy.Operation('SRTDoCalibration', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), IcePy._t_float, False, 0),), None, ())
+    telescope._op_SRTGetName = IcePy.Operation('SRTGetName', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    telescope._op_SRTClear = IcePy.Operation('SRTClear', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
 
     _M_SRTControl.telescope = telescope
     del telescope
