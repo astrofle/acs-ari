@@ -50,6 +50,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
 		self.connect()
+		sleep(0.5)
+		print self.SRTinitialized
 		if (not self.SRTinitialized):
 			self.SetSerialPort(self.serialport)
 			print "sending antenna to Stow"
