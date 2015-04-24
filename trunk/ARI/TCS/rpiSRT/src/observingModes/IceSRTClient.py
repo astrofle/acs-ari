@@ -23,7 +23,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())
 		self.getspectrum = True
-		self.spectra = 0
+		self.spectra = False
 		self.portInUse = False
 		self.spectrumStarted = False
 		self.az = 0.0
@@ -72,6 +72,9 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return s
 		
 	def getSpectrum(self, current = None):
+		while(self.spectra):
+			time.sleep(0.5)
+		print self.name + " New spectrum acquired"
 		_sS = SRTClient.stamp(self.spectrum.sampleStamp.name, self.spectrum.sampleStamp.timdate, self.spectrum.sampleStamp.aznow, self.spectrum.sampleStamp.elnow, self.spectrum.sampleStamp.temperature, self.spectrum.sampleStamp.freq0, self.spectrum.sampleStamp.av, self.spectrum.sampleStamp.avc, self.spectrum.sampleStamp.nfreq, self.spectrum.sampleStamp.freqsep)
 		_sp = SRTClient.specs(_sS , self.spectrum.specd, self.spectrum.spec, self.spectrum.avspec, self.spectrum.avspecc)
 		return _sp
