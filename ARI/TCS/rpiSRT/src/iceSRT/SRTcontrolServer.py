@@ -185,7 +185,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.eloff = eloff
 		return "Corrections updated"
 	
-	def SRTGetName(self):
+	def SRTGetName(self, current = None):
 		print "I am " + self.name
 		return self.name
 
