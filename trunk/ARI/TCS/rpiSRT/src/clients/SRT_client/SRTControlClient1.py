@@ -58,7 +58,7 @@ class SRT():
 		self.statusDisp = False
 		self.name = ''
 		self.SRTinitialized = False
-		return 
+
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
