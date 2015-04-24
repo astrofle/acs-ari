@@ -44,14 +44,16 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.target = None
 		self.spectrum = SRTClient.specs()
 		self.initialized = False
+		self.SRTinitialized = False
 		self.name =''
 		
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
 		self.connect()
-		self.SetSerialPort(self.serialport)
-		print "sending antenna to Stow"
-		self.Init(self.parameters)
+		if (not self.SRTinitialized):
+			self.SetSerialPort(self.serialport)
+			print "sending antenna to Stow"
+			self.Init(self.parameters)
 		while(not self.initialized):
 			sleep(1)
 		return "Antenna initialized and in stow position"
@@ -73,7 +75,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		
 	def getSpectrum(self, current = None):
 		while(self.spectra):
-			time.sleep(0.5)
+			sleep(0.5)
 		print self.name + " New spectrum acquired"
 		_sS = SRTClient.stamp(self.spectrum.sampleStamp.name, self.spectrum.sampleStamp.timdate, self.spectrum.sampleStamp.aznow, self.spectrum.sampleStamp.elnow, self.spectrum.sampleStamp.temperature, self.spectrum.sampleStamp.freq0, self.spectrum.sampleStamp.av, self.spectrum.sampleStamp.avc, self.spectrum.sampleStamp.nfreq, self.spectrum.sampleStamp.freqsep)
 		_sp = SRTClient.specs(_sS , self.spectrum.specd, self.spectrum.spec, self.spectrum.avspec, self.spectrum.avspecc)
