@@ -56,6 +56,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 			self.SetSerialPort(self.serialport)
 			print "sending antenna to Stow"
 			self.Init(self.parameters)
+		else:
+			self.initialized = True
 		while(not self.initialized):
 			sleep(1)
 		return "Antenna initialized and in stow position"
