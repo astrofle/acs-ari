@@ -135,7 +135,7 @@ class ObsBase():
 		print "Antenna on source"
 		self.OnSource
 		#call by getSpectrum
-		self.spectrum = spect
+		self.spectrum = a
 		print  self.name + " spectrum received"
 		
 	def stopTrack(self):
