@@ -93,6 +93,7 @@ class Antenna:
 		#(whenever the word digital is present in the cat file)
 		#If not present no initialization is done
 		self.name = os.uname()[1] #Antenna name
+		self.sampleStamp = []
 
 
 	def status(self, disp):
@@ -700,7 +701,7 @@ class Antenna:
 				pass
 		data = self.port.read(128)
 		print "recibido"
-		self.sampleStamp = [time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.aznow, self.elnow]
+		self.sampleStamp = [self.name, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.aznow, self.elnow]
 		recv = struct.unpack('64H', data)
 		#####
 		for i in range(64):
