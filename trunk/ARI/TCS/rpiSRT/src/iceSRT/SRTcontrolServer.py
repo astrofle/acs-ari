@@ -174,7 +174,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		#_sp = self.spectra()
 		while(self.waitingSp):
 			sleep(0.2)
-		stamps = SRTControl.stamp(self.sampleStamp)
+		stamps = SRTControl.stamp(name = self.sampleStamp[0], timdate = self.sampleStamp[1], aznow = self.sampleStamp[2], elnow = self.sampleStamp[3])
 		sp = SRTControl.specs(stamps, self.specd, self.spec, self.avspecs, self.avspeccs)
 		return sp
 						
