@@ -23,9 +23,9 @@ module SRTControl{
 	struct stamp{
 		string name;
 		string timdate;
-		floaf aznow;
+		float aznow;
 		float elnow;
-		}
+		};
 
 	struct specs{
 		stamp sampleStamp;
