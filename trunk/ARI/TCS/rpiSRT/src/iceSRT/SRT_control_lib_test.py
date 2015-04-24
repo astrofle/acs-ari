@@ -724,7 +724,7 @@ class Antenna:
 			if (i>=10 and i<54):
 				self.avpower += power
 		
-		self.avpower = self.avpower /44.0
+		self.avpower = self.avpower /44.0 
 		self.a = self.calcons * self.avpower
 		print self.avpower, self.a
 		return
@@ -733,8 +733,8 @@ class Antenna:
 		avp = 0.0
 		if ( int(self.receiver[0]) == 0 or int(self.receiver[0]) == 5):
 			for i in range(self.nfreq):
-				print i
 				freqf = self.fcenter + (i - float(self.nfreq)/2) * self.freqsep + 0.8;
+				print "scanning channel " + str(i)+ " at freq " + str(freqf) + "receiver in mode: " + str(self.receiver[0])
 				self.radiodg(freqf)
 				self.spec[i] = self.a
 				if i == 0:
@@ -761,6 +761,7 @@ class Antenna:
 			for k in range(nk):
 				nk2 = nk/2
 				freqf = self.fcenter + (k - nk2)*0.36 + 0.8
+				print "scanning channel " + str(i)+ " at freq " + str(freqf) + "receiver in mode: " + str(self.receiver[0])
 				self.radiodg(freqf)
 				if(k == nk2):
 					self.fcenter = self.freqa
@@ -889,4 +890,3 @@ class Antenna:
 			spectra_thread = threading.Thread(target = self.spectra, args=[], name = 'Spectra')
 			spectra_thread.start()
 		return
-	
