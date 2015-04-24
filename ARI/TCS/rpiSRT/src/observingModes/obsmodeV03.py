@@ -147,11 +147,27 @@ class ObsBase():
 				print "Stopping Antenna " + node
 		except:
 			traceback.print_exc()
-			self.statusIC = 1		
+			self.statusIC = 1
 	
 	def stopTrackCB(self, a):
 		print a
 		print "Antenna Stopped"
+		
+	def getSpectrum(self):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
+				print "Stopping Antenna " + node
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+		
+	def spectrumCB(self, sp):
+		self.spectrum = sp
+		return
+
 
 
 class SRTSingleDish(ObsBase):
