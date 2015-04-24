@@ -81,18 +81,18 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			return matching
 		except Exception, e:
 			print str(e)
-			return "Failed to gather available serial ports!"
+			return self.name + " Failed to gather available serial ports!"
 				
 	def SRTSetSerialPort(self, s, current = None):
 		try:
-			print "initializing port "+ s+"\n"
+			print self.name + " initializing port "+ s+"\n"
 			self.serialport = s
 			self.port = self.init_com()
 			print "Done!\n"
 		except Exception, e:
 			print str(e)
-			return "Serial port initialization failed!\n"
-		return "Serial port initialized!\n"
+			return self.name + " Serial port initialization failed!\n"
+		return self.name + " Serial port initialized!\n"
 
 	def SRTinit(self, s, current = None):
 		#print s
@@ -100,18 +100,18 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			self.load_parameters(s)
 			self.stow_antenna()
 			self.antennaInit = True
-			return "Done!\n"
+			return self.name + " Done!\n"
 		except Exception, e:
 			print str(e)
-			return "failed to load parameters file or Antenna failed on Stow"
+			return self.name + " failed to load parameters file or Antenna failed on Stow"
 	
 	def SRTStow(self, current = None):
 		try:
 			self.stow_antenna()
-			return "Done!\n"
+			return self.name + " Done!\n"
 		except Exception, e:
 			print str(e)
-			return "Failed to Stow antenna"
+			return self.name + " Failed to Stow antenna"
 			
 	def SRTStatus(self, current = None):
 		_st = self.status(disp = False)
@@ -130,15 +130,15 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			inLimits = self.get_cmd_inLimits()
 			if inLimits:
 				self.azel_thread(az+ self.azoff, el+self.azoff)
-				print "Commanding antenna movement with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
+				print self.name + "Commanding antenna movement with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
 				while(not self.OnTarget):
 					sleep(1)
-				return "Antenna reached (az,el)"
+				return self.name + "Antenna reached (az,el)"
 			else:
-				return "Command out of limits!"
+				return self.name + "Command out of limits!"
 		except Exception, e:
 			print str(e)
-			return "Failed to move the antenna"
+			return self.name + "Failed to move the antenna"
 	
 	def SRTThreads(self, current = None):
 		Threads = threading.enumerate()	
@@ -151,10 +151,10 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 	def SRTSetFreq(self, freq, receiver, current = None):
 		try:
 			self.set_freq(freq, receiver)
-			return "Frequency changed"
+			return self.name + " Frequency changed"
 		except Exception, e:
 			print str(e)
-			return "Failed to change frequency"
+			return self.name + " Failed to change frequency"
 	
 	def SRTDoCalibration(self, method, current = None):
 		try:
@@ -165,7 +165,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			return self.calcons
 		except Exception, e:
 			print str(e)
-			return "Failed to calibrate"
+			return self.name + " Failed to calibrate"
 
 	def SRTGetSpectrum(self, current = None):
 		self.spectra_thread()
@@ -178,12 +178,12 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 						
 	def SRTClear(self, current = None):
 		self.clear()
-		return "Clear Done!"
+		return self.name + " Clear Done!"
 
 	def SRTSet_azeloff(self, azoff, eloff):
 		self.azoff = azoff
 		self.eloff = eloff
-		return "Corrections updated"
+		return self.name + " Corrections updated"
 	
 	def SRTGetName(self, current = None):
 		print "I am " + self.name
@@ -209,7 +209,7 @@ try:
 	object = SRTControlI()
 	adapter.add(object, ic.stringToIdentity("SRTController"))
 	adapter.activate()
-	print "SRT Server up and running!"
+	print self.name + " SRT Server up and running!"
 	ic.waitForShutdown()
 except:
 	traceback.print_exc()
