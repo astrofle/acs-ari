@@ -57,6 +57,7 @@ class SRT():
 		self.rGraph = True
 		self.statusDisp = False
 		self.name = ''
+		self.SRTinitialized = False
 		return 
 		
 	def find_planets(self):
@@ -140,6 +141,7 @@ class SRT():
 			serialPort = state[0].replace('[','')
 			antennaInit = state[1].replace(']','')
 			if (serialPort != 'None') & (antennaInit != ' False'):
+				self.SRTinitialized = True
 				print self.name + " SRT has been initialised in a previus session"
 			else:
 				print self.name + " Proceed with SRT initialization"
