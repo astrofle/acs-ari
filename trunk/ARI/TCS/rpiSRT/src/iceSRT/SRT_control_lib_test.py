@@ -762,7 +762,7 @@ class Antenna:
 			for k in range(nk):
 				nk2 = nk/2
 				freqf = self.fcenter + (k - nk2)*0.36 + 0.8
-				print "scanning channel " + str(i)+ " at freq " + str(freqf) + "receiver in mode: " + str(self.receiver[0])
+				print "scanning band " + str(k)+ " at freq " + str(freqf) + "receiver in mode: " + str(self.receiver[0])
 				self.radiodg(freqf)
 				if(k == nk2):
 					self.fcenter = self.freqa
