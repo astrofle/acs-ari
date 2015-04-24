@@ -209,7 +209,7 @@ try:
 	object = SRTControlI()
 	adapter.add(object, ic.stringToIdentity("SRTController"))
 	adapter.activate()
-	print self.name + " SRT Server up and running!"
+	print " SRT Server up and running!"
 	ic.waitForShutdown()
 except:
 	traceback.print_exc()
