@@ -28,7 +28,6 @@ module SRTControl{
 		float elnow;
 		};
 
-    sequence<stamp> stamps;
 
 	struct specs{
 		stamps sampleStamp;
