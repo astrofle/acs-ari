@@ -7,7 +7,7 @@ import time
 import datetime
 
 from math import log, ceil
-    
+
 def format_line(head, data, fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} data: {data} \r\n' )):
    
     data_line = datetime.datetime.now().strftime(fmt).format(head=" ".join([str(h) for h in head]),
@@ -121,9 +121,10 @@ class SHManager:
         self.freq = []
 
         for i in range(0, num_channel):
-            print "iteration %d" %i
-            print pA[i]
-            print pF[i]
+            if i < 10:
+                print "iteration %d" %i
+                print pA[i]
+                print pF[i]
             self.ampl.append(pA[i])
             self.freq.append(pF[i])
         self.acc_num += 1
@@ -233,11 +234,11 @@ class SHManager:
 
         return head
 
-    def spectral_power(self):
+    def get_spectral_power(self):
         self.power = 0.0
         for dbm in self.ampl:
             self.power += 10**(dbm/10)
-        Pdbm = 10*math.log(power)
+        Pdbm = 10*log(power,10)
         print "spectral power is: " + str(Pdbm)
         return Pdbm
 
