@@ -181,7 +181,7 @@ class SRTSingleDish(ObsBase):
 			self.new_freq = freq
 			self.new_rec_mode = rec_mode
 			print "setting receiver"
-			self.rsetupCB("frequency and mode set")
+			self.ARI_controllers[self.nodes[0]].begin_setFreq(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
