@@ -26,9 +26,9 @@ class ObsBase():
 		self.initialized = False
 		self.radio_config = False
 		self.freq = 1420.4
-		self.rec_mode = 1
+		self.rec_mode = '1'
 		self.new_freq = 1420.4
-		self.new_rec_mode = 1
+		self.new_rec_mode = '1'
 		self.tracking = False
 		self.OnSource = False
 		self.Target = ""
@@ -179,7 +179,7 @@ class SRTSingleDish(ObsBase):
 		ic = None
 		try:
 			self.new_freq = freq
-			self.new_rec_mode = rec_mode
+			self.new_rec_mode = str(rec_mode)
 			print "setting receiver"
 			self.ARI_controllers[self.nodes[0]].begin_setFreq(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
 		except:
@@ -190,7 +190,7 @@ class SRTSingleDish(ObsBase):
 		self.radioSetup(freq, self.rec_mode)
 		
 	def set_mode(self, rec_mode):
-		self.radioSetup(self.freq, rec_mode)
+		self.radioSetup(self.freq, str(rec_mode))
 			
 	def rsetupCB(self,a):
 		#generic callback
