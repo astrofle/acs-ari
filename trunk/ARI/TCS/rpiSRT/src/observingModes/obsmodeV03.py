@@ -219,6 +219,17 @@ class SRTSingleDish(ObsBase):
 		print a
 		return
 
+	def startSpectrum(self):
+		statusIC = 0
+		ic = None
+		try:
+			print "stopping spectrum reading"
+			self.ARI_controllers[self.nodes[0]].begin_startSpectrum(self.stopspCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+
 class SRTDoubleSingleDish(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
