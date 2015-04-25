@@ -205,6 +205,19 @@ class SRTSingleDish(ObsBase):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
 		return statusList
 
+	def stopSpectrum(self):
+		statusIC = 0
+		ic = None
+		try:
+			print "stopping spectrum reading"
+			self.ARI_controllers[self.nodes[0]].begin_setFreq(self.stopspCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def stopspCB(self, a):
+		print a
+		return
 
 class SRTDoubleSingleDish(ObsBase):
 	def __init__(self):
