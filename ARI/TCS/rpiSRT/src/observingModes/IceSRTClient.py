@@ -99,6 +99,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.StopSpectrum()
 		return self.name + " Stopped spectrum reading"
 
+	def startSpectrum(self, current = None):
+		self.StartSpectrum()
+		return self.name + " Stopped spectrum reading"
+
 #try:
 #	if len(sys.argv)<2:
 #		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
