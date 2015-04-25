@@ -7,7 +7,7 @@ import os
 
 class SHControlI(SHControl.SignalHound, SH.SHManager):
     def __init__(self):
-        SH.SHManager.__init__()
+        SH.SHManager().__init__()
         self.SH_initialzed = False
         self.SH_freqUpdated = False
         self.SH_bwUpdated = False
