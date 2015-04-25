@@ -223,7 +223,7 @@ class SRTSingleDish(ObsBase):
 		statusIC = 0
 		ic = None
 		try:
-			print "stopping spectrum reading"
+			print "starting spectrum reading"
 			self.ARI_controllers[self.nodes[0]].begin_startSpectrum(self.stopspCB, self.failureCB)
 		except:
 			traceback.print_exc()
