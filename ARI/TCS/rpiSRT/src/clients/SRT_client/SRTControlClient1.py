@@ -337,7 +337,7 @@ class SRT():
 		self.statusIC = 0
 		self.ic = None
 		try:
-			target = self.controller.begin_SRTSetFreq(freq, receiver, self.genericCB, self.failureCB);
+			target = self.controller.begin_SRTSetFreq(freq, str(receiver), self.genericCB, self.failureCB);
 			print  self.name + " seting frequency"
 		except:
 			traceback.print_exc()
