@@ -5,16 +5,17 @@ import time
 sys.path.append('../IceClients/')
 import SRTClient
 import sites
-
+import SHControl
 
 antenna = ''
 class ObsBase():
 	def __init__(self):
-		self.ARI_nodes = {'SRT1':'localhost -p 10011',
-			'SRT2':'localhost -p 10012',
-			'SH':'localhost -p 10013',
-			'ROACH':'localhost -p 10014'
-			}
+		self.ARI_nodes = {
+		'SRT1':"SRTClient:default -h localhost -p 10011"
+		'SRT2':"SRTClient:default -h localhost -p 10012",
+		'SH':"SHControl:default -h localhost -p 10013",
+		'ROACH':"SRTClient:default -h localhost -p 10014"
+		}
 		self.antenna = ''
 		self.site = sites.site
 		self.planets = sites.planets
@@ -69,11 +70,12 @@ class ObsBase():
 			ic = Ice.initialize(sys.argv, initData)
 			# Create proxy
 			#base = ic.stringToProxy("SRTController:default -h 192.168.0.6 -p 10000")
-			IP_string = "SRTClient:default -h " + IP
+			IP_string = IP
+			#IP_string = "SRTClient:default -h " + IP
 			base = ic.stringToProxy(IP_string)
 			controller = SRTClient.ClientPrx.checkedCast(base)
 			controller.begin_message("connected to client", self.genericCB, self.failureCB);
-			print "Connecting to SRTClient"
+			print "Connecting to Client"
 			#self.controller.begin_serverState(self.serverCB, self.failureCB);
 			if not controller:
 				raise RuntimeError("Invalid proxy")
