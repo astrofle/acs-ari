@@ -17,8 +17,11 @@ int main()
 
     int i,returnCount = mySignalHound.FastSweep(310.0e6, 390.0e6);
 
-    for(i=0; i<returnCount; i++)
+    cout << "return count =" <<  returnCount << endl;
+
+    for(i=0; i<returnCount; i++) {
         cout << mySignalHound.dTraceFreq[i]<< " Hz " << mySignalHound.dTraceAmpl[i] << " dBm"<< endl;
+    }
 
 
     return 0;
