@@ -21,6 +21,7 @@ class SHControlI(SHcontrol.SignalHound, SH.SHManager):
         self.SH_writeUpdated = False
         self.SH_fileHeadUpdated = False
         self.SH_FFTSizeCheck = False
+        self.SH_powerUpdated = False
 
     def message(self, s, current = None):
         print s
@@ -119,6 +120,7 @@ class SHControlI(SHcontrol.SignalHound, SH.SHManager):
         self.SH_powerUpdated = False
         print "Obtaining Singal Hound spectral power"
         Pdbm = self.get_spectral_power()
+        self.SH_powerUpdated = True
         print "spectral power is " + Pdbm.split(';')[0]
         print "central frequenct power is " + Pdbm.split(';')[1]
         return "Spectral power: " + Pdbm 
@@ -130,3 +132,39 @@ class SHControlI(SHcontrol.SignalHound, SH.SHManager):
         self.SH_FFTSizeCheck = True
         print "Done"
         return str(check)
+
+try:
+	if len(sys.argv)<2:
+		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
+		sys.exit()
+	IP =  ' '.join(sys.argv[1:])
+	IP = "default -h " + IP
+except:
+	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
+		
+		
+status = 0
+ic = None
+try:
+	#ic = Ice.initialize(sys.argv)
+	ic = Ice.initialize([''])
+	#adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.6 -p 10000")
+	adapter = ic.createObjectAdapterWithEndpoints("SHController", IP)
+	object = SHControlI()
+	adapter.add(object, ic.stringToIdentity("SHController"))
+	adapter.activate()
+	print " SignalHound Server up and running!"
+	ic.waitForShutdown()
+except:
+	traceback.print_exc()
+	status = 1
+
+if ic:
+	#clean up
+	try:
+		ic.destroy()
+	except:
+		traceback.print_exc()
+		status = 1
+
+sys.exit(status)
