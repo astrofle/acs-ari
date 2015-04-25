@@ -98,7 +98,7 @@ class SHManager:
         self.datafile = open(self.filename, 'a')
 
     def set_fft(self, _fft):
-        if not valid_fft_size(_fft):
+        if not self.valid_fft_size(_fft):
             print "Invalid FFT size value of %0.f. It must be an integer power of 2." % _fft
             _fft = int(2**ceil(log(_fft, 2)))
             print "Will use %d instead." %_fft
@@ -239,17 +239,19 @@ class SHManager:
         for dbm in self.ampl:
             self.power += 10**(dbm/10)
         Pdbm = 10*log(self.power,10)
+        fcdbm = self.ampl[int(self.num_channel/2)]
         print "spectral power is: " + str(Pdbm)
-        print "power for fc: " + str(self.freq[int(self.num_channel/2)]) + " is " + str(self.ampl[int(self.num_channel/2)])
-        return Pdbm
+        print "power for fc: " + str(self.freq[int(self.num_channel/2)]) + " is " + str(fcdbm)
 
-def valid_fft_size(fft):
-    """
-    Checks that the given FFT size is 
-    a power of 2 different from 0.
-    """
-    num = int(fft)
-    return num > 0 and (num & (num - 1)) == 0
+        return str(Pdbm)+";"+str(fcdbm)
+
+    def valid_fft_size(self, _fft):
+        """
+        Checks that the given FFT size is 
+        a power of 2 different from 0.
+        """
+        num = int(_fft)
+        return num > 0 and (num & (num - 1)) == 0
     
 
        
