@@ -429,6 +429,7 @@ class SRT():
 			radec = 1
 		else:
 			print  self.name + " Object not found or not observable"
+			self.toSource = -1
 			return
 		
 		self.track = True
