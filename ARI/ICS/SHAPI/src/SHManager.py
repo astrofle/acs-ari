@@ -236,7 +236,7 @@ class SHManager:
     def spectral_power(self):
         self.power = 0.0
         for dbm in self.ampl:
-            self.power += 10^(dbm/10)
+            self.power += 10**(dbm/10)
         Pdbm = 10*math.log(power)
         print "spectral power is: " + str(Pdbm)
         return Pdbm
