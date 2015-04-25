@@ -6,7 +6,7 @@ module SHControl{
 		void SHsetBW(float bw, out string r);
 		void SHsetFc(float fc, out string r);
 		void SHsetFileName(string fn, out string r);
-		void SHsetFFT(int fft, out string);
+		void SHsetFFT(int fft, out string r);
 		void SHgetSpectrum(out string r);
 		void SHgetRBW(out string r);
 		void SHchwToFFTSize(int chw, out string r);
