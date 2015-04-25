@@ -64,7 +64,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	
 	def trackSource(self, s, current = None):
 		self.tracking(s)
-		while(not self.OnSource):
+		while(not self.OnSource and (self.toSource != -1)):
 			sleep(1)
 		return self.name + " Antenna On Source and Tracking"
 	
