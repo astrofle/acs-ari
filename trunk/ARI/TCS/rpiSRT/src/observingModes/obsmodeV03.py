@@ -11,7 +11,7 @@ antenna = ''
 class ObsBase():
 	def __init__(self):
 		self.ARI_nodes = {
-		'SRT1':"SRTClient:default -h localhost -p 10011"
+		'SRT1':"SRTClient:default -h localhost -p 10011",
 		'SRT2':"SRTClient:default -h localhost -p 10012",
 		'SH':"SHControl:default -h localhost -p 10013",
 		'ROACH':"SRTClient:default -h localhost -p 10014"
