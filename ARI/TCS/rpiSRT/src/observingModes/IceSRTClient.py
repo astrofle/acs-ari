@@ -95,6 +95,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print self.name +" setting receiver with freq " + str(freq) + " and mode " + str(mode)
 		return self.name + " receiver set" 
 
+	def stopSpectrum(self, current = None):
+		self.StopSpectrum()
+		return self.name + " Stopped spectrum reading"
+
 #try:
 #	if len(sys.argv)<2:
 #		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
