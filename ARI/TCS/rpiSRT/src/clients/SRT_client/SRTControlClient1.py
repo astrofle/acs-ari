@@ -374,12 +374,7 @@ class SRT():
 		self.statusIC = 0
 		self.ic = None
 		self.spectrumStarted = True
-		i = 0
 		while(self.getspectrum):
-			i = i + 1
-			if i > 10:
-				print "restarting process"
-				self.getspectrum = False
 			if not self.portInUse:
 				try:
 					if not self.spectra:
