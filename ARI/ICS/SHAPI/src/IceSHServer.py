@@ -5,7 +5,7 @@ import SHManager as SH
 import threading
 import os
 
-class SHControlI(SHcontrol.SignalHound, SH.SHManager):
+class SHControlI(SHControl.SignalHound, SH.SHManager):
     def __init__(self):
         SH.SHManager.__init__()
         self.SH_initialzed = False
