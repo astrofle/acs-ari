@@ -6,7 +6,7 @@ import threading
 import os
 
 class SHControlI(SHControl.SignalHound, SH.SHManager):
-    def __init__(self sim=False):
+    def __init__(self, sim=False):
         self.sim = sim
         
         if self.sim:
