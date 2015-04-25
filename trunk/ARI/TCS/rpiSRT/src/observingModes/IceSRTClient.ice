@@ -31,5 +31,6 @@ module SRTClient{
 		void trackSource(string s, out string r);
 		void stopTrack(out string r);
 		void getSpectrum(out specs sp);
+		void setFreq(float new_freq, float new_rec_mode, out string r);
 	};
 };

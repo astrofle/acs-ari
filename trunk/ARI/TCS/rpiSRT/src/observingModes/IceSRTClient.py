@@ -54,13 +54,13 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print self.SRTinitialized
 		if (not self.SRTinitialized):
 			self.SetSerialPort(self.serialport)
-			print "sending antenna to Stow"
+			print self.name + " sending antenna to Stow"
 			self.Init(self.parameters)
 		else:
 			self.initialized = True
 		while(not self.initialized):
 			sleep(1)
-		return "Antenna initialized"
+		return self.name + " Antenna initialized"
 	
 	def trackSource(self, s, current = None):
 		self.tracking(s)
@@ -70,8 +70,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	
 	def stopTrack(self, current = None):
 		self.Stop()
-		print "Stopping antenna and spectrum read"
-		return "Track Stopped"
+		print self.name + " Stopping antenna and spectrum read"
+		return self.name + " Track Stopped"
 
 	def message(self, s, current = None):
 		print s
@@ -80,7 +80,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def getSpectrum(self, current = None):
 		if not self.track:
 			self.StartSpectrum()
-		print "Getting new spectrum"
+		print self.name + " Getting new spectrum"
 		while(self.spectra):
 			sleep(0.5)
 		print self.name + " New spectrum acquired"
@@ -90,7 +90,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		_sp = SRTClient.specs(_sS , self.spectrum.specd, self.spectrum.spec, self.spectrum.avspec, self.spectrum.avspecc)
 		return _sp
 
-
+	def setFreq(self, freq, mode, current = None):
+		self.SetFreq(freq, mode)
+		print self.name +" setting receiver with freq " + str(freq) + " and mode " + str(mode)
+		return self.name + " receiver set" 
 
 #try:
 #	if len(sys.argv)<2:
