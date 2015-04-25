@@ -43,6 +43,7 @@ class SHManager:
         self.update_freq()
         self.set_chw(self.chw)
         self.head = []
+        self.power = 0.0
 
     def __del__(self):
         #clean up
@@ -232,6 +233,14 @@ class SHManager:
 
         return head
 
+    def spectral_power(self):
+        self.power = 0.0
+        for dbm in self.ampl:
+            self.power += 10^(dbm/10)
+        Pdbm = 10*math.log(power)
+        print "spectral power is: " + str(Pdbm)
+        return Pdbm
+
 def valid_fft_size(fft):
     """
     Checks that the given FFT size is 
@@ -239,6 +248,8 @@ def valid_fft_size(fft):
     """
     num = int(fft)
     return num > 0 and (num & (num - 1)) == 0
+    
+
        
 if __name__ == "__main__":
     print "Starting SHManager"
@@ -248,3 +259,6 @@ if __name__ == "__main__":
     sh.set_fc(1421.0e6)
     sh.set_file_name("script_mode.txt")
     sh.get_spectrum()
+    sh.make_head()
+    sh.write_spectrum()
+
