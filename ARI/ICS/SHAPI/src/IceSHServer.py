@@ -107,7 +107,7 @@ class SHControlI(SHcontrol.SignalHound, SH.SHManager):
         print "writing spectrum to file " + self.filename
         self.write_spectrum()
         self.SH_writeUpdated = True
-    return "Signal hound spectrum written to file "+ self.filename
+        return "Signal hound spectrum written to file "+ self.filename
 
     def SHmakeHead(self, ant1, ant2, source, current = None):
         self.SH_fileHeadUpdated = False
