@@ -91,7 +91,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return _sp
 
 	def setFreq(self, freq, mode, current = None):
-		self.SetFreq(freq, mode)
+		self.SetFreq(freq, str(mode))
 		print self.name +" setting receiver with freq " + str(freq) + " and mode " + str(mode)
 		return self.name + " receiver set" 
 
