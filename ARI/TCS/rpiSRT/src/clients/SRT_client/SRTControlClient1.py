@@ -430,6 +430,7 @@ class SRT():
 		else:
 			print  self.name + " Object not found or not observable"
 			self.toSource = -1
+			self.StopSpectrum()
 			return
 		
 		self.track = True
