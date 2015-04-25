@@ -6,8 +6,36 @@ import threading
 import os
 
 class SHControlI(SHControl.SignalHound, SH.SHManager):
-    def __init__(self):
-        SH.SHManager().__init__()
+    def __init__(self sim=False):
+        self.sim = sim
+        
+        if self.sim:
+            self.sh = None
+        else:
+            self.sh = CUSBSA.CUSBSA()
+            
+        self.MAXBW = 100e6
+        self.MAXFREQ = 4.4e9
+        
+        self.bw = 40e6
+        self.fc = 1420.4e6
+        self.fi = 0.0;
+        self.ff = 0.0;
+        self.fft = 256
+        self.rbw = 6400
+        self.chw = 7500
+        self.decimation = 1
+        self.filename = "default.txt"
+        self.acc_num = 0
+        self.datafile = None
+        self.ampl = []
+        self.freq = []
+        self.num_channel = 0
+        self.update_freq()
+        self.set_chw(self.chw)
+        self.head = []
+        self.power = 0.0
+
         self.SH_initialzed = False
         self.SH_freqUpdated = False
         self.SH_bwUpdated = False
