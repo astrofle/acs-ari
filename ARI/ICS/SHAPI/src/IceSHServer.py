@@ -1,6 +1,6 @@
 import sys, traceback, Ice
 from time import sleep
-import SHcontrol
+import SHControl
 import SHManager as SH
 import threading
 import os
