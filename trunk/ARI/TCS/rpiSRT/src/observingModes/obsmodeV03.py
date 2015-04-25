@@ -76,7 +76,6 @@ class ObsBase():
 			if IP_string.startswith('SRT'):
 			    controller = SRTClient.ClientPrx.checkedCast(base)
     			print "Connecting to SRT Client"
-    		
     		if IP_string.startswith('SH'):
     		    controller = SHControl.SignalHoundPrx.checkedCast(base)
     		    print "Connecting to Signal hound Client"
