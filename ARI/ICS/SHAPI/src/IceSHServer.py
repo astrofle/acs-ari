@@ -184,6 +184,7 @@ try:
 	#ic = Ice.initialize(sys.argv)
 	ic = Ice.initialize([''])
 	#adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.6 -p 10000")
+	print IP
 	adapter = ic.createObjectAdapterWithEndpoints("SHController", IP)
 	object = SHControlI()
 	adapter.add(object, ic.stringToIdentity("SHController"))
