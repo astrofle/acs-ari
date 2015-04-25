@@ -240,7 +240,7 @@ class SHManager:
             self.power += 10**(dbm/10)
         Pdbm = 10*log(self.power,10)
         print "spectral power is: " + str(Pdbm)
-        print "power for fc: " + self.freq[int(self.num_channel/2)] + " is " + self.ampl[int(self.num_channel/2)]
+        print "power for fc: " + str(self.freq[int(self.num_channel/2)]) + " is " + str(self.ampl[int(self.num_channel/2)])
         return Pdbm
 
 def valid_fft_size(fft):
