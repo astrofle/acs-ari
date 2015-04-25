@@ -348,6 +348,9 @@ class SRT():
 		self.getspectrum = 0
 		self.spectrumStarted = False
 	
+	def StartSpectrum(self):
+		self.getspectrum = 1
+		self.GetSpectrum()
 	
 	def GetSpectrum(self):
 		target = 0
