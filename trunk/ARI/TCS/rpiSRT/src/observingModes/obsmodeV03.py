@@ -74,11 +74,11 @@ class ObsBase():
 			#IP_string = "SRTClient:default -h " + IP
 			base = ic.stringToProxy(IP_string)
 			if IP_string.startswith('SRT'):
-			    controller = SRTClient.ClientPrx.checkedCast(base)
-    			print "Connecting to SRT Client"
-    		if IP_string.startswith('SH'):
-    		    controller = SHControl.SignalHoundPrx.checkedCast(base)
-    		    print "Connecting to Signal hound Client"
+				controller = SRTClient.ClientPrx.checkedCast(base)
+				print "Connecting to SRT Client"
+			if IP_string.startswith('SH'):
+				controller = SHControl.SignalHoundPrx.checkedCast(base)
+				print "Connecting to Signal hound Client"
 			controller.begin_message("connected to client", self.genericCB, self.failureCB);
 
 			#self.controller.begin_serverState(self.serverCB, self.failureCB);
