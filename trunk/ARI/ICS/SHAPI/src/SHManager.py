@@ -159,7 +159,7 @@ class SHManager:
 
         print "Using channel width of %.0f" % self.chw
 
-        return chw
+        return self.chw
 
     def set_chw(self, _chw):
         """
