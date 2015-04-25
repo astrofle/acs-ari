@@ -14,7 +14,7 @@ module SHControl{
 		void SHsetCHW(int chw, out string r);
 		void SHwriteSpectrum(out string r);
 		void SHmakeHead(string ant1, string ant2, string source, out string r);
-		void SHvalidFFFSize(fft);
+		void SHvalidFFFSize(int fft);
 	};
 };
 
