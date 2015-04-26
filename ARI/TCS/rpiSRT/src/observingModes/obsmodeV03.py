@@ -414,7 +414,7 @@ class ARI_SignalHound(ObsBase):
 			self.statusIC = 1
 
 	def SHspWCB(self, a):
-		print a
+		self.SHspectrum =  a
 		self.SH_spWritten = True
 
 	def SH_getSpectralPower(self):
