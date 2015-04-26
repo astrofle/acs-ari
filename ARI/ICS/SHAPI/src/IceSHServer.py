@@ -79,7 +79,7 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
     def SHsetBW(self, bw, current = None):
         self.SH_bwUpdated = False
         print "Updating Signal Hound span"
-        self.set_bw()
+        self.set_bw(bw)
         self.SH_bwUpdated = True
         return "Signal Hound span updated"
         
