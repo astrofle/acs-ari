@@ -539,7 +539,7 @@ class SRT():
 			self.statusIC = 1
 		return
 		
-    def setMode(self, mode): 
+		def setMode(self, mode): 
 		#Call for antenna name
 		self.statusIC = 0
 		self.ic = None
