@@ -114,7 +114,8 @@ class ObsBase():
 			print "Connecting to "+ node
 			controller = self.connect(self.ARI_nodes[node])
 			self.ARI_controllers[node] = controller
-			self.ARI_controllers[node].begin_setMode(self.mode, self.modeCB, self.failureCB);
+			if node.startswith('SRT'):
+				self.ARI_controllers[node].begin_setMode(self.mode, self.modeCB, self.failureCB);
 			
 	def modeCB(self, a):
 		print a
