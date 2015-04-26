@@ -1,4 +1,19 @@
 module SHControl{
+	sequence<float> spectrum;
+
+	struct SHstamp{
+		string time;
+		int seq;
+		float freqi;
+		float freqf;
+		int channels;
+		float chbw;
+	};
+	struct SHspectrum{
+		SHstamp samplestamp;
+		spectrum SHspec;
+	};
+
 	interface SignalHound{
 		void message(string s, out string r);
 		void SHinitHound(out string r);
