@@ -144,14 +144,17 @@ class ObsBase():
 			self.tracking
 		except:
 			traceback.print_exc()
-			self.statusIC = 1		
+			self.statusIC = 1
+		
 	
 	def trackCB(self, a):
 		print a
 		print "Antenna on source"
 		self.OnSource
 		#call by getSpectrum
-		
+		if self.mode = 'ARI':
+			self.stopSpectrum()
+	
 	def stopTrack(self):
 		statusIC = 0
 		ic = None
@@ -184,7 +187,19 @@ class ObsBase():
 		self.spectrum = sp
 		print sp.sampleStamp.name + " Spectrum Obtained"
 		return
+	def stopSpectrum(self):
+		statusIC = 0
+		ic = None
+		try:
+			print "stopping spectrum reading"
+			self.ARI_controllers[self.nodes[0]].begin_stopSpectrum(self.stopspCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
 
+	def stopspCB(self, a):
+		print a
+		return
 
 
 class SRTSingleDish(ObsBase):
@@ -223,21 +238,7 @@ class SRTSingleDish(ObsBase):
 	def status(self):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
 		return statusList
-
-	def stopSpectrum(self):
-		statusIC = 0
-		ic = None
-		try:
-			print "stopping spectrum reading"
-			self.ARI_controllers[self.nodes[0]].begin_stopSpectrum(self.stopspCB, self.failureCB)
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
-
-	def stopspCB(self, a):
-		print a
-		return
-
+	
 	def startSpectrum(self):
 		statusIC = 0
 		ic = None
