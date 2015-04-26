@@ -152,7 +152,7 @@ class ObsBase():
 		print "Antenna on source"
 		self.OnSource
 		#call by getSpectrum
-		if self.mode = 'ARI':
+		if self.mode == 'ARI':
 			self.stopSpectrum()
 	
 	def stopTrack(self):
