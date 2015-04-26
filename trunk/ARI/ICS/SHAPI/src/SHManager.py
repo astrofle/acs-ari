@@ -130,6 +130,7 @@ class SHManager:
             self.freq.append(pF[i])
         self.acc_num += 1
         self.sampleStamp = [time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.acc_num, self.freq[0], self.freq[1], self.num_channel, self.chw ]
+        print self.sampleStamp
         print "ready."
 
     def get_RBW(self):
