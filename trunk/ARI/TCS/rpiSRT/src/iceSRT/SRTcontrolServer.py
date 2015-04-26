@@ -4,6 +4,7 @@ import SRTControl
 import SRT_control_lib_test as SRT
 import threading
 import os
+import RPi.GPIO as GPIO
 
 class SRTControlI(SRTControl.telescope, SRT.Antenna):
 	def __init__(self):
@@ -67,6 +68,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.azoff = 0.0
 		self.name = os.uname()[1] #Antenna name
 		self.sampleStamp = []
+		self.SD_ARI_Switch_init()
 		
 	def message(self, s, current = None):
 		print s
@@ -200,6 +202,11 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		print "I am " + self.name
 		return self.name
 
+	def SRTsetMode(self, mode, current = None):
+		print "setting " + self.name+ "to " + mode
+		self.SD_ARI_Switch(mode)
+		return self.name + "set to " + mode
+		
 try:
 	if len(sys.argv)<2:
 		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"

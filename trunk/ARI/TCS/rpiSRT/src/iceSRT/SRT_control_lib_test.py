@@ -23,7 +23,7 @@ import ephem
 import importlib
 import threading
 import struct
-
+import RPi.GPIO as GPIO
 global port 
 global p
 
@@ -895,3 +895,58 @@ class Antenna:
 			spectra_thread = threading.Thread(target = self.spectra, args=[], name = 'Spectra')
 			spectra_thread.start()
 		return
+		
+		
+		
+		######### Single Dish / ARI_signalHound Switch
+    def SD_ARI_Switch_init():
+        self.SwitchPin = 25
+        self.SwitchFeedbackPin = 23
+        relay2 = 17
+        relay2_read = 24
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.SwitchFeedbackPin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
+        #GPIO.setup(relay2_read, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+        GPIO.setup(self.SwitchPin, GPIO.OUT)
+        #GPIO.setup(relay2, GPIO.OUT)
+        GPIO.add_event_detect(self.SwitchFeedbackPin, GPIO.RISING, callback=printSwitch1, bouncetime=300)
+        #GPIO.add_event_detect(relay2_read, GPIO.FALLING, callback=printRelay2, bouncetime=300)
+
+        
+    def printSwitch1(channel):
+	    print("Button 1 pressed!")
+
+    #def printRelay2(channel):
+	 #   print("Button 2 pressed!")
+
+    def end():
+        GPIO.cleanup()
+        GPIO.remove_event_detect(self.SwitchFeedbackPin)
+        #GPIO.remove_event_detect(relay2_read)
+        
+    def on(pin):
+        GPIO.output(pin, True)
+        print "Switching receiver to ARI"
+
+    def off(pin):
+        GPIO.output(pin, False)
+        print "Switching receiver to SD"
+        
+    def GPstatus():
+        SD_ARI_Switch = GPIO.input(self.SwitchFeedbackPin)
+        #relay2 = GPIO.input(relay2_read)
+        print "SD_ARI_Switch: " + str(relay1)
+        #print "relay 2: " + str(relay2)
+
+    def SD_ARI_Switch(mode):
+        if (mode == 'SD'):
+            self.off(self.SwitchPin)
+        if (mode == 'ARI'):
+            self.on(self.SwitchPin)
+
+    #def R2(state):
+    #    if state:
+    #        on(relay2)
+    #    else:
+    #        off(relay2)
+
