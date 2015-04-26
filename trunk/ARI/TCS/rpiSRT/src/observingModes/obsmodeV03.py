@@ -5,6 +5,7 @@ import time
 sys.path.append('../IceClients/')
 import SRTClient
 import sites
+
 import SHControl
 
 antenna = ''
@@ -13,7 +14,7 @@ class ObsBase():
 		self.ARI_nodes = {
 		'SRT1':"SRTClient:default -h localhost -p 10011",
 		'SRT2':"SRTClient:default -h localhost -p 10012",
-		'SH':"SHControl:default -h localhost -p 10013",
+		'SH':"SHController:default -h localhost -p 10013",
 		'ROACH':"SRTClient:default -h localhost -p 10014"
 		}
 		self.antenna = ''
