@@ -22,7 +22,7 @@ module SHControl{
 		void SHsetFc(float fc, out string r);
 		void SHsetFileName(string fn, out string r);
 		void SHsetFFT(int fft, out string r);
-		void SHgetSpectrum(out specs sp);
+		void SHgetSpectrum(out SHspectrum sp);
 		void SHgetRBW(out string r);
 		void SHchwToFFTSize(int chw, out string r);
 		void SHgetCHW(out string r);
