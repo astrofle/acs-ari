@@ -313,7 +313,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_initialized = False
 		try:
 			print "Initializing SignalHound"
-			self.ARI_controllers[self.nodes[0]].begin_SHinitHound(self.SHinitCB, self.failureCB)
+			self.ARI_controllers['SH'].begin_SHinitHound(self.SHinitCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -329,7 +329,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_bwSetup = False
 		try:
 			print "Set SignalHound BW"
-			self.ARI_controllers[self.nodes[0]].begin_SHsetBW(self.bw, self.SHBWCB, self.failureCB)
+			self.ARI_controllers['SH'].begin_SHsetBW(self.bw, self.SHBWCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -345,7 +345,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_fcSetup = False
 		try:
 			print "Set SignalHound central frequency"
-			self.ARI_controllers[self.nodes[0]].begin_SHsetFc(self.fc, self.SHfcCB, self.failureCB)
+			self.ARI_controllers['SH'].begin_SHsetFc(self.fc, self.SHfcCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -361,7 +361,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_filenameSetup = False
 		try:
 			print "Set SignalHound spectrum filename"
-			self.ARI_controllers[self.nodes[0]].begin_SHsetFileName(self.filename, self.SHfilenameCB, self.failureCB)
+			self.ARI_controllers['SH'].begin_SHsetFileName(self.filename, self.SHfilenameCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -376,7 +376,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_readSpectrum = False
 		try:
 			print "Getting Signal hound spectrum"
-			self.ARI_controllers[self.nodes[0]].begin_SHgetSpectrum(self.SHspCB, self.failureCB)
+			self.ARI_controllers['SH'].begin_SHgetSpectrum(self.SHspCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -391,7 +391,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_headmade = False
 		try:
 			print "Creating header for spectrum file"
-			self.ARI_controllers[self.nodes[0]].begin_SHmakeHead('SRT1', 'SRT2', 'Dummy', self.SHmheadCB, self.failureCB)
+			self.ARI_controllers['SH'].begin_SHmakeHead('SRT1', 'SRT2', 'Dummy', self.SHmheadCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -406,7 +406,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_spectrumWritten = False
 		try:
 			print "Writing spectrum to file"
-			self.ARI_controllers[self.nodes[0]].begin_SHwriteSpectrum(self.SHspWCB, self.failureCB)
+			self.ARI_controllers['SH'].begin_SHwriteSpectrum(self.SHspWCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -421,7 +421,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_powerRead = False
 		try:
 			print "Getting spectrum power"
-			self.ARI_controllers[self.nodes[0]].begin_SHgetSpectralPower(self.SHspPwCB, self.failureCB)
+			self.ARI_controllers['SH'].begin_SHgetSpectralPower(self.SHspPwCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
