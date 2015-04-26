@@ -49,9 +49,6 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.mode =''
 		
 	def setup(self, current = None):
-		self.setIP(self.antennaIP)
-		self.connect()
-		sleep(0.5)
 		print self.SRTinitialized
 		if (not self.SRTinitialized):
 			self.SetSerialPort(self.serialport)
@@ -139,6 +136,9 @@ try:
 	adapter.activate()
 	print "SRT client up and running!"
 	object.antennaIP = ARI_nodes[sys.argv[1]]['antenna']
+    object.setIP(self.antennaIP)
+    object.connect()
+	sleep(0.5)
 	ic.waitForShutdown()
 except:
 	traceback.print_exc()
