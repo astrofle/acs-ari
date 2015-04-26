@@ -416,6 +416,34 @@ class ARI_SignalHound(ObsBase):
 	def SHspPwCB(self, a):
 		print a
 		self.SH_powerRead = True
+		
+	def SH_routine(self):
+		self.initHound()
+		while(not self.SH_initialized):
+			time.sleep(0.5)
+		self.SH_setBW(self.bw)
+		while(not self.SH_bwSetup):
+			time.sleep(0.5)
+		self.SH_SH_setfc(self.fc)
+		while(not self.SH_fcSetup):
+			time.sleep(0.5)
+		self.SH_setFileName("script_mode.txt")
+		while(not self.SH_filenameSetup):
+			time.sleep(0.5)
+		self.SH_getSpectrum()
+		while(not self.SH_readSpectrum):
+			time.sleep(0.5)
+		self.SH_makeHead()
+		while(not self.SH_headmade):
+			time.sleep(0.5)
+		self.SH_writeSpectrum()
+		while(not self.SH_spWritten):
+			time.sleep(0.5)
+		self.SH_getSpectralPower()
+		while(not self.SH_powerRead):
+			time.sleep(0.5)
+
+
 
 class ARI_ROACH(ObsBase):
 	def __init__(self):
