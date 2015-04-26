@@ -126,8 +126,9 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				self.ARI_controllers[node].begin_setup(self.setupCB, self.failureCB);
-				print "initializing antenna " + node
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_setup(self.setupCB, self.failureCB);
+					print "initializing antenna " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -136,9 +137,10 @@ class ObsBase():
 		statusIC = 0
 		ic = None
 		try:
-			for node in self.nodes:				
-				self.ARI_controllers[node].begin_trackSource(target, self.trackCB, self.failureCB);
-				print "moving antenna" + node + " to target"
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_trackSource(target, self.trackCB, self.failureCB);
+					print "moving antenna" + node + " to target"
 			self.tracking
 		except:
 			traceback.print_exc()
@@ -155,8 +157,9 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				self.ARI_controllers[node].begin_stopTrack(self.stopTrackCB, self.failureCB);
-				print "Stopping Antenna " + node
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_stopTrack(self.stopTrackCB, self.failureCB);
+					print "Stopping Antenna " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -170,8 +173,9 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
-				print node + "Getting spectrum"
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
+					print node + "Getting spectrum"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
