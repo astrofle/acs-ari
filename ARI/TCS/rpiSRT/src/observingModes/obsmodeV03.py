@@ -460,16 +460,16 @@ class ARI_SignalHound(ObsBase):
 		while(not self.SH_powerRead):
 			time.sleep(0.5)
 		
-		def observation_thread(self, source, freq, bw):
-			self.trackSource(source)
-			while(self.observe):
-				while(self.getSHsp):
-					self.SH_getSpectrum()
-					while(not self.SH_readSpectrum):
-						time.sleep(0.5)
-					self.SH_getSpectralPower()
-					while(not self.SH_powerRead):
-						time.sleep(0.5)
+	def observation_thread(self, source, freq, bw):
+		self.trackSource(source)
+		while(self.observe):
+			while(self.getSHsp):
+				self.SH_getSpectrum()
+				while(not self.SH_readSpectrum):
+					time.sleep(0.5)
+				self.SH_getSpectralPower()
+				while(not self.SH_powerRead):
+					time.sleep(0.5)
 	
 		def observation(self, source, freq, bw):
 			obs_Thread = threading.Thread(target = self.observation_thread, args=(source, freq, bw), name='observation')
