@@ -538,8 +538,16 @@ class SRT():
 			traceback.print_exc()
 			self.statusIC = 1
 		return
-
-
-
-
+		
+    def setMode(self, mode): 
+		#Call for antenna name
+		self.statusIC = 0
+		self.ic = None
+		try:
+			target = self.controller.begin_SRTsetMode(mode, self.getNameCB, self.failureCB)
+			print "setting receiver mode"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+		return
 
