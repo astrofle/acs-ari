@@ -46,6 +46,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.initialized = False
 		self.SRTinitialized = False
 		self.name =''
+		self.mode =''
 		
 	def setup(self, current = None):
 		self.setIP(self.antennaIP)
@@ -102,7 +103,12 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def startSpectrum(self, current = None):
 		self.StartSpectrum()
 		return self.name + " Stopped spectrum reading"
-
+		
+	def setMode(self, mode, current = None):
+	    print "setting " + self.name + "to " + mode + "mode"
+	    self.mode = mode
+	    self.setMode(mode)
+	    return self.name + "set for " + self.mode
 #try:
 #	if len(sys.argv)<2:
 #		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"

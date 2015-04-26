@@ -114,7 +114,12 @@ class ObsBase():
 			print "Connecting to "+ node
 			controller = self.connect(self.ARI_nodes[node])
 			self.ARI_controllers[node] = controller
+			self.ARI_controllers[node].begin_setMode(self.modeCB, self.failureCB);
+			
+	def modeCB(self, a):
+		print a
 	
+
 	def setup(self):
 		statusIC = 0
 		ic = None
@@ -181,7 +186,8 @@ class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
 		ObsBase.__init__(self)	
 		self.nodes = [antenna]
-				
+		self.mode = 'SD'
+		
 	def radioSetup(self, freq, rec_mode):
 		statusIC = 0
 		ic = None
@@ -242,7 +248,8 @@ class SRTDoubleSingleDish(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
 		self.nodes = ['SRT1', 'SRT2']
-		
+		self.mode = 'SD'
+	
 	def radioSetup(self, freq, rec_mode):
 		statusIC = 0
 		ic = None
@@ -281,6 +288,7 @@ class ARI_SignalHound(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
 		self.nodes =['SH']
+		self.mode = 'ARI'
 		#self.nodes =['SRT1', 'SRT2', 'SH']
 		self.SH_initialized = False
 		self.bw = 40e6
