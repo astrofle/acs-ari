@@ -1,5 +1,5 @@
 module SHControl{
-	sequence<float> spectrum
+	sequence<float> spectrum;
 
 	struct SHstamp{
 		string time;
