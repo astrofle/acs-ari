@@ -57,8 +57,8 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         self.SH_fileHeadUpdated = False
         self.SH_FFTSizeCheck = False
         self.SH_powerUpdated = False
-        self.sampleStamp = SHControl.SHStamp()
-        self.SH_Spectrum = SHControl.SHSpectrum()
+        self.sampleStamp = SHControl.SHstamp()
+        self.SH_Spectrum = SHControl.SHspectrum()
 
     def message(self, s, current = None):
         print s
