@@ -107,7 +107,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def setMode(self, mode, current = None):
 	    print "setting " + self.name + "to " + mode + "mode"
 	    self.mode = mode
-	    self.setMode(mode)
+	    self.SetMode(mode)
 	    return self.name + "set for " + self.mode
 #try:
 #	if len(sys.argv)<2:
