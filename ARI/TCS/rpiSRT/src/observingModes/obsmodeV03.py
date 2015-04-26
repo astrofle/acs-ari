@@ -287,9 +287,9 @@ class SRTDoubleSingleDish(ObsBase):
 class ARI_SignalHound(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
-		self.nodes =['SH']
+		#self.nodes =['SH']
 		self.mode = 'ARI'
-		#self.nodes =['SRT1', 'SRT2', 'SH']
+		self.nodes =['SRT1', 'SRT2', 'SH']
 		self.SH_initialized = False
 		self.bw = 40e6
 		self.SH_bwSetup = False
