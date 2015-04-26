@@ -43,7 +43,7 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         self.head = []
         self.power = 0.0
 
-        self.SH_initialzed = False
+        self.SH_initialized = False
         self.SH_freqUpdated = False
         self.SH_bwUpdated = False
         self.SH_fcUpdated = False
@@ -63,10 +63,13 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         return s
     
     def SHinitHound(self, current = None):
-        self.SH_initialzed = False
-        print "Initialising Signal Hound"
-        self.init_hound()
-        self.SH_initialized = True
+        if (not self.SH_initialized):
+            self.SH_initialized = False
+            print "Initialising Signal Hound"
+            self.init_hound()
+            self.SH_initialized = True
+        else:
+            print "Signal Hound already initialized, skipping"
         return "Signal Hound initialized"
 
     def SHupdateFreq(self, current = None):
