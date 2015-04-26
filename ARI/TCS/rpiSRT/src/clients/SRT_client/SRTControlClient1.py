@@ -519,7 +519,7 @@ class SRT():
 
 	def clean(self):
 		if self.ic:
-		#clean up
+		#clean up#
 			try:
 				self.ic.destroy()
 			except:
