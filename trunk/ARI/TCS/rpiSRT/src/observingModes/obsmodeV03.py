@@ -35,7 +35,8 @@ class ObsBase():
 		self.OnSource = False
 		self.Target = ""
 		self.spectrum = SRTClient.specs()
-		
+		self.SHspectrum = SHControl.SHspectrum()
+	
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
