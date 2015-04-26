@@ -57,6 +57,8 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         self.SH_fileHeadUpdated = False
         self.SH_FFTSizeCheck = False
         self.SH_powerUpdated = False
+        self.sampleStamp = SHControl.SHStamp()
+        self.SH_Spectrum = SHControl.SHSpectrum()
 
     def message(self, s, current = None):
         print s
@@ -112,7 +114,10 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         print "Getting Signal Hound spectrum"
         self.get_spectrum()
         self.SH_spectrumUpdated = True
-        return "Signal Hound spectrum obtained"
+        _stamp = SHControl.SHstamp(self.sampleStamp[0], self.sampleStamp[1], self.sampleStamp[2], self.sampleStamp[3], self.sampleStamp[4], self.sampleStamp[5])
+        _ampl = SHControl.spectrum(self.ampl)
+        _SHsp = SHControl.SHspectrum(_stamp, _ampl)
+        return _SHsp
 
     def SHgetRBW(self, current = None):
         self.SH_RBWUpdated = False

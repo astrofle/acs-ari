@@ -44,6 +44,7 @@ class SHManager:
         self.set_chw(self.chw)
         self.head = []
         self.power = 0.0
+        self.sampleStamp = []
 
     def __del__(self):
         #clean up
@@ -128,6 +129,7 @@ class SHManager:
             self.ampl.append(pA[i])
             self.freq.append(pF[i])
         self.acc_num += 1
+        self.sampleStamp = [time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.acc_num, self.freq[0], self.freq[1], self.num_channel, self.chw ]
         print "ready."
 
     def get_RBW(self):
