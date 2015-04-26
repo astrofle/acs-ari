@@ -136,8 +136,8 @@ try:
 	adapter.activate()
 	print "SRT client up and running!"
 	object.antennaIP = ARI_nodes[sys.argv[1]]['antenna']
-    object.setIP(self.antennaIP)
-    object.connect()
+	object.setIP(self.antennaIP)
+	object.connect()
 	sleep(0.5)
 	ic.waitForShutdown()
 except:
