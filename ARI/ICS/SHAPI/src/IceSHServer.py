@@ -115,9 +115,9 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         self.get_spectrum()
         self.SH_spectrumUpdated = True
         _stamp = SHControl.SHstamp(self.sampleStamp[0], self.sampleStamp[1], self.sampleStamp[2], self.sampleStamp[3], self.sampleStamp[4], self.sampleStamp[5])
-        _ampl = SHControl.spectrum(self.ampl)
-        _SHsp = SHControl.SHspectrum(_stamp, _ampl)
-        return _SHsp
+        _ampl = self.ampl
+        SHsp = SHControl.SHspectrum(_stamp, _ampl)
+        return SHsp
 
     def SHgetRBW(self, current = None):
         self.SH_RBWUpdated = False
