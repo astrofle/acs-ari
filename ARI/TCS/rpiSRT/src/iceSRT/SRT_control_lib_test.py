@@ -906,7 +906,7 @@ class Antenna:
 		#GPIO.setup(relay2_read, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 		GPIO.setup(self.SwitchPin, GPIO.OUT)
 		#GPIO.setup(relay2, GPIO.OUT)
-		GPIO.add_event_detect(self.SwitchFeedbackPin, GPIO.RISING, callback=printSwitch1, bouncetime=300)
+		GPIO.add_event_detect(self.SwitchFeedbackPin, GPIO.RISING, callback=self.printSwitch1, bouncetime=300)
 		#GPIO.add_event_detect(relay2_read, GPIO.FALLING, callback=printRelay2, bouncetime=300)
 
 	def printSwitch1(self,channel):
