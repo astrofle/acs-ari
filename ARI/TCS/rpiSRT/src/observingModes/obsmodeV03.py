@@ -7,6 +7,7 @@ import SRTClient
 import sites
 
 import SHControl
+import threading
 
 antenna = ''
 class ObsBase():
@@ -36,7 +37,8 @@ class ObsBase():
 		self.Target = ""
 		self.spectrum = SRTClient.specs()
 		self.SHspectrum = SHControl.SHspectrum()
-	
+		self.observe = False
+
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -457,8 +459,21 @@ class ARI_SignalHound(ObsBase):
 		self.SH_getSpectralPower()
 		while(not self.SH_powerRead):
 			time.sleep(0.5)
-
-
+		
+		def observation_thread(self, source, freq, bw):
+			self.trackSource(source)
+			while(self.observe):
+				while(self.getSHsp):
+					self.SH_getSpectrum()
+					while(not self.SH_readSpectrum):
+						time.sleep(0.5)
+					self.SH_getSpectralPower()
+					while(not self.SH_powerRead):
+						time.sleep(0.5)
+	
+		def observation(self, source, freq, bw):
+			obs_Thread = threading.Thread(target = self.observation_thread, args=(source, freq, bw), name='observation')
+			obs_Thread.start()
 
 class ARI_ROACH(ObsBase):
 	def __init__(self):
