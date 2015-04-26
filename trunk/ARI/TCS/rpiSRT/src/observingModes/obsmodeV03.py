@@ -280,7 +280,8 @@ class SRTDoubleSingleDish(ObsBase):
 class ARI_SignalHound(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
-		self.nodes =['SRT1', 'SRT2', 'SH']
+		self.nodes =['SH']
+		#self.nodes =['SRT1', 'SRT2', 'SH']
 	
 class ARI_ROACH(ObsBase):
 	def __init__(self):
