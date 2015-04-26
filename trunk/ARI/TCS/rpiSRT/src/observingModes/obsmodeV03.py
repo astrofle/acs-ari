@@ -424,7 +424,7 @@ class ARI_SignalHound(ObsBase):
 		self.SH_setBW(self.bw)
 		while(not self.SH_bwSetup):
 			time.sleep(0.5)
-		self.SH_SH_setfc(self.fc)
+		self.SH_setfc(self.fc)
 		while(not self.SH_fcSetup):
 			time.sleep(0.5)
 		self.SH_setFileName("script_mode.txt")
