@@ -59,6 +59,7 @@ module SRTControl{
 		void SRTDoCalibration(string method, out float r);
 		void SRTGetName(out string r);
 		void SRTClear(out string r);
+		void SRTsetMode(string mode, out string r);
 	};
 };
 
