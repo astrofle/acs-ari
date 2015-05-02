@@ -70,7 +70,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.name = os.uname()[1] #Antenna name
 		self.sampleStamp = []
 		self.SD_ARI_Switch_init()
-		self.portInUse = False
+		self.portInUse = [False, '']
 		
 	def message(self, s, current = None):
 		print s
