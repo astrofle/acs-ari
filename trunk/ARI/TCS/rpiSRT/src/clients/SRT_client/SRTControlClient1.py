@@ -312,6 +312,17 @@ class SRT():
 			if self.toSource == 2:
 				self.OnSource = True
 
+	def stopAzEl(self):
+		self.statusIC = 0
+		self.ic = None
+		if self.IsMoving:
+			try:
+				print "Stopping antenna by command!"
+				self.controller.begin_SRTStopSlew(self.AzElCB, self.failureCB);
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+
 	def movingThread(self):
 		moving_Thread = threading.Thread(target = self.getSRTThreads, name='moving')
 		moving_Thread.start()
