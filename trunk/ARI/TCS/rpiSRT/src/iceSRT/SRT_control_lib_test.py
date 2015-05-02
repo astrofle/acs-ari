@@ -98,8 +98,8 @@ class Antenna:
 
 
 	def status(self, disp):
+		now = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 		if(disp == True):
-			now = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 			print "Date: " + now
 			print "Antenna: " + self.name
 			print "commanded azimuth: " + str(self.az)
