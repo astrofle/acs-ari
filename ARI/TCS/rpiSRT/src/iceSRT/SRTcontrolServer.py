@@ -135,9 +135,11 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			inLimits = self.get_cmd_inLimits()
 			if inLimits:
 				self.azel_thread(az+ self.azoff, el+self.azoff)
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
-				while(not self.OnTarget):
-					sleep(1)
+				return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
+
+				#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
+				#while(not self.OnTarget):
+				#	sleep(1)
 				#return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Antenna reached (az,el):1"
 			else:
 				return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Command out of limits!:0"
@@ -145,6 +147,13 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			print str(e)
 			return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Failed to move the antenna:-1"
 	
+	def SRTOnTarget(self, current = None):
+		if not self.OnTarget:
+			return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Not on target:1"
+		else:
+			return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Antenna reached (az,el):1"
+			
+		
 	def SRTStopSlew(self, current = None):
 		self.stop_slew()
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " slew stopped"
