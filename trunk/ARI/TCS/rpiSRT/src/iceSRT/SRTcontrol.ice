@@ -4,6 +4,8 @@ module SRTControl{
 	
 	struct AntennaStatus
         {
+        string now;
+        string name;
         float az;
         float el;
         float aznow;
