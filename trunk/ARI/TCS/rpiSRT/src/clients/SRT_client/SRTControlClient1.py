@@ -57,7 +57,8 @@ class SRT():
 		self.rGraph = True
 		self.statusDisp = False
 		self.name = ''
-		self.SRTinitialized = False
+		self.SRTinitialized = False #This variable check if SRT was initialised in a previous session
+		self.mode = 'SD'
 
 		
 	def find_planets(self):
@@ -76,6 +77,7 @@ class SRT():
 	####### Ice Callbacks ###################
 	def getStatusCB(self, state):
 		#status callback
+		self.now = state.now
 		self.az = state.az
 		self.el = state.el
 		self.aznow = state.aznow
@@ -102,7 +104,7 @@ class SRT():
 			print "azimuth axis at stow position: " + str(self.azatstow)
 			print "Controller Serial Port: " + str(self.serialport)
 			print "last SRT command: " + str(self.lastSRTCom)
-			print "last SRT received message: " + str(self.lastSerialMsg)	
+			print "last SRT received message: " + str(self.lastSerialMsg)
 			print "\n"
 		return
 	
@@ -114,7 +116,7 @@ class SRT():
 	def stowCB(self, a):
 		#call by Init and Stow
 		print self.name + " Antenna Stowed"
-		self.initialized = True
+		self.initialized = True # This variable check the SRT initialization in the current session
 		self.tostow = 1
 		self.IsMoving = False
 		self.portInUse = False
@@ -129,25 +131,28 @@ class SRT():
 		
 	def genericCB(self, a):
 		#generic callback
-			print a
+		print a
 
 	def getNameCB(self, a):
-			print "connected to " + a
-			self.name = a
+		print "connected to " + a
+		self.name = a
 
 	def serverCB(self, a):
 		#generic callback
-			state = a.split(',')
-			serialPort = state[0].replace('[','')
-			antennaInit = state[1].replace(']','')
-			if (serialPort != 'None') & (antennaInit != ' False'):
-				self.SRTinitialized = True
-				print self.name + " SRT has been initialised in a previus session"
-			else:
-				print self.name + " Proceed with SRT initialization"
-			
-			print self.name + " Serial Port: " + str(serialPort)
-			print self.name + " Antenna Initialised (sent to stow): " + str(antennaInit)
+		state = a.split(',')
+		serialPort = state[0].replace('[','')
+		antennaInit = state[1].replace(']','')
+		aznow = state[2].replace(']','')
+		elnow = state[3].replace(']','')
+		if (serialPort != 'None') & (antennaInit != ' False'):
+			self.SRTinitialized = True
+			print self.name + " SRT has been initialised in a previus session"
+		else:
+			print self.name + " Proceed with SRT initialization"
+		
+		print self.name + " Serial Port: " + str(serialPort)
+		print self.name + " Antenna Initialised (sent to stow): " + str(antennaInit)
+		print self.name + "Antenna position is: " + str(aznow)+", "+str(elnow)
 
 	######## Control functions #######################
 	def setIP(self, IP):
@@ -281,20 +286,31 @@ class SRT():
 		self.statusIC = 0
 		self.ic = None
 		target = 0
-		if not self.portInUse:		
+		if not self.portInUse:
 			try:
 				self.portInUse = True
-				target = self.controller.begin_SRTAzEl(az, el, self.genericCB, self.failureCB);
+				target = self.controller.begin_SRTAzEl(az, el, self.AzElCB, self.failureCB);
 				print  self.name + " moving the antenna "
 				print self.name +  " commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
 				self.IsMoving = True
-				self.movingThread()
+				#self.movingThread()
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
 		else:
-			print  self.name + " wait until serial port is available or antenna end movement"
+			print  self.name + " wait until serial port is available or antenna ends movement"
 		return target
+		
+	def AzElCB(self,a):
+		print a
+		print  self.name + " Movement finished!!"
+		self.IsMoving = False
+		self.portInUse = False
+		self.status(False)
+		if self.track:
+			self.toSource = self.toSource + 1
+			if self.toSource == 2:
+				self.OnSource = True
 
 	def movingThread(self):
 		moving_Thread = threading.Thread(target = self.getSRTThreads, name='moving')
@@ -544,10 +560,16 @@ class SRT():
 		self.statusIC = 0
 		self.ic = None
 		try:
-			target = self.controller.begin_SRTsetMode(mode, self.getNameCB, self.failureCB)
+			target = self.controller.begin_SRTsetMode(mode, self.setModeCB, self.failureCB)
 			print "setting receiver mode"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 		return
+		
+	def setModeCB(self, a):
+		print a
+		self.mode = a
+		
+
 
