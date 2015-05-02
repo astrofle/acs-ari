@@ -1,5 +1,6 @@
 import sys, traceback, Ice
 from time import sleep
+import time
 import SRTControl
 import SRT_control_lib_test as SRT
 import threading
