@@ -143,6 +143,10 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			print str(e)
 			return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Failed to move the antenna:-1"
 	
+	def SRTStopSlew(self, current = None):
+		self.stop_slew()
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " slew stopped"
+	
 	def SRTThreads(self, current = None):
 		Threads = threading.enumerate()	
 		return str(Threads)
@@ -179,7 +183,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		stamps = SRTControl.stamp(name = self.sampleStamp[0], 
 		timdate = self.sampleStamp[1],
 		aznow = self.sampleStamp[2],
-	    elnow = self.sampleStamp[3],
+		elnow = self.sampleStamp[3],
 		temperature = self.sampleStamp[4],
 		freq0 = self.sampleStamp[5],
 		av = self.sampleStamp[6],

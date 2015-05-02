@@ -505,6 +505,7 @@ class Antenna:
 	def stop_slew(self):
 	    self.slew = 0;
 	    self.portInUse[0] = False
+	    print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " "+ "stopping slew (azel_thread)"
 
 	def load_parameters(self, pfile):
 		global p
@@ -740,6 +741,7 @@ class Antenna:
 		return
 		
 	def spectra(self):
+		self.waitingSp = True
 		avp = 0.0
 		if ( int(self.receiver[0]) == 0 or int(self.receiver[0]) == 5):
 			for i in range(self.nfreq):
