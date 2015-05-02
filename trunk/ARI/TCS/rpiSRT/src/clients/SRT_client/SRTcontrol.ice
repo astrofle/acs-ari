@@ -4,6 +4,8 @@ module SRTControl{
 	
 	struct AntennaStatus
         {
+        string now;
+        string name;
         float az;
         float el;
         float aznow;
@@ -52,6 +54,7 @@ module SRTControl{
 		void SRTStow(out string r);
 		void SRTStatus(out AntennaStatus l);
 		void SRTAzEl(float az, float el, out string r);
+		void SRTStopSlew(out string r);
 		void SRTThreads(out string r);
 		void serverState(out string r);
 		void SRTSetFreq(float freq, string receiver, out string r);
@@ -62,4 +65,3 @@ module SRTControl{
 		void SRTsetMode(string mode, out string r);
 	};
 };
-
