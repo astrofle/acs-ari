@@ -99,6 +99,8 @@ class Antenna:
 
 	def status(self, disp):
 		if(disp == True):
+			now = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+			print "Date: " + now
 			print "Antenna: " + self.name
 			print "commanded azimuth: " + str(self.az)
 			print "commanded elevation: " + str(self.el)
@@ -112,7 +114,7 @@ class Antenna:
 			print "serial port: " + self.serialport
 			print "last SRT command: " + str(self.lastSRTCom)
 			print "last received Serial message: " + str(self.lastSerialMsg)
-		return self.az, self.el, self.aznow, self.elnow, self.axis, self.tostow, self.elatstow, self.azatstow, self.slew, self.serialport, str(self.lastSRTCom), str(self.lastSerialMsg)
+		return self.az, self.el, self.aznow, self.elnow, self.axis, self.tostow, self.elatstow, self.azatstow, self.slew, self.serialport, str(self.lastSRTCom), str(self.lastSerialMsg, self.now, self.name)
 		
 	def init_com(self):
 		#serial port USB-RS232 initializacion
@@ -142,7 +144,7 @@ class Antenna:
 			else:
 				cmd_r = cmd_r +self.port.read(self.port.inWaiting())
 			if time.time() > timeout:
-				print "Serial port time out"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name +" Serial port time out"
 				finished = 1
 			time.sleep(1)
 	
@@ -164,8 +166,8 @@ class Antenna:
 		#Whenever answer first character is different from M or T then there is a communication failure
 		#This function is not used for antenna stow.
 		if ((cmd_r[0] !="M") & (cmd_r[0] !="T")):
-			print "error, comandar a stow position"
-			print cmd_r
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " error, comandar a stow position"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + cmd_r
 			sys.exit()
 		else:
 			#print "OK"
@@ -183,21 +185,21 @@ class Antenna:
 		#Stop position verification
 		#condition for entering elevation stow position
 		if ((mm == 2) & (cmd_r[0] == 'T') & (self.tostow == 1)):
-			print "elevation at stow position"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+self.name +" elevation at stow position"
 			self.elatstow = 1;
 			self.elcount = 0
 			self.elnow = p.ellim1;
 	
 		#condition for entering azimuth stow position
 		if ((mm == 0) & (cmd_r[0] == 'T') & (self.tostow == 1)):
-			print "azimuth at stow position"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+self.name +" azimuth at stow position"
 			self.azatstow = 1;
 			self.azcount = 0;
 			self.aznow= p.azlim1
 	
 		#Time out from antenna
 		if ((cmd_r[0] == 'T') & (self.tostow == 0)):
-			print "timeout from antenna, command to stow"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+self.name +" timeout from antenna, command to stow"
 			sys.exit()
 	
 		#axis current azcount and elcount updated with count variation from last step fcount
@@ -223,7 +225,7 @@ class Antenna:
 		return
 
 	def stow_antenna(self):
-		print "Sending Antenna to Stow"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " Sending Antenna to Stow"
 		self.tostow = 1
 		self.azcount = 0
 		self.elcount = 0
@@ -263,7 +265,7 @@ class Antenna:
 		self.el = 0.0
 		self.slew = 0
 		self.lastSRTCom = 'stow'
-		print "Antenna stowed, az: "+ str(self.aznow) +" el: "+str(self.elnow)+ " azcount: "+ str(self.azcount)+ " elcount: "+ str(self.elcount)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" Antenna stowed, az: "+ str(self.aznow) +" el: "+str(self.elnow)+ " azcount: "+ str(self.azcount)+ " elcount: "+ str(self.elcount)
 		return 
 
 	def make_SRTCommand(self):
@@ -322,7 +324,7 @@ class Antenna:
 		if ((az < (p.azlim2 - 180.0)) & (el > (180.0 - p.ellim2))):
 			region3 = 1;
 		if ((region1 == 0) & (region2 == 0) & (region3 == 0)):
-			print "cmd out of limits"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name+" cmd out of limits"
 			return 0
 		#	if (fstatus == 1 && track != 0):
 		#		o.stroutfile(g, "* ERROR cmd out of limits");
@@ -390,7 +392,7 @@ class Antenna:
 	def check_count(self, rec_count, count):
 		#read back count < commanded count only when antenna reaches to stow position in other case there is a lost count problem
 		if ((rec_count < count) & ((int(self.axis) == 0 & int(self.az) != int(p.azlim1))|(int(self.axis) == 1 & int(self.el) != int(p.ellim1)))):
-			print "error, lost count, comandar a stow position"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" error, lost count, comandar a stow position"
 			error = 1
 			sys.exit()
 		else:
@@ -437,7 +439,7 @@ class Antenna:
 		if ((abs(self.elnow - p.ellim1) < 0.2)):
 			self.elatstow = 1
 		if (self.elatstow and self.azatstow):
-			print "antenna at stow";
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name+ " antenna at stow";
 			self.slew = 0
 		return
 		
@@ -446,8 +448,8 @@ class Antenna:
 		if ((abs(self.aznow - self.az) <= 0.2) & (abs(self.elnow - self.el) <= 0.2)):
 			self.slew = 0
 			self.OnTarget = True
-			print "movimiento terminado"
-			print "azcount: "+str(self.azcount)+ " elcount: " + str(self.elcount)
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" movimiento terminado"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" azcount: "+str(self.azcount)+ " elcount: " + str(self.elcount)
 			self.portInUse[0] = False
 		if self.aznow < p.azlim1:
 			self.aznow = p.azelim1
@@ -466,8 +468,8 @@ class Antenna:
 		inLimits = self.get_cmd_inLimits()
 		self.get_azzcount()
 		self.get_ellcount()
-		print "az: "+ str(self.az) + " azzcount: "+str(self.azzcount) + " el: "+ str(self.el)+" ellcount: "+ str(self.ellcount)
-		print "current position: az: "+ str(self.aznow)+ " el: "+str(self.elnow) 
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " az: "+ str(self.az) + " azzcount: "+str(self.azzcount) + " el: "+ str(self.el)+" ellcount: "+ str(self.ellcount)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" current position: az: "+ str(self.aznow)+ " el: "+str(self.elnow) 
 		self.get_first_axis()
 		self.slew_antenna()
 		time.sleep(0.5)
@@ -494,18 +496,22 @@ class Antenna:
 				self.antenna_positionStatus(mm, cmd_r, fcount)
 				self.get_current_azelPosition()
 				status = status + "az: " + str(self.aznow) + " el: "+ str(self.elnow)
-				print status
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " "+status
 				self.check_limit()
 				self.check_end()
 				time.sleep(0.1)
 		return
+		
+	def stop_slew(self):
+	    self.slew = 0;
+	    self.portInUse[0] = False
 
 	def load_parameters(self, pfile):
 		global p
 		p = importlib.import_module(pfile)
 		self.azoff = p.azoff
 		self.eloff = p.eloff
-		print "loaded parameters file " + str(p)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" loaded parameters file " + str(p)
 		if p.digital:
 			self.receiver_default = '1a'
 			self.receiver = self.receiver_default
@@ -568,10 +574,10 @@ class Antenna:
 		self.atten = 0 # attenuator to 0 (not used for digital = True)
 		pwr0 = pwr1 = trecvr = 0
 		if self.mancal == 0:
-			print "moving load on feed"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" moving load on feed"
 			self.calibrator('in')
 		else:
-			print "place load on feed"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" place load on feed"
 			self.stopProc =1
 			raw_input("press any key when done")
 		self.stopProc = 0
@@ -589,10 +595,10 @@ class Antenna:
 		pwr1 = float(pwr1)/(istop-istart)
 		time.sleep(1)
 		if self.mancal == 0:
-			print "moving load out of feed"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" moving load out of feed"
 			self.calibrator('out')
 		else:
-			print "remove load"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " remove load"
 			self.stopProc = 1
 			raw_input("press any key when done")
 		self.stopProc = 0
@@ -607,18 +613,18 @@ class Antenna:
 			trecvr = (p.tload - (pwr1/pwr0)*p.tspill)/( (pwr1/pwr0) - 1.0)
 			self.tsys = trecvr + p.tspill
 			self.calcons = ((trecvr + p.tspill)*self.calcons/ pwr0)
-			print "tsys: ", self.tsys, " K"
-			print "calcons", self.calcons
-			print "trec: :", trecvr, " K"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" tsys: ", self.tsys, " K"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" calcons", self.calcons
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" trec: :", trecvr, " K"
 			self.docal = 0
 		else:
-			print "tsys: error"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+"tsys: error"
 		return
 
 	def noise_calibration(self):
 		self.atten = 0 # attenuator to 0 (not used for digital = True)
 		pwr0 = pwr1 = trecvr = 0
-		print "turning on noise diode"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " turning on noise diode"
 		self.calibrator('noise_on')
 		self.calon = 2
 		self.fcenter
@@ -632,7 +638,7 @@ class Antenna:
 		for i in range(istart, istop):
 			pwr1 += self.spec[i]
 		pwr1 = float(pwr1)/(istop-istart)
-		print "turning off noise diode"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" turning off noise diode"
 		self.calibrator('noise_off')
 		self.calon = 0
 		self.spectra()
@@ -645,31 +651,31 @@ class Antenna:
 			trecvr = ( p.noisecal / (pwr1/pwr0 - 1)) - p.tspill
 			self.tsys = trecvr + p.tspill
 			self.calcons = ((trecvr + p.tspill)*self.calcons/ pwr0)
-			print "tsys: ", self.tsys, " K"
-			print "calcons", self.calcons
-			print "trec: :", trecvr, " K"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" tsys: ", self.tsys, " K"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" calcons", self.calcons
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" trec: :", trecvr, " K"
 			self.docal = 0
 		else:
-			print "tsys: error"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" tsys: error"
 		return
 
 	def calibrator(self, pos):
 		if pos=='noise_on':
 			mode = 7
-			print "waiting on noise on  "
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " waiting on noise on  "
 		if pos=='noise_off':
 			mode = 6
-			print "waiting on noise off  "
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" waiting on noise off  "
 		if pos=='in':
 			mode = 5
-			print "waiting on calin  "
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" waiting on calin  "
 		if pos=='out':
 			mode = 4
-			print "waiting on calout"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" waiting on calout"
 		cmd = "  move " + str(mode) + " 0 \n"
 		self.send_command(cmd)
 		cmd_r = self.get_serialAnswer()
-		print "Done"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " Done"
 		return
 	
 	def radiodg(self, freq):
@@ -695,7 +701,7 @@ class Antenna:
 		#Enviar comando por puerto serial y esperar respuesta en variable recv
 		#simulacion#
 		self.send_command(msg)
-		print "freq request enviado"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " freq request enviado"
 		self.receiving = True
 		while self.receiving:
 			if self.port.inWaiting() >= 128:
@@ -703,7 +709,7 @@ class Antenna:
 			else:
 				pass
 		data = self.port.read(128)
-		print "recibido"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" recibido"
 		recv = struct.unpack('64H', data)
 		#####
 		for i in range(64):
@@ -729,7 +735,7 @@ class Antenna:
 		
 		self.avpower = self.avpower /44.0 
 		self.a = self.calcons * self.avpower
-		print self.avpower, self.a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" "+str(self.avpower+" "+str(self.a)
 		self.sampleStamp = [self.name, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.aznow, self.elnow, self.a]
 		return
 		
@@ -738,7 +744,7 @@ class Antenna:
 		if ( int(self.receiver[0]) == 0 or int(self.receiver[0]) == 5):
 			for i in range(self.nfreq):
 				freqf = self.fcenter + (i - float(self.nfreq)/2) * self.freqsep + 0.8;
-				print "scanning channel " + str(i)+ " at freq " + str(freqf) + "receiver in mode: " + str(self.receiver[0])
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" scanning channel " + str(i)+ " at freq " + str(freqf) + "receiver in mode: " + str(self.receiver[0])
 				self.radiodg(freqf)
 				self.spec[i] = self.a
 				if i == 0:
@@ -765,7 +771,7 @@ class Antenna:
 			for k in range(nk):
 				nk2 = nk/2
 				freqf = self.fcenter + (k - nk2)*0.36 + 0.8
-				print "scanning band " + str(k)+ " at freq " + str(freqf) + "receiver in mode: " + str(self.receiver[0])
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" scanning band " + str(k)+ " at freq " + str(freqf) + "receiver in mode: " + str(self.receiver[0])
 				self.radiodg(freqf)
 				if(k == nk2):
 					self.fcenter = self.freqa
@@ -851,9 +857,9 @@ class Antenna:
 		self.sampleStamp.append(self.nfreq)
 		self.avspecs = [x / (self.av+1e-6) for x in self.avspec]
 		self.avspeccs = [x / (self.avc+1e-6) for x in self.avspecc]
-		print "av:", self.av, "avc:", self.avc
-		print "avspec", max(self.avspec), max(self.avspecs)
-		print "avspecc", max(self.avspecc), max(self.avspeccs)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" av:", self.av, "avc:", self.avc
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" avspec", max(self.avspec), max(self.avspecs)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" avspecc", max(self.avspecc), max(self.avspeccs)
 		self.portInUse[0] = False
 		time.sleep(0.5) # wait before end the thread
 		return self.spec, self.avspecs, self.avspeccs, self.specd
@@ -884,11 +890,11 @@ class Antenna:
 			azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el), name = 'AzEl')
 			azel_thread.start()
 		else:
-			print "SerialPort busy: " + str(self.portInUse)
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " SerialPort busy: " + str(self.portInUse)
 			if self.portInUse[1]=='AzEl':
-				print "Wait antenna to reach commanded position"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" Wait antenna to reach commanded position"
 			if self.portInUse[1]=='spectra':
-				print "wait until spectrum is received"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" wait until spectrum is received"
 		return
 		
 	def status_thread(self, disp):
@@ -903,11 +909,11 @@ class Antenna:
 			spectra_thread = threading.Thread(target = self.spectra, args=[], name = 'Spectra')
 			spectra_thread.start()
 		else:
-			print "SerialPort busy: " + str(self.portInUse)
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " SerialPort busy: " + str(self.portInUse)
 			if self.portInUse[1]=='AzEl':
-				print "Wait antenna to reach commanded position"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" Wait antenna to reach commanded position"
 			if self.portInUse[1]=='spectra':
-				print "wait until spectrum is received"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" wait until spectrum is received"
 		return
 		######### Single Dish / ARI_signalHound Switch
 	def SD_ARI_Switch_init(self):
@@ -936,16 +942,16 @@ class Antenna:
 
 	def on(self, pin):
 		GPIO.output(pin, True)
-		print "Switching receiver to ARI"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" Switching receiver to ARI"
 
 	def off(self, pin):
 		GPIO.output(pin, False)
-		print "Switching receiver to SD"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" Switching receiver to SD"
 
 	def GPstatus(self):
 		SD_ARI_Switch = GPIO.input(self.SwitchFeedbackPin)
 		#relay2 = GPIO.input(relay2_read)
-		print "SD_ARI_Switch: " + str(relay1)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" SD_ARI_Switch: " + str(relay1)
 		#print "relay 2: " + str(relay2)
 
 	def SD_ARI_Switch(self, mode):
