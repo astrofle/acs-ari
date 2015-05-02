@@ -135,7 +135,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			inLimits = self.get_cmd_inLimits()
 			if inLimits:
 				self.azel_thread(az+ self.azoff, el+self.azoff)
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
 				while(not self.OnTarget):
 					sleep(1)
 				return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Antenna reached (az,el):1"
