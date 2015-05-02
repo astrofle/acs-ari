@@ -854,6 +854,8 @@ class Antenna:
 		print "av:", self.av, "avc:", self.avc
 		print "avspec", max(self.avspec), max(self.avspecs)
 		print "avspecc", max(self.avspecc), max(self.avspeccs)
+		self.portInUse[0] = False
+		time.sleep(0.5) # wait before end the thread
 		return self.spec, self.avspecs, self.avspeccs, self.specd
 	
 	def clear(self):
@@ -883,8 +885,10 @@ class Antenna:
 			azel_thread.start()
 		else:
 			print "SerialPort busy: " + str(self.portInUse)
-			if self.slew:
+			if self.portInUse[1]=='AzEl':
 				print "Wait antenna to reach commanded position"
+			if self.portInUse[1]=='spectra':
+				print "wait until spectrum is received"
 		return
 		
 	def status_thread(self, disp):
@@ -893,14 +897,17 @@ class Antenna:
 		return
 		
 	def spectra_thread(self):
-		if self.slew:
-			print "wait until antenna stops slew"
-		elif self.receiving:
-			print "wait until spectrum is received"
-		else:
-			self.waitingSp = True
+		if not self.portInUse[0]: # Nueva linea
+			self.portInUse = [True, 'spectra']
+			#self.waitingSp = True
 			spectra_thread = threading.Thread(target = self.spectra, args=[], name = 'Spectra')
 			spectra_thread.start()
+		else:
+			print "SerialPort busy: " + str(self.portInUse)
+			if self.portInUse[1]=='AzEl':
+				print "Wait antenna to reach commanded position"
+			if self.portInUse[1]=='spectra':
+				print "wait until spectrum is received"
 		return
 		######### Single Dish / ARI_signalHound Switch
 	def SD_ARI_Switch_init(self):
