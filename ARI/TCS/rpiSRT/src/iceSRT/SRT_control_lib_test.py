@@ -114,7 +114,7 @@ class Antenna:
 			print "serial port: " + self.serialport
 			print "last SRT command: " + str(self.lastSRTCom)
 			print "last received Serial message: " + str(self.lastSerialMsg)
-		return self.az, self.el, self.aznow, self.elnow, self.axis, self.tostow, self.elatstow, self.azatstow, self.slew, self.serialport, str(self.lastSRTCom), str(self.lastSerialMsg), now, self.name)
+		return self.az, self.el, self.aznow, self.elnow, self.axis, self.tostow, self.elatstow, self.azatstow, self.slew, self.serialport, str(self.lastSRTCom), str(self.lastSerialMsg), now, self.name
 		
 	def init_com(self):
 		#serial port USB-RS232 initializacion
