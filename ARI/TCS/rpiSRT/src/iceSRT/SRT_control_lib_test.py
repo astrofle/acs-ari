@@ -735,7 +735,7 @@ class Antenna:
 		
 		self.avpower = self.avpower /44.0 
 		self.a = self.calcons * self.avpower
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" "+str(self.avpower+" "+str(self.a)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" "+str(self.avpower)+" "+str(self.a)
 		self.sampleStamp = [self.name, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.aznow, self.elnow, self.a]
 		return
 		
