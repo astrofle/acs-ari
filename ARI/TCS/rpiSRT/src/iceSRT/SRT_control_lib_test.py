@@ -94,6 +94,7 @@ class Antenna:
 		#If not present no initialization is done
 		self.name = os.uname()[1] #Antenna name
 		self.sampleStamp = []
+		self.portInUse = [False, '']
 
 
 	def status(self, disp):
@@ -447,6 +448,7 @@ class Antenna:
 			self.OnTarget = True
 			print "movimiento terminado"
 			print "azcount: "+str(self.azcount)+ " elcount: " + str(self.elcount)
+			self.portInUse[0] = False
 		if self.aznow < p.azlim1:
 			self.aznow = p.azelim1
 			self.azcount = 0.0
@@ -468,6 +470,7 @@ class Antenna:
 		print "current position: az: "+ str(self.aznow)+ " el: "+str(self.elnow) 
 		self.get_first_axis()
 		self.slew_antenna()
+		time.sleep(0.5)
 		return
 	
 	def slew_antenna(self):
@@ -871,13 +874,17 @@ class Antenna:
 		
 		####### Threads
 	def azel_thread(self, az, el):
-		while(self.receiving):
-			time.sleep(0.1)
-		if self.slew ==0:
+		#while(self.receiving):
+		#	time.sleep(0.1)
+		#if self.slew ==0: Modificado por mejora
+		if not self.portInUse[0]: # Nueva linea
+			self.portInUse = [True, 'AzEl']
 			azel_thread = threading.Thread(target = self.cmd_azel, args=(az,el), name = 'AzEl')
 			azel_thread.start()
 		else:
-			print "Wait antenna to reach commanded position"
+			print "SerialPort busy: " + str(self.portInUse)
+			if self.slew:
+				print "Wait antenna to reach commanded position"
 		return
 		
 	def status_thread(self, disp):
