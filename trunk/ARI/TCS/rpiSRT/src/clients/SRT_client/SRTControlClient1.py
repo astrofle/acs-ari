@@ -293,8 +293,8 @@ class SRT():
 				print  self.name + " moving the antenna "
 				print self.name +  " commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
 				self.IsMoving = True
-				OnSource_Thread = threading.Thread(target = self.OnSource_thread, name='OnSource')
-				OnSource_Thread.start()
+				OnTarget_Thread = threading.Thread(target = self.OnTarget_thread, name='OnSource')
+				OnTarget_Thread.start()
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
@@ -302,10 +302,16 @@ class SRT():
 			print  self.name + " wait until serial port is available or antenna ends movement"
 		return target
 	
-	def OnSource_thread(self):
-		while(True):
-			ontarget = self.controller.SRTOnTarget()
-	
+	def OnTarget_thread(self):
+		slewing = True
+		while(slewing):
+			state = self.controller.SRTOnTarget()
+			onTarget = state.split(':')[-1]
+			if onTarget:
+				slewing = False
+				self.AzELCB("Antenna on Target")
+			time.sleep(1)
+		
 	def AzElCB(self,a):
 		print a
 		print  self.name + " Movement finished!!"
@@ -317,6 +323,10 @@ class SRT():
 			if self.toSource == 2:
 				self.OnSource = True
 
+	def AzEl1CB(self, a):
+		print a
+		return
+		
 	def stopAzEl(self):
 		self.statusIC = 0
 		self.ic = None
