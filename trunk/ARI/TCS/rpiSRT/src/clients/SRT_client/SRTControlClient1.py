@@ -59,6 +59,7 @@ class SRT():
 		self.name = ''
 		self.SRTinitialized = False #This variable check if SRT was initialised in a previous session
 		self.mode = 'SD'
+		self.slewing = False
 
 		
 	def find_planets(self):
@@ -303,12 +304,12 @@ class SRT():
 		return target
 	
 	def OnTarget_thread(self):
-		slewing = True
-		while(slewing):
+		self.slewing = True
+		while(self.slewing):
 			state = self.controller.SRTOnTarget()
 			onTarget = state.split(':')[-1]
 			if int(onTarget):
-				slewing = False
+				self.slewing = False
 				self.AzElCB("Antenna on Target")
 			time.sleep(1)
 		
@@ -328,6 +329,7 @@ class SRT():
 		return
 		
 	def stopAzEl(self):
+		self.slewing = False
 		self.statusIC = 0
 		self.ic = None
 		if self.IsMoving:
