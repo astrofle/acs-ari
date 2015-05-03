@@ -186,12 +186,12 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 
 	def SRTGetSpectrum(self, current = None):
 		self.spectra_thread()
+		sleep(1)
 		print self.waitingSp 
 		#return "obtaining spectrum"
 		#_sp = self.spectra()
 		while(self.waitingSp):
 			print self.waitingSp
-			sleep(0.5)
 		print self.waitingSp
 		stamps = SRTControl.stamp(name = self.sampleStamp[0], 
 		timdate = self.sampleStamp[1],
