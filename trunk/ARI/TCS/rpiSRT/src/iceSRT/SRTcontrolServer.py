@@ -149,7 +149,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 	
 	def SRTOnTarget(self, current = None):
 		if not self.OnTarget:
-			return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Not on target:1"
+			return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Not on target:0"
 		else:
 			return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Antenna reached (az,el):1"
 			
