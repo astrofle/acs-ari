@@ -307,7 +307,7 @@ class SRT():
 		while(slewing):
 			state = self.controller.SRTOnTarget()
 			onTarget = state.split(':')[-1]
-			if onTarget:
+			if int(onTarget):
 				slewing = False
 				self.AzElCB("Antenna on Target")
 			time.sleep(1)
