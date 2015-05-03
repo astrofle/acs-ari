@@ -289,18 +289,23 @@ class SRT():
 		if not self.portInUse:
 			try:
 				self.portInUse = True
-				target = self.controller.begin_SRTAzEl(az, el, self.AzElCB, self.failureCB);
+				target = self.controller.begin_SRTAzEl(az, el, self.AzEl1CB, self.failureCB);
 				print  self.name + " moving the antenna "
 				print self.name +  " commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
 				self.IsMoving = True
-				#self.movingThread()
+				OnSource_Thread = threading.Thread(target = self.OnSource_thread, name='OnSource')
+				OnSource_Thread.start()
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
 		else:
 			print  self.name + " wait until serial port is available or antenna ends movement"
 		return target
-		
+	
+	def OnSource_thread(self):
+		while(True):
+			ontarget = self.controller.SRTOnTarget()
+	
 	def AzElCB(self,a):
 		print a
 		print  self.name + " Movement finished!!"
