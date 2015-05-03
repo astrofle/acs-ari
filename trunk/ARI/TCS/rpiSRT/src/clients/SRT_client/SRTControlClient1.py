@@ -294,7 +294,7 @@ class SRT():
 				print  self.name + " moving the antenna "
 				print self.name +  " commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
 				self.IsMoving = True
-				OnTarget_Thread = threading.Thread(target = self.OnTarget_thread, name='OnSource')
+				OnTarget_Thread = threading.Thread(target = self.OnTarget_thread, name='OnTarget')
 				OnTarget_Thread.start()
 			except:
 				traceback.print_exc()
@@ -304,6 +304,7 @@ class SRT():
 		return target
 	
 	def OnTarget_thread(self):
+		time.sleep(0.2)
 		self.slewing = True
 		while(self.slewing):
 			state = self.controller.SRTOnTarget()
