@@ -136,11 +136,10 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			if inLimits:
 				self.azel_thread(az+ self.azoff, el+self.azoff)
 				return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
-
 				#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
 				#while(not self.OnTarget):
 				#	sleep(1)
-				return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Moving antenna to (az,el)"
+				#return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Moving antenna to (az,el)"
 			else:
 				return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Command out of limits!:0"
 		except Exception, e:
@@ -187,9 +186,11 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 
 	def SRTGetSpectrum(self, current = None):
 		self.spectra_thread()
+		print self.waitingSp 
 		#return "obtaining spectrum"
 		#_sp = self.spectra()
 		while(self.waitingSp):
+		print self.waitingSp
 			sleep(0.2)
 		stamps = SRTControl.stamp(name = self.sampleStamp[0], 
 		timdate = self.sampleStamp[1],
