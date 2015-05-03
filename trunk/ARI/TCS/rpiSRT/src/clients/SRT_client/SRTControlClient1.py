@@ -309,7 +309,7 @@ class SRT():
 			onTarget = state.split(':')[-1]
 			if onTarget:
 				slewing = False
-				self.AzELCB("Antenna on Target")
+				self.AzElCB("Antenna on Target")
 			time.sleep(1)
 		
 	def AzElCB(self,a):
