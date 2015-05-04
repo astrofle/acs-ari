@@ -62,6 +62,7 @@ class SRT():
 		########## 
 		self.slewing = False
 		self.newAzEl = False
+		self.cmdstop = False
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -326,6 +327,10 @@ class SRT():
 			if self.toSource == 2:
 				self.OnSource = True
 		time.sleep(0.2)
+		if cmdstop:
+			print "Safe waiting"
+			self.cmdstop = False
+			time.sleep(15)
 
 	def AzEl1CB(self, a):
 		print a
@@ -333,6 +338,7 @@ class SRT():
 		
 	def stopAzEl(self):
 		self.slewing = False
+		self.cmdstop = True
 		self.statusIC = 0
 		self.ic = None
 		if self.IsMoving:
