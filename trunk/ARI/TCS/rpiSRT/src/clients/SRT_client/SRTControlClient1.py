@@ -63,6 +63,7 @@ class SRT():
 		self.slewing = False
 		self.newAzEl = False
 		self.cmdstop = False
+		self.enSRT = True
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -331,7 +332,7 @@ class SRT():
 			if self.toSource == 2:
 				self.OnSource = True
 		time.sleep(0.2)
-		if cmdstop:
+		if self.cmdstop:
 			print "Safe waiting"
 			self.cmdstop = False
 			time.sleep(15)
@@ -606,9 +607,11 @@ class SRT():
 	
 	def operSRTLoop(self):
 		#This is the loop that manages the commands to control the SRT
-		while(True):
+		while(self.enSRT):
 			if self.newAzEl:
 				self.stopAzEl()
+				while self.portInUse[0]:
+					time.sleep(0.5)
 				self.AzEl(self.az,self.el)
 				self.newAzEl = False
 			else:
