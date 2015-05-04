@@ -596,7 +596,7 @@ class SRT():
 		while(True):
 			if self.newAzEl:
 				self.stopAzEl()
-				self.AzEl(az,el)
+				self.AzEl(self.az,self.el)
 				self.newAzEl = False
 			else:
 				self.SRTGetSpectrum()
