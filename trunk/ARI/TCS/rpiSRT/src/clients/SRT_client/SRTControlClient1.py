@@ -52,7 +52,7 @@ class SRT():
 		self.ic = None
 		self.getspectrum = True
 		self.spectra = False
-		self.portInUse = False
+		self.portInUse = [False, '']
 		self.spectrumStarted = False
 		self.rGraph = True
 		self.statusDisp = False
@@ -121,14 +121,14 @@ class SRT():
 		self.initialized = True # This variable check the SRT initialization in the current session
 		self.tostow = 1
 		self.IsMoving = False
-		self.portInUse = False
+		self.portInUse[0] = False
 		self.status(False)
 		return
 		
 	def failureCB(self, ex):
 		#failure Callback
 		print "Exception is: " + str(ex)
-		self.portInUse = False
+		self.portInUse[0] = False
 		return
 		
 	def genericCB(self, a):
@@ -250,10 +250,10 @@ class SRT():
 		#This routine is mandatory when the system is started
 		self.statusIC = 0
 		self.ic = None
-		if not self.portInUse:
+		if not self.portInUse[0]:
 			try:
 				self.initialized = False
-				self.portInUse = True
+				self.portInUse = [True, 'Init']
 				self.IsMoving = True
 				self.controller.begin_SRTinit(parameters, self.stowCB, self.failureCB);
 				print self.name + " loading parameters file and sending antenna to stow"
@@ -269,9 +269,9 @@ class SRT():
 		#commands SRT antenna to stow position
 		self.statusIC = 0
 		self.ic = None
-		if not self.portInUse:
+		if not self.portInUse[0]:
 			try:
-				self.portInUse = True
+				self.portInUse = [True, 'Stow']
 				self.IsMoving = True
 				self.controller.begin_SRTStow(self.stowCB, self.failureCB);
 				print  self.name + " sending antenna to stow"
@@ -288,9 +288,9 @@ class SRT():
 		self.statusIC = 0
 		self.ic = None
 		target = 0
-		if not self.portInUse:
+		if not self.portInUse[0]:
 			try:
-				self.portInUse = True
+				self.portInUse = [True, 'AzEl']
 				target = self.controller.begin_SRTAzEl(az, el, self.AzEl1CB, self.failureCB);
 				print  self.name + " moving the antenna "
 				print self.name +  " commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
@@ -319,7 +319,7 @@ class SRT():
 		print a
 		print  self.name + " Movement finished!!"
 		self.IsMoving = False
-		self.portInUse = False
+		self.portInUse[0] = False
 		self.status(False)
 		if self.track:
 			self.toSource = self.toSource + 1
@@ -347,7 +347,7 @@ class SRT():
 		if (self.IsMoving and idx==-1):
 			print  self.name + " Movement finished!!"
 			self.IsMoving = False
-			self.portInUse = False
+			self.portInUse[0] = False
 			self.status(False)
 			self.toSource = self.toSource + 1
 			if self.toSource == 2:
@@ -357,7 +357,7 @@ class SRT():
 		if (self.spectra and idx2==-1):
 			print  self.name + " Spectra finished!!"
 			self.spectra = False
-			self.portInUse = False
+			self.portInUse[0] = False
 	
 	# Receiver control	
 	def SetFreq(self, freq, receiver):
@@ -403,10 +403,10 @@ class SRT():
 		self.ic = None
 		#self.spectrumStarted = True
 		#while(self.getspectrum):
-		if not self.portInUse:
+		if not self.portInUse[0]:
 			try:
 				#if not self.spectra:
-				self.portInUse = True
+				self.portInUse = [True, 'spectra']
 				self.spectra = True
 				target = self.controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
 			except:
@@ -425,7 +425,7 @@ class SRT():
 		self.spectrum = spect
 		print  self.name + " spectrum received"
 		self.spectra = False
-		self.portInUse = False
+		self.portInUse[0] = False
 		fspec = open('fspec.csv','w')
 		fspecW = csv.writer(fspec)
 		fspecd = open('fspecd.csv','w')
@@ -470,7 +470,7 @@ class SRT():
 		self.OnSource = False
 		self.toSource = 0
 		while(self.track):
-			if (not self.IsMoving and not self.portInUse):
+			if (not self.IsMoving and not self.portInUse[0]):
 				if radec:
 					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
 				else:
