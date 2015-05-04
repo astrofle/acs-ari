@@ -61,7 +61,7 @@ class SRT():
 		self.mode = 'SD'
 		########## 
 		self.slewing = False
-
+		self.newAzEl = True
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -588,5 +588,22 @@ class SRT():
 		print a
 		self.mode = a
 		
-
+	def operSRT(self):
+		operSRT_thread = threading.Thread(target = self.operSRTLoop)
+		
+	def operSRTLoop(self):
+		#This is the loop that manages the commands to control the SRT
+		while(True):
+			if self.newAzEl:
+				self.stopAzEl()
+				self.AzEl(az,el)
+				self.newAzEl = False
+			else:
+				self.SRTGetSpectrum()
+			time.sleep(1)
+		
+	def setAzEl(selfl aznew, elnew):
+		self.az = aznew
+		self.el = elnew
+		self.newAzEl = True
 
