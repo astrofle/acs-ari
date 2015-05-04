@@ -64,6 +64,7 @@ module SRTControl{
 		void SRTClear(out string r);
 		void SRTsetMode(string mode, out string r);
 		void SRTOnTarget(out string r);
+		void SRTportInUse(out string r);
 	};
 };
 
