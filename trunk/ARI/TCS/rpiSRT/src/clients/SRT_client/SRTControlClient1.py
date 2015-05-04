@@ -147,8 +147,10 @@ class SRT():
 		state = a.split(',')
 		serialPort = state[0].replace('[','')
 		antennaInit = state[1].replace(']','')
-		aznow = state[2].replace(']','')
-		elnow = state[3].replace(']','')
+		self.aznow = state[2].replace(']','')
+		self.elnow = state[3].replace(']','')
+		self.az = self.aznow
+		self.el = self.elnow
 		if (serialPort != 'None') & (antennaInit != ' False'):
 			self.SRTinitialized = True
 			print self.name + " SRT has been initialised in a previus session"
@@ -157,7 +159,7 @@ class SRT():
 		
 		print self.name + " Serial Port: " + str(serialPort)
 		print self.name + " Antenna Initialised (sent to stow): " + str(antennaInit)
-		print self.name + "Antenna position is: " + str(aznow)+", "+str(elnow)
+		print self.name + "Antenna position is: " + str(self.aznow)+", "+str(self.elnow)
 
 	######## Control functions #######################
 	def setIP(self, IP):
