@@ -602,7 +602,7 @@ class SRT():
 				self.SRTGetSpectrum()
 			time.sleep(1)
 		
-	def setAzEl(selfl aznew, elnew):
+	def setAzEl(self, aznew, elnew):
 		self.az = aznew
 		self.el = elnew
 		self.newAzEl = True
