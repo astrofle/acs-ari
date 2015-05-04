@@ -612,7 +612,6 @@ class SRT():
 		self.ic = None
 		try:
 			self.portInUse = self.controller.SRTportInUse()
-			self.portInUse = self.portInUse.split(',')
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
