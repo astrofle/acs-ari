@@ -59,6 +59,7 @@ class SRT():
 		self.name = ''
 		self.SRTinitialized = False #This variable check if SRT was initialised in a previous session
 		self.mode = 'SD'
+		########## 
 		self.slewing = False
 
 		
@@ -341,24 +342,6 @@ class SRT():
 				traceback.print_exc()
 				self.statusIC = 1
 
-	def movingThread(self):
-		moving_Thread = threading.Thread(target = self.getSRTThreads, name='moving')
-		moving_Thread.start()
-
-	def getSRTThreads(self):
-		#Get active threads from SRT	
-		self.statusIC = 0
-		self.ic = None
-		target = 0
-		try:
-			while(self.IsMoving or self.spectra):
-				target = self.controller.begin_SRTThreads(self.threadCB, self.failureCB);
-				time.sleep(1.0)
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
-		return target
-
 	def threadCB(self, a):
 		idx = a.find('AzEl')
 		if (self.IsMoving and idx==-1):
@@ -418,18 +401,18 @@ class SRT():
 		#Gets spectrum from receiver
 		self.statusIC = 0
 		self.ic = None
-		self.spectrumStarted = True
-		while(self.getspectrum):
-			if not self.portInUse:
-				try:
-					if not self.spectra:
-						self.portInUse = True
-						self.spectra = True
-						target = self.controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
-				except:
-					traceback.print_exc()
-					self.statusIC = 1
-			time.sleep(1)
+		#self.spectrumStarted = True
+		#while(self.getspectrum):
+		if not self.portInUse:
+			try:
+				#if not self.spectra:
+				self.portInUse = True
+				self.spectra = True
+				target = self.controller.begin_SRTGetSpectrum(self.getSpectrumCB, self.failureCB)
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		#time.sleep(1)
 		return
 
 	def getSpectrumCB(self, spect):
