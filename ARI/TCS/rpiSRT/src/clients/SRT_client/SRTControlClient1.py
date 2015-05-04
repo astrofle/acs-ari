@@ -334,8 +334,8 @@ class SRT():
 		time.sleep(0.2)
 		if self.cmdstop:
 			print "Safe waiting"
-			self.cmdstop = False
 			time.sleep(15)
+			self.cmdstop = False
 
 	def AzEl1CB(self, a):
 		print a
@@ -615,7 +615,7 @@ class SRT():
 				self.AzEl(self.az,self.el)
 				self.newAzEl = False
 			else:
-				while self.portInUse[0]:
+				while (self.portInUse[0] or self.cmdstop):
 					time.sleep(0.5)
 				self.SRTGetSpectrum()
 			time.sleep(1)
