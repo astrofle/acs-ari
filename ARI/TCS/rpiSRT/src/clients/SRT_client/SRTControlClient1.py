@@ -615,6 +615,8 @@ class SRT():
 				self.AzEl(self.az,self.el)
 				self.newAzEl = False
 			else:
+				while self.portInUse[0]:
+					time.sleep(0.5)
 				self.SRTGetSpectrum()
 			time.sleep(1)
 		
