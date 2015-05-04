@@ -606,4 +606,14 @@ class SRT():
 		self.az = aznew
 		self.el = elnew
 		self.newAzEl = True
-
+		
+	def getSRTportInUse(self):
+		self.statusIC = 0
+		self.ic = None
+		try:
+			self.portInUse = self.controller.SRTportInUse()
+			self.portInUse = self.portInUse.strip(',')
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+		return
