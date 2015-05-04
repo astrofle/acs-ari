@@ -124,6 +124,8 @@ class SRT():
 		self.IsMoving = False
 		self.portInUse[0] = False
 		self.status(False)
+		self.az = self.aznow
+		self.el = self.elnow
 		return
 		
 	def failureCB(self, ex):
