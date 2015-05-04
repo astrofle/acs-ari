@@ -413,6 +413,11 @@ class SRT():
 				traceback.print_exc()
 				self.statusIC = 1
 		#time.sleep(1)
+		else:
+			if self.IsMoving:
+				print  self.name + " wait until serial port is available or antenna ends movement"
+			else:
+				print  self.name + " wait until serial port is available or spectrum is acquired"
 		return
 
 	def getSpectrumCB(self, spect):
