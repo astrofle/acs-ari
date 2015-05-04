@@ -46,6 +46,11 @@ module SRTControl{
 	
 	sequence<specs> spectrums;
 
+	struct inuse{
+	    bool use;
+	    string proc;
+	    };
+
 	interface telescope{
 		void message(string s, out string r);
 		void SRTGetSerialPorts(out ports u);
@@ -64,7 +69,7 @@ module SRTControl{
 		void SRTClear(out string r);
 		void SRTsetMode(string mode, out string r);
 		void SRTOnTarget(out string r);
-		void SRTportInUse(out string r);
+		void SRTportInUse(out inuse p);
 	};
 };
 

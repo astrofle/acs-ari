@@ -224,7 +224,8 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " set to " + mode
 	
 	def SRTportInUse(self, current = None):
-		return str(self.portInUse)
+		p = SRTControl.inuse(self.portInUse[0], self.portInUse[1])
+		return p
 		
 try:
 	if len(sys.argv)<2:
