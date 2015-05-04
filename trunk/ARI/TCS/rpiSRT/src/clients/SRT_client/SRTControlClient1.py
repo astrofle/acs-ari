@@ -455,7 +455,7 @@ class SRT():
 		favspecc.close()
 		if self.toSource == 1:
 			self.StopSpectrum()
-		time.sleep(0.2)
+		time.sleep(1)
 		return
 		
 	######## Thread functions	
@@ -603,6 +603,7 @@ class SRT():
 	def operSRT(self):
 		operSRT_thread = threading.Thread(target = self.operSRTLoop)
 		operSRT_thread.start()
+	
 	def operSRTLoop(self):
 		#This is the loop that manages the commands to control the SRT
 		while(True):
