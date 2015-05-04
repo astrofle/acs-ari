@@ -61,7 +61,7 @@ class SRT():
 		self.mode = 'SD'
 		########## 
 		self.slewing = False
-		self.newAzEl = True
+		self.newAzEl = False
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
