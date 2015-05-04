@@ -590,7 +590,7 @@ class SRT():
 		
 	def operSRT(self):
 		operSRT_thread = threading.Thread(target = self.operSRTLoop)
-		
+		operSRT_Thread.start()
 	def operSRTLoop(self):
 		#This is the loop that manages the commands to control the SRT
 		while(True):
