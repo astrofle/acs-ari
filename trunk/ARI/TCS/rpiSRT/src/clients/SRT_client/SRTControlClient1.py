@@ -229,7 +229,7 @@ class SRT():
 		self.statusDisp = disp
 		try:
 			self.controller.begin_SRTStatus(self.getStatusCB, self.failureCB);
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " getting status"
+			#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " getting status"
 		except:
 			traceback.print_exc()
 			self.status = 1
