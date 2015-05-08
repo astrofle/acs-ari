@@ -115,11 +115,11 @@ class SRT():
 	def docalCB(self, calcons):
 		#call by do_calibration
 		self.calcons = calcons
-		return self.name + " calibration done"
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " calibration done"
 	
 	def stowCB(self, a):
 		#call by Init and Stow
-		print self.name + " Antenna Stowed"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Antenna Stowed"
 		self.initialized = True # This variable check the SRT initialization in the current session
 		self.tostow = 1
 		self.IsMoving = False
@@ -140,7 +140,7 @@ class SRT():
 		print a
 
 	def getNameCB(self, a):
-		print "connected to " + a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + "connected to " + a
 		self.name = a
 
 	def serverCB(self, a):
@@ -154,13 +154,13 @@ class SRT():
 		self.el = self.elnow
 		if (serialPort != 'None') & (antennaInit != ' False'):
 			self.SRTinitialized = True
-			print self.name + " SRT has been initialised in a previus session"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " SRT has been initialised in a previus session"
 		else:
-			print self.name + " Proceed with SRT initialization"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Proceed with SRT initialization"
 		
-		print self.name + " Serial Port: " + str(serialPort)
-		print self.name + " Antenna Initialised (sent to stow): " + str(antennaInit)
-		print self.name + "Antenna position is: " + str(self.aznow)+", "+str(self.elnow)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Serial Port: " + str(serialPort)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Antenna Initialised (sent to stow): " + str(antennaInit)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + "Antenna position is: " + str(self.aznow)+", "+str(self.elnow)
 
 	######## Control functions #######################
 	def setIP(self, IP):
@@ -190,7 +190,7 @@ class SRT():
 			self.controller = SRTControl.telescopePrx.checkedCast(base)
 			self.controller.begin_message("connected to controller", self.genericCB, self.failureCB);
 			self.controller.begin_SRTGetName(self.getNameCB, self.failureCB)
-			print "Connecting to SRTController"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +"Connecting to SRTController"
 			self.controller.begin_serverState(self.serverCB, self.failureCB);
 			if not self.controller:
 				raise RuntimeError("Invalid proxy")
@@ -202,7 +202,7 @@ class SRT():
 
 	def disconnect(self):
 		#disconnection routine
-		print "Disconnecting.."
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" Disconnecting.."
 		if self.ic:
 			try:
 				self.ic.destroy()
@@ -219,7 +219,7 @@ class SRT():
 		self.statusDisp = disp
 		try:
 			self.controller.begin_SRTStatus(self.getStatusCB, self.failureCB);
-			print self.name + " getting status"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " getting status"
 		except:
 			traceback.print_exc()
 			self.status = 1
@@ -230,7 +230,7 @@ class SRT():
 		self.ic = None
 		try:
 			self.controller.begin_SRTGetSerialPorts(self.genericCB, self.failureCB);
-			print self.name + " Obtaining available serial ports"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Obtaining available serial ports"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -243,7 +243,7 @@ class SRT():
 		self.ic = None
 		try:
 			self.controller.begin_SRTSetSerialPort(port, self.genericCB, self.failureCB);
-			print self.name + " Setting serial port"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Setting serial port"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -262,12 +262,12 @@ class SRT():
 				self.portInUse = [True, 'Init']
 				self.IsMoving = True
 				self.controller.begin_SRTinit(parameters, self.stowCB, self.failureCB);
-				print self.name + " loading parameters file and sending antenna to stow"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " loading parameters file and sending antenna to stow"
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
 		else:
-			print self.name + " Wait until initializacion is finished"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Wait until initializacion is finished"
 		return
 		
 			
@@ -280,12 +280,12 @@ class SRT():
 				self.portInUse = [True, 'Stow']
 				self.IsMoving = True
 				self.controller.begin_SRTStow(self.stowCB, self.failureCB);
-				print  self.name + " sending antenna to stow"
+				print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " sending antenna to stow"
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
 		else:
-			print  self.name + " Wait until stow is finished"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Wait until stow is finished"
 		return
 
 	#Antenna Movement ##########
@@ -298,8 +298,8 @@ class SRT():
 			try:
 				self.portInUse = [True, 'AzEl']
 				target = self.controller.begin_SRTAzEl(az, el, self.AzEl1CB, self.failureCB);
-				print  self.name + " moving the antenna "
-				print self.name +  " commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " moving the antenna "
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name +  " commanded coordinates: " + "Azimuth: "+ str(az) + " Elevation: " + str(el)
 				self.IsMoving = True
 				OnTarget_Thread = threading.Thread(target = self.OnTarget_thread, name='OnTarget')
 				OnTarget_Thread.start()
@@ -307,7 +307,7 @@ class SRT():
 				traceback.print_exc()
 				self.statusIC = 1
 		else:
-			print  self.name + " wait until serial port is available or antenna ends movement"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " wait until serial port is available or antenna ends movement"
 		return target
 	
 	def OnTarget_thread(self):
@@ -323,7 +323,7 @@ class SRT():
 		
 	def AzElCB(self,a):
 		print a
-		print  self.name + " Movement finished!!"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Movement finished!!"
 		self.IsMoving = False
 		self.portInUse[0] = False
 		self.status(False)
@@ -333,7 +333,7 @@ class SRT():
 				self.OnSource = True
 		time.sleep(0.2)
 		if self.cmdstop:
-			print "Safe waiting"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +"Safe waiting"
 			time.sleep(15)
 			self.cmdstop = False
 
@@ -350,7 +350,7 @@ class SRT():
 		self.ic = None
 		try:
 			target = self.controller.begin_SRTSetFreq(freq, str(receiver), self.genericCB, self.failureCB);
-			print  self.name + " seting frequency"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " seting frequency"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -376,15 +376,15 @@ class SRT():
 		#time.sleep(1)
 		else:
 			if self.IsMoving:
-				print  self.name + " wait until serial port is available or antenna ends movement"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " wait until serial port is available or antenna ends movement"
 			else:
-				print  self.name + " wait until serial port is available or spectrum is acquired"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " wait until serial port is available or spectrum is acquired"
 		return
 
 	def getSpectrumCB(self, spect):
 		#call by getSpectrum
 		self.spectrum = spect
-		print  self.name + " spectrum received"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " spectrum received"
 		self.spectra = False
 		self.portInUse[0] = False
 		fspec = open('fspec.csv','w')
@@ -423,7 +423,7 @@ class SRT():
 			source = self.SRTsources[source]
 			radec = 1
 		else:
-			print  self.name + " Object not found or not observable"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Object not found or not observable"
 			self.toSource = -1
 			self.StopSpectrum()
 			return
@@ -469,7 +469,7 @@ class SRT():
 		self.ic = None
 		try:
 			target = self.controller.begin_SRTDoCalibration(method, self.docalCB, self.failureCB)
-			print  self.name + " calibrating receiver"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " calibrating receiver"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -506,7 +506,7 @@ class SRT():
 		self.ic = None
 		try:
 			target = self.controller.begin_SRTClear(self.genericCB, self.failureCB)
-			print  self.name + " clearing spectrum"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " clearing spectrum"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -528,7 +528,7 @@ class SRT():
 		self.ic = None
 		try:
 			target = self.controller.begin_SRTGetName(self.getNameCB, self.failureCB)
-			print "getting antenna name"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +"getting antenna name"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -540,7 +540,7 @@ class SRT():
 		self.ic = None
 		try:
 			target = self.controller.begin_SRTsetMode(mode, self.setModeCB, self.failureCB)
-			print "setting receiver mode"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +"setting receiver mode"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -582,7 +582,7 @@ class SRT():
 		self.ic = None
 		if self.IsMoving:
 			try:
-				print "Stopping antenna by command!"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +"Stopping antenna by command!"
 				self.controller.begin_SRTStopSlew(self.AzElCB, self.failureCB);
 			except:
 				traceback.print_exc()
