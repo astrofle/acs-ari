@@ -65,6 +65,8 @@ class SRT():
 		self.cmdstop = False
 		self.enSRT = True
 		self.enSpec = True
+		self.getStatus = True
+
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -192,6 +194,9 @@ class SRT():
 			self.controller.begin_SRTGetName(self.getNameCB, self.failureCB)
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +"Connecting to SRTController"
 			self.controller.begin_serverState(self.serverCB, self.failureCB);
+			Status_Thread = threading.Thread(target = self.status_thread, name='status')
+			print "starting status thread"
+			Status_Thread.start()
 			if not self.controller:
 				raise RuntimeError("Invalid proxy")
 		except:
@@ -211,6 +216,11 @@ class SRT():
 				self.statusIC = 1
 				sys.exit(status)
 		return
+	
+	def status_thread(self):
+		while(self.getStatus):
+			status(False)
+			time.sleep(2)
 
 	def status(self,disp):
 		#asynchronous status
