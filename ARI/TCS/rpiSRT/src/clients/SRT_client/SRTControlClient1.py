@@ -64,7 +64,7 @@ class SRT():
 		self.newAzEl = False
 		self.cmdstop = False
 		self.enSRT = True
-		
+		self.enSpec = True
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -341,35 +341,7 @@ class SRT():
 		print a
 		return
 		
-	def stopAzEl(self):
-		self.slewing = False
-		self.cmdstop = True
-		self.statusIC = 0
-		self.ic = None
-		if self.IsMoving:
-			try:
-				print "Stopping antenna by command!"
-				self.controller.begin_SRTStopSlew(self.AzElCB, self.failureCB);
-			except:
-				traceback.print_exc()
-				self.statusIC = 1
 
-	def threadCB(self, a):
-		idx = a.find('AzEl')
-		if (self.IsMoving and idx==-1):
-			print  self.name + " Movement finished!!"
-			self.IsMoving = False
-			self.portInUse[0] = False
-			self.status(False)
-			self.toSource = self.toSource + 1
-			if self.toSource == 2:
-				self.OnSource = True
-				self.GetSpectrum()
-		idx2 = a.find('spectra')
-		if (self.spectra and idx2==-1):
-			print  self.name + " Spectra finished!!"
-			self.spectra = False
-			self.portInUse[0] = False
 	
 	# Receiver control	
 	def SetFreq(self, freq, receiver):
@@ -384,30 +356,7 @@ class SRT():
 			self.statusIC = 1
 		return
 
-	def StopSpectrum(self):
-		self.getspectrum = 0
-		self.spectrumStarted = False
-	
-	def StartSpectrum(self):
-		self.getspectrum = 1
-		self.GetSpectrum()
-	
-	def GetSpectrum(self):
-		target = 0
-		self.getspectrum = 1
-		if self.spectrumStarted:
-			print  self.name + " this is already started"
-			return target
-		if (not self.IsMoving):
-			target = self.spectraThread()
-			print  self.name + " getting spectrum"
-		else:
-			print  self.name + " wait until antenna stop movement"
-		return target
 
-	def spectraThread(self):
-		spectra_Thread = threading.Thread(target = self.SRTGetSpectrum, name='spectra')
-		spectra_Thread.start()
 		
 	def SRTGetSpectrum(self):
 		#Gets spectrum from receiver
@@ -617,7 +566,8 @@ class SRT():
 			else:
 				while (self.portInUse[0] or self.cmdstop):
 					time.sleep(0.5)
-				self.SRTGetSpectrum()
+				if self.enSpec:
+					self.SRTGetSpectrum()
 			time.sleep(1)
 		
 	def setAzEl(self, aznew, elnew):
@@ -625,4 +575,23 @@ class SRT():
 		self.el = elnew
 		self.newAzEl = True
 		
+	def stopAzEl(self):
+		self.slewing = False
+		self.cmdstop = True
+		self.statusIC = 0
+		self.ic = None
+		if self.IsMoving:
+			try:
+				print "Stopping antenna by command!"
+				self.controller.begin_SRTStopSlew(self.AzElCB, self.failureCB);
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		
+	def StopSpectrum(self):
+		self.enSpec = False
+	
+	def enSpectrum(self):
+		self.enSpec = True
+
 
