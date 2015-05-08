@@ -219,7 +219,7 @@ class SRT():
 	
 	def status_thread(self):
 		while(self.getStatus):
-			status(False)
+			self.status(False)
 			time.sleep(2)
 
 	def status(self,disp):
