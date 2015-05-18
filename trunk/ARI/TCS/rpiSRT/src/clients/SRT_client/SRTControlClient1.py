@@ -607,7 +607,7 @@ class SRT():
 			self.SRTTrack = False
 			self.setAzEl(obsTarget[1][0], obsTarget[1][1])
 			self.SRTState = 'Slewing to position'
-		if mode == 'Track'
+		if mode == 'Track':
 			self.SRTState = 'Slewing to source'
 			self.toSource = 0
 			self.SRTTrack = True
