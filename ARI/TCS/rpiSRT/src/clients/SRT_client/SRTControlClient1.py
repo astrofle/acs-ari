@@ -599,7 +599,7 @@ class SRT():
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Calling SRT observation thread"
 		return
 
-	obswSRTLoop(self, mode, obsTarget):
+	def obswSRTLoop(self, mode, obsTarget):
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Starting SRT observation thread with "
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " observing with SRT using " + str(obsTarget)
 		self.SRTMode = mode
