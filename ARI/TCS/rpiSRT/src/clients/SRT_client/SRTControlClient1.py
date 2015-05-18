@@ -524,7 +524,7 @@ class SRT():
 		self.mode = a
 		
 	def operSRT(self):
-		operSRT_thread = threading.Thread(target = self.operSRTLoop, name = operSRTLoop)
+		operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
 		operSRT_thread.start()
 	
 	def operSRTLoop(self):
