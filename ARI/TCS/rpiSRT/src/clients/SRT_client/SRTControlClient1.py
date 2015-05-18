@@ -595,7 +595,8 @@ class SRT():
 				self.toSource = -1
 				return
 			obsTarget = ['source',source]
-		obswSRT_thread = threading.Thread(target = self.obswSRTLoop, args = (mode, obsTarget), name = obswSRTLoop)
+		obswSRT_thread = threading.Thread(target = self.obswSRTLoop, args = (mode, obsTarget), name = 'obswSRTLoop')
+		obswSRT_thread.start()
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Calling SRT observation thread"
 		return
 
