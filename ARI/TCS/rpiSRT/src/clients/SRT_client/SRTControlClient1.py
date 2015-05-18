@@ -199,9 +199,9 @@ class SRT():
 			self.controller.begin_SRTGetName(self.getNameCB, self.failureCB)
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +"Connecting to SRTController"
 			self.controller.begin_serverState(self.serverCB, self.failureCB);
-			Status_Thread = threading.Thread(target = self.status_thread, name='status')
-			print "starting status thread"
-			Status_Thread.start()
+			#Status_Thread = threading.Thread(target = self.status_thread, name='status')
+			#print "starting status thread"
+			#Status_Thread.start()
 			if not self.controller:
 				raise RuntimeError("Invalid proxy")
 		except:
@@ -681,5 +681,14 @@ class SRT():
 		self.StopSpectrum()
 		self.StopTrack()
 		
+	def shutdown(self):
+		#Observation loop
+		self.enObs = False
+		#Operation loop
+		self.enSRT = False
+		#status loop
+		self.getStatus = False
+		#disconnect ICe
+		self.disconnect()
 
 
