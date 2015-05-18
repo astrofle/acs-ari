@@ -568,7 +568,7 @@ class SRT():
 		self.enSpec = True
 		
 	def obswSRT(self, mode, target):
-	# mode: 'GoTo' --> target = position ([Az,El] or ‘Source’)
+	# mode: 'GoTo' --> target = position
 	# mode: 'Track' --> target = 'Source'
 		#### SRT starts in STOP state ###
 		self.SRTState = 'Idle'
