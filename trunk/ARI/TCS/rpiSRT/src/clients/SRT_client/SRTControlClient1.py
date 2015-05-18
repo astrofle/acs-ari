@@ -66,6 +66,11 @@ class SRT():
 		self.enSRT = True
 		self.enSpec = True
 		self.getStatus = True
+		self.enObs = True
+		self.SRTState = ''
+		self.SRTMode = ''
+		self.SRTTarget =''
+		self.SRTTrack = False
 
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -337,15 +342,25 @@ class SRT():
 		self.IsMoving = False
 		self.portInUse[0] = False
 		self.status(False)
-		if self.track:
+		if self.mode=='GoTo':
+			self.SRTState = 'On target position'
+			self.SRTonTarget = True
+		if self.mode == 'Track':
 			self.toSource = self.toSource + 1
 			if self.toSource == 2:
-				self.OnSource = True
+				self.SRTState = 'On target source'
+				self.SRTonTarget = True
+				self.toSource = 1
+				print "Tracking source"
+			else:
+				self.SRTonTarget = False
 		time.sleep(0.2)
 		if self.cmdstop:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +"Safe waiting"
 			time.sleep(15)
 			self.cmdstop = False
+			self.SRTonTarget = False
+
 
 	def AzEl1CB(self, a):
 		print a
@@ -420,58 +435,6 @@ class SRT():
 		
 	######## Thread functions	
 		
-	def track_source(self, source): 
-		self.GetSpectrum()
-		time.sleep(3)
-		if self.planets.has_key(source):
-			source = self.planets[source]
-			radec = 0
-		elif self.stars.has_key(source):
-			source = self.stars[source]
-			radec = 0
-		elif self.SRTsources.has_key(source):
-			source = self.SRTsources[source]
-			radec = 1
-		else:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Object not found or not observable"
-			self.toSource = -1
-			self.StopSpectrum()
-			return
-		
-		self.track = True
-		self.OnSource = False
-		self.toSource = 0
-		while(self.track):
-			if (not self.IsMoving and not self.portInUse[0]):
-				if radec:
-					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
-				else:
-					[az, el] = sites.source_azel(source, self.site)
-				#Implementar para traer azlim2 desde parametersV01
-				if az > 270:
-					naz = az - 360
-				else:
-					naz = az
-				if ((abs(naz - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
-					self.toSource = 1
-					print naz, self.aznow, el, self.elnow
-					self.target = self.AzEl(az, el)
-			time.sleep(2)
-		return 
-		
-	def tracking(self, source):
-		tracking_Thread = threading.Thread(target = self.track_source, args =(source,), name='tracking')
-		tracking_Thread.start()
-		
-	def StopTrack(self):
-		self.track = False
-		self.OnSource = False
-		self.toSource = 0
-		
-	def Stop(self):
-		self.StopSpectrum()
-		self.StopTrack()
-		
 			
 	def do_calibration(self, method):
 		#Call for receiver calibration
@@ -544,7 +507,7 @@ class SRT():
 			self.statusIC = 1
 		return
 		
-	def SetMode(self, mode): 
+	def SetRxMode(self, mode): 
 		#Call for antenna name
 		self.statusIC = 0
 		self.ic = None
@@ -561,7 +524,7 @@ class SRT():
 		self.mode = a
 		
 	def operSRT(self):
-		operSRT_thread = threading.Thread(target = self.operSRTLoop)
+		operSRT_thread = threading.Thread(target = self.operSRTLoop, name = operSRTLoop)
 		operSRT_thread.start()
 	
 	def operSRTLoop(self):
@@ -598,10 +561,123 @@ class SRT():
 				traceback.print_exc()
 				self.statusIC = 1
 		
-	def StopSpectrum(self):
+	def stopSpectrum(self):
 		self.enSpec = False
 	
 	def enSpectrum(self):
 		self.enSpec = True
+		
+	def obswSRT(self, mode, target):
+	# mode: 'GoTo' --> target = position ([Az,El] or ‘Source’)
+	# mode: 'Track' --> target = 'Source'
+		#### SRT starts in STOP state ###
+		self.SRTState = 'Idle'
+		self.SRTonTarget = False
+		self.SRTMode = mode
+		if (type(target) == list):
+			radec = 0
+			obsTarget = ['position',target]
+			self.SRTTarget = 'position'
+		if (type(target) == str):
+			self.SRTTarget = 'Source'
+			if self.planets.has_key(target):
+				source = self.planets[target]
+				radec = 0
+			elif self.stars.has_key(target):
+				source = self.stars[target]
+				radec = 0
+			elif self.SRTsources.has_key(target):
+				source = self.SRTsources[target]
+				radec = 1
+			else:
+				self.SRTTarget = 'Error'
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Object not found or not observable"
+				self.toSource = -1
+				return
+			obsTarget = ['source',source]
+		obswSRT_thread = threading.Thread(target = self.obswSRTLoop, args = (mode, obsTarget) name = obswSRTLoop)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Calling SRT observation thread"
+		return
+
+	obswSRTLoop(self, mode, obsTarget):
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Starting SRT observation thread with "
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " observing with SRT using " + str(obsTarget)
+		self.SRTMode = mode
+		if mode == 'GoTo':
+			self.SRTTrack = False
+			self.setAzEl(obsTarget[1][0], obsTarget[1][1])
+			self.SRTState = 'Slewing to position'
+		if mode == 'Track'
+			self.SRTState = 'Slewing to source'
+			self.toSource = 0
+			self.SRTTrack = True
+			while(SRTTrack):
+				if radec:
+					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
+				else:
+					[az, el] = sites.source_azel(source, self.site)
+				#Implementar para traer azlim2 desde parametersV01
+				if az > 270:
+					naz = az - 360
+				else:
+					naz = az
+				if ((abs(naz - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
+					print "new tracking position"
+					self.SRTState = 'Slewing to source'
+					self.setAzEl(az, el)
+				time.sleep(10)
+			
+	def track_source(self, source): 
+		self.GetSpectrum()
+		time.sleep(3)
+		if self.planets.has_key(source):
+			source = self.planets[source]
+			radec = 0
+		elif self.stars.has_key(source):
+			source = self.stars[source]
+			radec = 0
+		elif self.SRTsources.has_key(source):
+			source = self.SRTsources[source]
+			radec = 1
+		else:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Object not found or not observable"
+			self.toSource = -1
+			self.StopSpectrum()
+			return
+		
+		self.track = True
+		self.OnSource = False
+		self.toSource = 0
+		while(self.track):
+			if (not self.IsMoving and not self.portInUse[0]):
+				if radec:
+					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
+				else:
+					[az, el] = sites.source_azel(source, self.site)
+				#Implementar para traer azlim2 desde parametersV01
+				if az > 270:
+					naz = az - 360
+				else:
+					naz = az
+				if ((abs(naz - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
+					self.toSource = 1
+					print naz, self.aznow, el, self.elnow
+					self.target = self.AzEl(az, el)
+			time.sleep(2)
+		return 
+		
+	def tracking(self, source):
+		tracking_Thread = threading.Thread(target = self.track_source, args =(source,), name='tracking')
+		tracking_Thread.start()
+		
+	def StopTrack(self):
+		self.track = False
+		self.OnSource = False
+		self.toSource = 0
+		
+	def Stop(self):
+		self.StopSpectrum()
+		self.StopTrack()
+		
 
 
