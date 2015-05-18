@@ -534,6 +534,7 @@ class SRT():
 				print "loop newazel"
 				self.stopAzEl()
 				while self.portInUse[0]:
+					print "port in use"
 					time.sleep(0.5)
 				self.AzEl(self.az,self.el)
 				self.newAzEl = False
