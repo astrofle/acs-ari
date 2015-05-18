@@ -531,6 +531,7 @@ class SRT():
 		#This is the loop that manages the commands to control the SRT
 		while(self.enSRT):
 			if self.newAzEl:
+				print "loop newazel"
 				self.stopAzEl()
 				while self.portInUse[0]:
 					time.sleep(0.5)
