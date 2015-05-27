@@ -282,6 +282,7 @@ class SRT():
 				self.initialized = False
 				self.portInUse = [True, 'Init']
 				self.IsMoving = True
+				self.disableSpectrum()
 				self.controller.begin_SRTinit(parameters, self.stowCB, self.failureCB);
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " loading parameters file and sending antenna to stow"
 			except:
@@ -291,7 +292,7 @@ class SRT():
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Wait until initializacion is finished"
 		return
 		
-			
+		
 	def Stow(self):
 		#commands SRT antenna to stow position
 		self.statusIC = 0
