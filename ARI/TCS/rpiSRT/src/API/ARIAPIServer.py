@@ -117,29 +117,32 @@ class ARIAPII(ARIAPI.API):
 		return sources
 
 
-#try:
-#	if len(sys.argv)<2:
-#		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
-#		sys.exit()
-#	IP =  ' '.join(sys.argv[1:])
-#	IP = "default -h " + IP
-#except:
-#	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
-#
+try:
+	if len(sys.argv)<2:
+		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
+		sys.exit()
+	IP =  ' '.join(sys.argv[1:])
+	IP = "default -h " + IP
+except:
+	print "use SRTcontrolServer.py default -h 192.168.0.6 -p 10000 or 10001"
+
 status = 0
 ic = None
-#IP = 'default -h 192.168.0.6 -p 10015'
-#IP = 'default -h '+ IP
+#IP = 'default -h 192.168.3.100 -p 10015'
+IP = 'default -h '+ IP
+print IP
 
 try:
-	ic = Ice.initialize(sys.argv)
-	#ic = Ice.initialize([''])
+	#ic = Ice.initialize(sys.argv)
+	ic = Ice.initialize([''])
 	#adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.6 -p 10000")
-        hostname = "192.168.1.111"
-        endpoint = "tcp -h %s -p 10000:udp -h %s -p 10000:ws -h %s -p 10002" % (hostname, hostname, hostname)
-	adapter = ic.createObjectAdapterWithEndpoints("API", endpoint)
+	adapter = ic.createObjectAdapterWithEndpoints("ARIAPI", IP)
+
+    #hostname = "192.168.1.111"
+    #endpoint = "tcp -h %s -p 10000:udp -h %s -p 10000:ws -h %s -p 10002" % (hostname, hostname, hostname)
+	#adapter = ic.createObjectAdapterWithEndpoints("API", endpoint)
 	object = ARIAPII()
-	adapter.add(object, ic.stringToIdentity("API"))
+	adapter.add(object, ic.stringToIdentity("ARIAPI"))
 	adapter.activate()
 	print "ARI ICE API server up and running!"
 	ic.waitForShutdown()
