@@ -75,6 +75,7 @@ class SRT():
 		self.ellim1 = None
 		self.azcmd = None
 		self.elcmd = None
+		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -216,6 +217,7 @@ class SRT():
 			Status_Thread = threading.Thread(target = self.status_thread, name='status')
 			print "starting status thread"
 			Status_Thread.start()
+			self.disableSpectrum()
 			if not self.controller:
 				raise RuntimeError("Invalid proxy")
 		except:
@@ -290,7 +292,6 @@ class SRT():
 				self.initialized = False
 				self.portInUse = [True, 'Init']
 				self.IsMoving = True
-				self.disableSpectrum()
 				self.controller.begin_SRTinit(parameters, self.stowCB, self.failureCB);
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " loading parameters file and sending antenna to stow"
 			except:
