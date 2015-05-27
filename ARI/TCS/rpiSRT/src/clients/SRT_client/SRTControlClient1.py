@@ -367,13 +367,16 @@ class SRT():
 			time.sleep(15)
 			self.cmdstop = False
 			self.SRTonTarget = False
+			self.status(False)
 
 
 	def AzEl1CB(self, a):
 		print a
 		if (a.split(':')[-1] == '-1'):
+			#Antenna command failed
 			self.portInUse[0] = False
 			self.IsMoving = False
+			self.slewing = False
 		return
 		
 
