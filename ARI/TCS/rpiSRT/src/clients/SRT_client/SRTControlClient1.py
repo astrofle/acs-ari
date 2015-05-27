@@ -144,7 +144,7 @@ class SRT():
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
 		#self.operSRT()
 		self.enSRT = False
-		time.sleep(1.1)
+		time.sleep(2)
 		self.enSRT = True
 		operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
 		operSRT_thread.start()
@@ -180,7 +180,7 @@ class SRT():
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
 		#self.operSRT()
 			self.enSRT = False
-			time.sleep(1.1)
+			time.sleep(2)
 			self.enSRT = True
 			operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
 			operSRT_thread.start()
