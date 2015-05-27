@@ -29,8 +29,6 @@ class SRT():
 		self.aznow = 0.0
 		self.elnow = 0.0
 		self.axis = 0
-		self.tostow = 0
-		self.elatstow = 0
 		self.azatstow = 0
 		self.slew = 0
 		self.serialport = ''
@@ -71,6 +69,8 @@ class SRT():
 		self.SRTMode = ''
 		self.SRTTarget =''
 		self.SRTTrack = False
+		self.azoffset = 0.0
+		self.eloffset = 0.0
 
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -337,15 +337,15 @@ class SRT():
 			time.sleep(1)
 		
 	def AzElCB(self,a):
-		print a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " "+a
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Movement finished!!"
 		self.IsMoving = False
 		self.portInUse[0] = False
 		self.status(False)
-		if self.mode=='GoTo':
+		if self.SRTMode=='GoTo':
 			self.SRTState = 'On target position'
 			self.SRTonTarget = True
-		if self.mode == 'Track':
+		if self.SRTMode == 'Track':
 			self.toSource = self.toSource + 1
 			if self.toSource == 2:
 				self.SRTState = 'On target source'
@@ -428,8 +428,8 @@ class SRT():
 		fspecd.close()
 		favspec.close()
 		favspecc.close()
-		if self.toSource == 1:
-			self.StopSpectrum()
+		#if self.toSource == 1:
+		#	self.StopSpectrum()
 		time.sleep(1)
 		return
 		
@@ -531,10 +531,10 @@ class SRT():
 		#This is the loop that manages the commands to control the SRT
 		while(self.enSRT):
 			if self.newAzEl:
-				print "loop newazel"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " loop newazel"
 				#self.stopAzEl()
 				while self.portInUse[0]:
-					print "port in use"
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " port in use"
 					time.sleep(0.5)
 				self.AzEl(self.az,self.el)
 				self.newAzEl = False
@@ -569,6 +569,22 @@ class SRT():
 	def enSpectrum(self):
 		self.enSpec = True
 		
+	
+	def stopObs(self):
+		self.SRTTrack = False
+		self.enSRT = False
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Observation Threads stopped"
+
+	def driftObs(self):
+		self.SRTTrack = False
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Track stopped, drift observing"
+
+	def stopGoingToSource(self):
+		self.SRTTrack = False
+		self.newAzEl = False
+		self.stopAzEl()
+
+
 	def obswSRT(self, mode, target):
 	# mode: 'GoTo' --> target = position
 	# mode: 'Track' --> target = 'Source'
@@ -597,12 +613,12 @@ class SRT():
 				self.toSource = -1
 				return
 			obsTarget = ['source',source]
-		obswSRT_thread = threading.Thread(target = self.obswSRTLoop, args = (mode, obsTarget), name = 'obswSRTLoop')
+		obswSRT_thread = threading.Thread(target = self.obswSRTLoop, args = (mode, obsTarget, radec), name = 'obswSRTLoop')
 		obswSRT_thread.start()
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Calling SRT observation thread"
 		return
 
-	def obswSRTLoop(self, mode, obsTarget):
+	def obswSRTLoop(self, mode, obsTarget, radec):
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Starting SRT observation thread with "
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " observing with SRT using " + str(obsTarget)
 		self.SRTMode = mode
@@ -614,18 +630,20 @@ class SRT():
 			self.SRTState = 'Slewing to source'
 			self.toSource = 0
 			self.SRTTrack = True
-			while(SRTTrack):
+			while(self.SRTTrack):
 				if radec:
-					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
+					[az, el] = sites.radec2azel(obsTarget[1]['ra'], obsTarget[1]['dec'], self.site)
 				else:
 					[az, el] = sites.source_azel(source, self.site)
 				#Implementar para traer azlim2 desde parametersV01
+				az = az + self.azoffset
+				el = el + self.eloffset
 				if az > 270:
 					naz = az - 360
 				else:
 					naz = az
-				if ((abs(naz - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
-					print "new tracking position"
+				if ((abs(naz - float(self.aznow))>0.2) or (abs(el - float(self.elnow))>0.2)):
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " new tracking position"
 					self.SRTState = 'Slewing to source'
 					self.setAzEl(az, el)
 				time.sleep(10)
@@ -684,7 +702,7 @@ class SRT():
 		
 	def shutdown(self):
 		#Observation loop
-		self.enObs = False
+		self.SRTTrack = False
 		#Operation loop
 		self.enSRT = False
 		#status loop
