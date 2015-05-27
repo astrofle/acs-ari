@@ -172,6 +172,10 @@ class SRT():
 		if (serialPort != 'None') & (antennaInit != ' False'):
 			self.SRTinitialized = True
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " SRT has been initialised in a previus session"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
+		#self.operSRT()
+			operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
+			operSRT_thread.start()
 		else:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Proceed with SRT initialization"
 		
