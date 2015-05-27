@@ -138,6 +138,8 @@ class SRT():
 		self.el = self.elnow
 		self.azlim1 = float(self.aznow)
 		self.ellim1 = float(self.elnow)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
+		self.operSRT()
 		return
 		
 	def failureCB(self, ex):
@@ -368,6 +370,9 @@ class SRT():
 
 	def AzEl1CB(self, a):
 		print a
+		self.portInUse[0] = False
+		self.IsMoving = False
+		self.slewing = False
 		return
 		
 
