@@ -140,8 +140,10 @@ class SRT():
 		self.el = self.elnow
 		self.azlim1 = float(self.aznow)
 		self.ellim1 = float(self.elnow)
-		#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
 		#self.operSRT()
+		operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
+		operSRT_thread.start()
 		return
 		
 	def failureCB(self, ex):
