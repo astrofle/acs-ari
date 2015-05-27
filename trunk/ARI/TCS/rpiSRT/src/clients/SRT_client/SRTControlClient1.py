@@ -564,9 +564,11 @@ class SRT():
 		
 	def enableSRT(self):
 		self.enSRT = True
+		self.getStatus = True
 	
 	def disableSRT(self):
 		self.enSRT = False
+		self.getStatus = False
 	
 	def setAzEl(self, aznew, elnew):
 		self.azcmd = aznew
