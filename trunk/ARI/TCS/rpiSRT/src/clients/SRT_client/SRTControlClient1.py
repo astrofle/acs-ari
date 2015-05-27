@@ -371,7 +371,7 @@ class SRT():
 
 	def AzEl1CB(self, a):
 		print a
-		if (a.split(':')[-1] == '-1')
+		if (a.split(':')[-1] == '-1'):
 			self.portInUse[0] = False
 			self.IsMoving = False
 		return
