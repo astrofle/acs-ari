@@ -58,6 +58,7 @@ module SRTControl{
 		void SRTinit(string s, out string r);
 		void SRTStow(out string r);
 		void SRTStatus(out AntennaStatus l);
+		void SRTgetParameters(out string r);
 		void SRTAzEl(float az, float el, out string r);
 		void SRTStopSlew(out string r);
 		void SRTThreads(out string r);
