@@ -71,6 +71,8 @@ class SRT():
 		self.SRTTrack = False
 		self.azoffset = 0.0
 		self.eloffset = 0.0
+		self.azlim1 = None
+		self.ellim1 = None
 
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -134,6 +136,8 @@ class SRT():
 		self.status(False)
 		self.az = self.aznow
 		self.el = self.elnow
+		self.azlim1 = self.aznow
+		self.ellim1 = self.elnow
 		return
 		
 	def failureCB(self, ex):
@@ -545,6 +549,12 @@ class SRT():
 					self.SRTGetSpectrum()
 			time.sleep(1)
 		
+	def enableSRT(self):
+		self.enSRT = True
+	
+	def disableSRT(self:)
+		self.enSRT = False
+	
 	def setAzEl(self, aznew, elnew):
 		self.az = aznew
 		self.el = elnew
@@ -563,10 +573,10 @@ class SRT():
 				traceback.print_exc()
 				self.statusIC = 1
 		
-	def stopSpectrum(self):
+	def disableSpectrum(self):
 		self.enSpec = False
 	
-	def enSpectrum(self):
+	def enableSpectrum(self):
 		self.enSpec = True
 		
 	
@@ -638,7 +648,7 @@ class SRT():
 				#Implementar para traer azlim2 desde parametersV01
 				az = az + self.azoffset
 				el = el + self.eloffset
-				if az > 270:
+				if az > (360 + self.azlim1):
 					naz = az - 360
 				else:
 					naz = az
