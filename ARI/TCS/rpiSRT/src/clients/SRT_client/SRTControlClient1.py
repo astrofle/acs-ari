@@ -648,7 +648,7 @@ class SRT():
 				#Implementar para traer azlim2 desde parametersV01
 				az = az + self.azoffset
 				el = el + self.eloffset
-				if az > (360 + self.azlim1):
+				if az > (360 + float(self.azlim1)):
 					naz = az - 360
 				else:
 					naz = az
