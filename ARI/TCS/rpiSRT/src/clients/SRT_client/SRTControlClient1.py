@@ -648,57 +648,7 @@ class SRT():
 					self.setAzEl(az, el)
 				time.sleep(10)
 			
-	def track_source(self, source): 
-		self.GetSpectrum()
-		time.sleep(3)
-		if self.planets.has_key(source):
-			source = self.planets[source]
-			radec = 0
-		elif self.stars.has_key(source):
-			source = self.stars[source]
-			radec = 0
-		elif self.SRTsources.has_key(source):
-			source = self.SRTsources[source]
-			radec = 1
-		else:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Object not found or not observable"
-			self.toSource = -1
-			self.StopSpectrum()
-			return
-		
-		self.track = True
-		self.OnSource = False
-		self.toSource = 0
-		while(self.track):
-			if (not self.IsMoving and not self.portInUse[0]):
-				if radec:
-					[az, el] = sites.radec2azel(source['ra'], source['dec'], self.site)
-				else:
-					[az, el] = sites.source_azel(source, self.site)
-				#Implementar para traer azlim2 desde parametersV01
-				if az > 270:
-					naz = az - 360
-				else:
-					naz = az
-				if ((abs(naz - self.aznow)>0.2) or (abs(el - self.elnow)>0.2)):
-					self.toSource = 1
-					print naz, self.aznow, el, self.elnow
-					self.target = self.AzEl(az, el)
-			time.sleep(2)
-		return 
-		
-	def tracking(self, source):
-		tracking_Thread = threading.Thread(target = self.track_source, args =(source,), name='tracking')
-		tracking_Thread.start()
-		
-	def StopTrack(self):
-		self.track = False
-		self.OnSource = False
-		self.toSource = 0
-		
-	def Stop(self):
-		self.StopSpectrum()
-		self.StopTrack()
+
 		
 	def shutdown(self):
 		#Observation loop
