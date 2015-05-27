@@ -73,6 +73,8 @@ class SRT():
 		self.eloffset = 0.0
 		self.azlim1 = None
 		self.ellim1 = None
+		self.azcmd = None
+		self.elcmd = None
 
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -549,7 +551,7 @@ class SRT():
 				while self.portInUse[0]:
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " port in use"
 					time.sleep(0.5)
-				self.AzEl(self.az,self.el)
+				self.AzEl(self.azcmd,self.elcmd)
 				self.newAzEl = False
 			else:
 				while (self.portInUse[0] or self.cmdstop):
@@ -565,8 +567,8 @@ class SRT():
 		self.enSRT = False
 	
 	def setAzEl(self, aznew, elnew):
-		self.az = aznew
-		self.el = elnew
+		self.azcmd = aznew
+		self.elcmd = elnew
 		self.newAzEl = True
 		
 	def stopAzEl(self):
