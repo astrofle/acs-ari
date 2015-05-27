@@ -180,7 +180,7 @@ class SRT():
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
 		#self.operSRT()
 			self.enSRT = False
-			time.sleep(2)
+			time.sleep(2    )
 			self.enSRT = True
 			operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
 			operSRT_thread.start()
@@ -192,7 +192,7 @@ class SRT():
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + "Antenna position is: " + str(self.aznow)+", "+str(self.elnow)
 	
 	def SRTparamCB(self, a):
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + "with limits: " + a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " with limits: " + a
 		self.azlim1 = float(a.split(',')[0])
 		self.ellim1 = float(a.split(',')[1])
 		self.azlim2 = float(a.split(',')[2])
