@@ -640,24 +640,25 @@ class SRT():
 			self.SRTState = 'Slewing to source'
 			self.toSource = 0
 			self.SRTTrack = True
-			while(self.SRTTrack):
-				if radec:
-					[az, el] = sites.radec2azel(obsTarget[1]['ra'], obsTarget[1]['dec'], self.site)
-				else:
-					[az, el] = sites.source_azel(source, self.site)
-				#Implementar para traer azlim2 desde parametersV01
-				az = az + self.azoffset
-				el = el + self.eloffset
-				if az > (360 + self.azlim1):
-					naz = az - 360
-				else:
-					naz = az
-				if ((abs(naz - float(self.aznow))>0.2) or (abs(el - float(self.elnow))>0.2)):
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " new tracking position"
-					self.SRTState = 'Slewing to source'
-					self.setAzEl(az, el)
-				time.sleep(10)
-			
+			while(self.enOBS):
+				while(self.SRTTrack):
+					if radec:
+						[az, el] = sites.radec2azel(obsTarget[1]['ra'], obsTarget[1]['dec'], self.site)
+					else:
+						[az, el] = sites.source_azel(source, self.site)
+					#Implementar para traer azlim2 desde parametersV01
+					az = az + self.azoffset
+					el = el + self.eloffset
+					if az > (360 + self.azlim1):
+						naz = az - 360
+					else:
+						naz = az
+					if ((abs(naz - float(self.aznow))>0.2) or (abs(el - float(self.elnow))>0.2)):
+						print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " new tracking position"
+						self.SRTState = 'Slewing to source'
+						self.setAzEl(az, el)
+					time.sleep(10)
+				time.sleep(5)
 
 		
 	def shutdown(self):
