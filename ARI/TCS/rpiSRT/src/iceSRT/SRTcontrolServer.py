@@ -126,7 +126,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		return realStatus
 
 	def SRTgetParameters(self, current= None):
-		params= str(self.p.azlim1)+','+str(self.p.ellim1)
+		params= str(SRT.p.azlim1)+','+str(SRT.p.ellim1)
 		return params
 
 	def SRTAzEl(self, az, el, current = None):
