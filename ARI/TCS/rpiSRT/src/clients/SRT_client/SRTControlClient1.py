@@ -141,8 +141,6 @@ class SRT():
 		self.status(False)
 		self.az = self.aznow
 		self.el = self.elnow
-		self.azlim1 = float(self.aznow)
-		self.ellim1 = float(self.elnow)
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
 		#self.operSRT()
 		operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
@@ -186,6 +184,13 @@ class SRT():
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Serial Port: " + str(serialPort)
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Antenna Initialised (sent to stow): " + str(antennaInit)
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + "Antenna position is: " + str(self.aznow)+", "+str(self.elnow)
+	
+	def SRTparamCB(self, a):
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + "with limits: " + a
+		self.azlim1 = float(a.split(',')[0])
+		self.ellim1 = float(a.split(',')[1])
+		self.azlim2 = float(a.split(',')[2])
+		self.ellim2 = float(a.split(',')[3])
 
 	######## Control functions #######################
 	def setIP(self, IP):
@@ -297,6 +302,7 @@ class SRT():
 				self.IsMoving = True
 				self.controller.begin_SRTinit(parameters, self.stowCB, self.failureCB);
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " loading parameters file and sending antenna to stow"
+				self.getSRTParameters()
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
@@ -325,14 +331,7 @@ class SRT():
 	def getSRTParameters(self):
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Obtaining parameters"
 		self.controller.begin_SRTgetParameters(self.SRTparamCB, self.failureCB);
-			
-	def SRTparamCB(self, a):
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + "with limits: " + a
-		self.azlim1 = float(a.split(',')[0])
-		self.ellim1 = float(a.split(',')[1])
-		self.azlim2 = float(a.split(',')[2])
-		self.ellim2 = float(a.split(',')[3])
-
+	
 	#Antenna Movement ##########
 	def AzEl(self, az, el):
 		#Command antenna position to (az, el) coordinates	
