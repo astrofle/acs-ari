@@ -71,7 +71,12 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.sampleStamp = []
 		self.SD_ARI_Switch_init()
 		self.portInUse = [False, '']
-		
+		self.azlim1 = None
+		self.azlim2 = None
+		self.ellim1 = None
+		self.ellim2 = None
+
+
 	def message(self, s, current = None):
 		print s
 		return s
@@ -126,7 +131,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		return realStatus
 
 	def SRTgetParameters(self, current= None):
-		params= str(SRT.p.azlim1)+','+str(SRT.p.ellim1)
+		params= str(self.azlim1)+','+str(self.ellim1) + ','+str(self.azlim2)+','+str(self.ellim2)
 		return params
 
 	def SRTAzEl(self, az, el, current = None):

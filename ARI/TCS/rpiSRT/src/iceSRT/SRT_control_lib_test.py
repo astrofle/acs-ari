@@ -95,6 +95,10 @@ class Antenna:
 		self.name = os.uname()[1] #Antenna name
 		self.sampleStamp = []
 		self.portInUse = [False, '']
+		self.azlim1
+		self.azlim2
+		self.ellim1
+		self.ellim2
 
 
 	def status(self, disp):
@@ -512,6 +516,10 @@ class Antenna:
 		p = importlib.import_module(pfile)
 		self.azoff = p.azoff
 		self.eloff = p.eloff
+		self.azlim1 = p.azlim1
+		self.azlim2 = p.azlim2
+		self.ellim1 = p.ellim1
+		self.ellim2 = p.ellim2
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" loaded parameters file " + str(p)
 		if p.digital:
 			self.receiver_default = '1a'
