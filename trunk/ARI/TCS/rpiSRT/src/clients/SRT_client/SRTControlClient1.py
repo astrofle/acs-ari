@@ -604,7 +604,7 @@ class SRT():
 		self.SRTTrack = False
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Track stopped, drift observing"
 
-	def stopGoingToSource(self):
+	def stopGoingToTarget(self):
 		self.SRTTrack = False
 		self.newAzEl = False
 		self.stopAzEl()
@@ -655,7 +655,7 @@ class SRT():
 			self.SRTState = 'Slewing to source'
 			self.toSource = 0
 			self.SRTTrack = True
-			while(self.enOBS):
+			while(self.enObs):
 				while(self.SRTTrack):
 					if radec:
 						[az, el] = sites.radec2azel(obsTarget[1]['ra'], obsTarget[1]['dec'], self.site)
