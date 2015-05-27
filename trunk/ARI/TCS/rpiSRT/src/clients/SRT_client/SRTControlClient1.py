@@ -320,7 +320,7 @@ class SRT():
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Wait until stow is finished"
 		return
 		
-	def getSRTParamenters(self):
+	def getSRTParameters(self):
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Obtaining parameters"
 		self.controller.begin_SRTgetParameters(self.SRTparamCB, self.failureCB);
 			
