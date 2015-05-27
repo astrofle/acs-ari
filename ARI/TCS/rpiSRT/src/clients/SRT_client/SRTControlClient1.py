@@ -371,8 +371,8 @@ class SRT():
 
 	def AzEl1CB(self, a):
 		print a
-		self.portInUse[0] = False
-		self.IsMoving = False
+		#self.portInUse[0] = False
+		#self.IsMoving = False
 		return
 		
 
