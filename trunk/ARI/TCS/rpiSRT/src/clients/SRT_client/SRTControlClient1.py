@@ -173,6 +173,7 @@ class SRT():
 		if (serialPort != 'None') & (antennaInit != ' False'):
 			self.SRTinitialized = True
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " SRT has been initialised in a previus session"
+			self.getSRTParameters()
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
 		#self.operSRT()
 			operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
@@ -318,6 +319,15 @@ class SRT():
 		else:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Wait until stow is finished"
 		return
+		
+	def getSRTParamenters(self):
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Obtaining parameters"
+		self.controller.begin_SRTgetParameters(self.SRTparamCB, self.failureCB);
+			
+	def SRTparamCB(self, a):
+		print a
+		self.azlim1 = a.split(',')[0]
+		self.ellim1 = a.split(',')[1]
 
 	#Antenna Movement ##########
 	def AzEl(self, az, el):
