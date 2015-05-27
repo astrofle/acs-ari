@@ -143,6 +143,9 @@ class SRT():
 		self.el = self.elnow
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
 		#self.operSRT()
+		self.enSRT = False
+		time.sleep(1.1)
+		self.enSRT = True
 		operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
 		operSRT_thread.start()
 		return
@@ -176,6 +179,9 @@ class SRT():
 			self.getSRTParameters()
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " Starting SRT operation loop Thread"
 		#self.operSRT()
+			self.enSRT = False
+			time.sleep(1.1)
+			self.enSRT = True
 			operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
 			operSRT_thread.start()
 		else:
