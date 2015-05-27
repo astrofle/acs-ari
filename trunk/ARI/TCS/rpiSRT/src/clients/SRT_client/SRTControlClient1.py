@@ -136,8 +136,8 @@ class SRT():
 		self.status(False)
 		self.az = self.aznow
 		self.el = self.elnow
-		self.azlim1 = self.aznow
-		self.ellim1 = self.elnow
+		self.azlim1 = float(self.aznow)
+		self.ellim1 = float(self.elnow)
 		return
 		
 	def failureCB(self, ex):
@@ -648,7 +648,7 @@ class SRT():
 				#Implementar para traer azlim2 desde parametersV01
 				az = az + self.azoffset
 				el = el + self.eloffset
-				if az > (360 + float(self.azlim1)):
+				if az > (360 + self.azlim1):
 					naz = az - 360
 				else:
 					naz = az
