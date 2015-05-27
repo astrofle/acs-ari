@@ -73,6 +73,8 @@ class SRT():
 		self.eloffset = 0.0
 		self.azlim1 = None
 		self.ellim1 = None
+		self.azlim2 = None
+		self.ellim2 = None
 		self.azcmd = None
 		self.elcmd = None
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
@@ -325,9 +327,11 @@ class SRT():
 		self.controller.begin_SRTgetParameters(self.SRTparamCB, self.failureCB);
 			
 	def SRTparamCB(self, a):
-		print a
-		self.azlim1 = a.split(',')[0]
-		self.ellim1 = a.split(',')[1]
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + "with limits: " + a
+		self.azlim1 = float(a.split(',')[0])
+		self.ellim1 = float(a.split(',')[1])
+		self.azlim2 = float(a.split(',')[2])
+		self.ellim2 = float(a.split(',')[3])
 
 	#Antenna Movement ##########
 	def AzEl(self, az, el):
