@@ -81,6 +81,7 @@ class SRT():
 		self.ellim2 = None
 		self.azcmd = None
 		self.elcmd = None
+		self.Target = ''
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 
 	def find_planets(self, disp):
@@ -663,6 +664,7 @@ class SRT():
 		self.SRTState = 'Idle'
 		self.SRTonTarget = False
 		self.SRTMode = mode
+		self.Target = target
 		if (type(target) == list):
 			radec = 0
 			self.obsTarget = ['position',target]
@@ -721,7 +723,15 @@ class SRT():
 					time.sleep(10)
 				time.sleep(5)
 
+	def setOffsetPointing(self, azoff, eloff):
+		self.azoffset = azoff
+		self.eloffset = eloff
 		
+	def resetOffsetPointing(self):
+		self.azoffset = 0.0
+		self.eloffset = 0.0
+	
+	
 	def shutdown(self):
 		#Observation loop
 		self.SRTTrack = False
@@ -754,6 +764,7 @@ class SRT():
 		print "SRTinitialized: " + str(self.SRTinitialized)
 		print "initialized: " + str(self.initialized)
 		print "toStow: " + str(self.tostow)
+		print "Target: " + str(self.Target)
 		print "obsTarget: " + str(self.obsTarget)
 		
 	def getThreads(self):
