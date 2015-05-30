@@ -760,7 +760,7 @@ class SRT():
 		SRTthreads = []
 		th = threading.enumerate()
 		for t in th:
-			if (t.name != 'MainThread' or t.name != 'Thread-1' or t.name != 'Dummy-2'):
+			if (t.name != 'MainThread' and t.name != 'Thread-1' and t.name != 'Dummy-2'):
 				SRTthreads.append(t.name)
 		print "Active SRT Threads "+str(SRTthreads)
 
