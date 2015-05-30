@@ -68,6 +68,7 @@ class SRT():
 		self.SRTState = ''
 		self.SRTMode = ''
 		self.SRTTarget =''
+		self.SRTonTarget = ''
 		self.SRTTrack = False
 		self.azoffset = 0.0
 		self.eloffset = 0.0
