@@ -58,6 +58,7 @@ class SRT():
 		self.SRTinitialized = False #This variable check if SRT was initialised in a previous session
 		self.RxSwitchMode = 'SD'
 		########## 
+		self.initialized = None
 		self.slewing = False
 		self.newAzEl = False
 		self.cmdstop = False
