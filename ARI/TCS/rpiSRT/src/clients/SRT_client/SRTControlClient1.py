@@ -712,26 +712,26 @@ class SRT():
 		self.disconnect()
 		
 	def state(self):
-		print "SRTState: "+ self.SRTState
-		print "SRTonTarget: " + self.SRTonTarget
-		print "SRTMode: " + self.SRTMode
-		print "SRTTarget: " + self.SRTTarget
-		print "SRTTrack: "+ self.SRTTrack
-		print "enObs: " + self.enObs
-		print "newAzEl: " + self.newAzEl
-		print "enSRT: " + self.enSRT
-		print "enSpec: " + self.enSpec
-		print "slewing: " + self.slewing
-		print "cmdstop: " + self.cmdstop
-		print "InMoving: " + self.IsMoving
-		print "getStatus: " + self.getStatus
-		print "portInUse: " + self.portInUse
-		print "spectra: " + self.spectra
-		print "RxSwitchMode: "  + self.RxSwitchMode
-		print "toSource: " + self.toSource
-		print "SRTinitialized: " + self.SRTinitialized
-		print "initialized: " + self.initialized 
-		print "toStow: " + self.tostow 
+		print "SRTState: "+ str(self.SRTState)
+		print "SRTonTarget: " + str(self.SRTonTarget)
+		print "SRTMode: " + str(self.SRTMode)
+		print "SRTTarget: " + str(self.SRTTarget)
+		print "SRTTrack: "+ str(self.SRTTrack)
+		print "enObs: " + str(self.enObs)
+		print "newAzEl: " + str(self.newAzEl)
+		print "enSRT: " + str(self.enSRT)
+		print "enSpec: " + str(self.enSpec)
+		print "slewing: " + str(self.slewing)
+		print "cmdstop: " + str(self.cmdstop)
+		print "InMoving: " + str(self.IsMoving)
+		print "getStatus: " + str(self.getStatus)
+		print "portInUse: " + str(self.portInUse)
+		print "spectra: " + str(self.spectra)
+		print "RxSwitchMode: "  + str(self.RxSwitchMode)
+		print "toSource: " + str(self.toSource)
+		print "SRTinitialized: " + str(self.SRTinitialized)
+		print "initialized: " + str(self.initialized)
+		print "toStow: " + str(self.tostow)
 
 
 
