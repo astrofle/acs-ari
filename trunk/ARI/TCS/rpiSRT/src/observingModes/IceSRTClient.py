@@ -24,12 +24,11 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())
 		self.getspectrum = True
 		self.spectra = False
-		self.portInUse = False
 		self.spectrumStarted = False
-		self.az = 0.0
-		self.el = 0.0
-		self.aznow = 0.0
-		self.elnow = 0.0
+		self.az = None
+		self.el = None
+		self.aznow = None
+		self.elnow = None
 		self.axis = 0
 		self.tostow = 0
 		self.elatstow = 0
@@ -43,11 +42,42 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.toSource = 0
 		self.target = None
 		self.spectrum = SRTClient.specs()
-		self.initialized = False
-		self.SRTinitialized = False
+		self.SRTinitialized = False #This variable check if SRT was initialised in a previous session
 		self.name =''
 		self.mode =''
-		
+
+		self.IP_string = "SRTController:default -h " + self.IP
+		self.spectrum = []
+		self.ic = None
+		self.portInUse = [False, '']
+		self.rGraph = True
+		self.statusDisp = False
+		self.RxSwitchMode = 'SD'
+		########## 
+		self.initialized = None
+		self.slewing = False
+		self.newAzEl = False
+		self.cmdstop = False
+		self.enSRT = True
+		self.enSpec = True
+		self.getStatus = True
+		self.enObs = False
+		self.SRTState = ''
+		self.SRTMode = ''
+		self.SRTTarget =''
+		self.SRTonTarget = ''
+		self.obsTarget = None
+		self.SRTTrack = False
+		self.azoffset = 0.0
+		self.eloffset = 0.0
+		self.azlim1 = None
+		self.ellim1 = None
+		self.azlim2 = None
+		self.ellim2 = None
+		self.azcmd = None
+		self.elcmd = None
+		self.Target = ''
+		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 	def setup(self, current = None):
 		print self.SRTinitialized
 		if (not self.SRTinitialized):
