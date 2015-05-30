@@ -83,17 +83,19 @@ class SRT():
 		self.elcmd = None
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 
-	def find_planets(self):
-		self.planets = sites.find_planets(sites.planet_list, self.site)
+	def find_planets(self, disp):
+		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
 		
 	def find_stars(self):
-		self.stars = sites.find_stars(sites.star_list, self.site)
+		self.stars = sites.find_stars(sites.star_list, self.site, disp)
 		print str(len(self.stars)) + " observabable stars: " + str(self.stars)
 	
 	def find_radec(self):
-	
-	
+		self.radecSources = sites.find_SRTsources(sites.SRTsources, sites.site, disp)
+		print str(len(self.radecSources)) + " observabable stars: " + str(self.radecSources)
+
+
 	def getTrackingStatus(self):
 		print self.name + " Antenna slewing: " + str(self.IsMoving)
 		print self.name + " Antenna tracking: " + str(self.track)
