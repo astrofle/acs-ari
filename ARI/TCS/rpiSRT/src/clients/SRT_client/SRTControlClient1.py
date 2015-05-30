@@ -71,6 +71,7 @@ class SRT():
 		self.SRTMode = ''
 		self.SRTTarget =''
 		self.SRTonTarget = ''
+		self.obsTarget = None
 		self.SRTTrack = False
 		self.azoffset = 0.0
 		self.eloffset = 0.0
@@ -664,19 +665,19 @@ class SRT():
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Object not found or not observable"
 				self.toSource = -1
 				return
-			obsTarget = ['source',source]
-		obswSRT_thread = threading.Thread(target = self.obswSRTLoop, args = (mode, obsTarget, radec), name = 'obswSRTLoop')
+			self.obsTarget = ['source',source]
+		obswSRT_thread = threading.Thread(target = self.obswSRTLoop, args = (mode, self.obsTarget, radec), name = 'obswSRTLoop')
 		obswSRT_thread.start()
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Calling SRT observation thread"
 		return
 
 	def obswSRTLoop(self, mode, obsTarget, radec):
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Starting SRT observation thread with "
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " observing with SRT using " + str(obsTarget)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " observing with SRT using " + str(self.obsTarget)
 		self.SRTMode = mode
 		if mode == 'GoTo':
 			self.SRTTrack = False
-			self.setAzEl(obsTarget[1][0], obsTarget[1][1])
+			self.setAzEl(self.obsTarget[1][0], self.obsTarget[1][1])
 			self.SRTState = 'Slewing to position'
 		if mode == 'Track':
 			self.SRTState = 'Slewing to source'
@@ -685,9 +686,9 @@ class SRT():
 			while(self.enObs):
 				while(self.SRTTrack):
 					if radec:
-						[az, el] = sites.radec2azel(obsTarget[1]['ra'], obsTarget[1]['dec'], self.site)
+						[az, el] = sites.radec2azel(self.obsTarget[1]['ra'], self.obsTarget[1]['dec'], self.site)
 					else:
-						[az, el] = sites.source_azel(source, self.site)
+						[az, el] = sites.source_azel(self.obsTarget[1], self.site)
 					#Implementar para traer azlim2 desde parametersV01
 					az = az + self.azoffset
 					el = el + self.eloffset
@@ -734,6 +735,7 @@ class SRT():
 		print "SRTinitialized: " + str(self.SRTinitialized)
 		print "initialized: " + str(self.initialized)
 		print "toStow: " + str(self.tostow)
+		print "obsTarget: " + str(self.obsTarget)
 
 
 
