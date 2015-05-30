@@ -631,8 +631,9 @@ class SRT():
 		
 	
 	def stopObs(self):
+		#Stop observation after tracking
 		self.SRTTrack = False
-		self.enSRT = False
+		self.enObs = False
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Observation Threads stopped"
 
 	def driftObs(self):
