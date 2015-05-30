@@ -707,6 +707,7 @@ class SRT():
 	def shutdown(self):
 		#Observation loop
 		self.SRTTrack = False
+		self.enObs =False
 		#Operation loop
 		self.enSRT = False
 		#status loop
