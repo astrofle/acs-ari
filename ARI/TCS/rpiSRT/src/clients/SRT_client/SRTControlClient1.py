@@ -647,7 +647,7 @@ class SRT():
 		self.SRTMode = mode
 		if (type(target) == list):
 			radec = 0
-			obsTarget = ['position',target]
+			self.obsTarget = ['position',target]
 			self.SRTTarget = 'position'
 		if (type(target) == str):
 			self.SRTTarget = 'Source'
@@ -714,6 +714,7 @@ class SRT():
 		self.getStatus = False
 		#disconnect ICe
 		self.disconnect()
+		quit()
 		
 	def state(self):
 		print "SRTState: "+ str(self.SRTState)
