@@ -727,7 +727,6 @@ class SRT():
 		self.getStatus = False
 		#disconnect ICe
 		self.disconnect()
-		quit()
 		
 	def state(self):
 		print "SRTState: "+ str(self.SRTState)
