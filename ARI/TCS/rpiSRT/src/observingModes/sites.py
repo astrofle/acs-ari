@@ -50,32 +50,36 @@ for star in ephem.stars.db.split("\n"):
 	star_list.append(star.split(",")[0])	
 star_list.remove('')
 
-def find_planets(planets, site):
+def find_planets(planets, site, disp):
 	sources = {}
 	for planet in planets:
 		[az, el] = source_azel(planets[planet], site)
-		#print planet, az, el
+		if disp:
+    		print planet, az, el
 		if el > 15.0:
 			sources[planet] = planets[planet]
 	return sources
 
-def find_stars(stars, site):
+def find_stars(stars, site, disp):
 	sources = {}
 	for star in stars:
 		[az, el] = source_azel(ephem.star(star), site)
-		#print star, az, el
+		if disp:
+    		print star, az, el
 		if el > 15.0:
 			sources[star] = ephem.star(star)
 	return sources
 	
-def find_SRTsources(SRTsources, site):
+def find_SRTsources(SRTsources, site, disp):
 	sources = {}
 	for source in SRTsources:
 		[az, el] = radec2azel(SRTsources[source]['ra'], SRTsources[source]['dec'], site)
-		#print source, az, el
+		if disp:
+    		print source, az, el
 		if el> 15.0:
 			sources[source] = SRTsources[source]
 	return sources
+	
 
 def source_azel(object, site):
 	site.date = ephem.now()
