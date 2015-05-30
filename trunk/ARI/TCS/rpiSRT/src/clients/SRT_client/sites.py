@@ -58,6 +58,7 @@ def find_planets(planets, site, disp):
 			print planet, az, el
 		if el > 15.0:
 			sources[planet] = planets[planet]
+			sources[azel] = [az, el]
 	return sources
 
 def find_stars(stars, site, disp):
@@ -68,6 +69,7 @@ def find_stars(stars, site, disp):
 			print star, az, el
 		if el > 15.0:
 			sources[star] = ephem.star(star)
+			sources[azel] = [az, el]
 	return sources
 	
 def find_SRTsources(SRTsources, site, disp):
@@ -78,6 +80,7 @@ def find_SRTsources(SRTsources, site, disp):
 			print source, az, el
 		if el> 15.0:
 			sources[source] = SRTsources[source]
+			sources[azel] = [az, el]
 	return sources
 
 def source_azel(object, site):
@@ -118,4 +121,4 @@ planets = find_planets(planet_list, site, False)
 # Find observable stars
 stars = find_stars(star_list, site, False)
 # Find observable SRT sources
-SRTsources = find_SRTsources(SRT_sources_list, site, False)
+SRTsources = find_SRTsources(SRT_sources_list, site, False  )
