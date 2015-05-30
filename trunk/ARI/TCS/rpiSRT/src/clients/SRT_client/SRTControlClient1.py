@@ -634,13 +634,17 @@ class SRT():
 		#Stop observation after tracking
 		self.SRTTrack = False
 		self.enObs = False
+		self.disableSpectrum()
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Observation Threads stopped"
 
 	def driftObs(self):
+		#Stop antenna tracking after reaching target and keeps capturing spectrum
 		self.SRTTrack = False
+		self.enableSpectrum()
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " Track stopped, drift observing"
 
 	def stopGoingToTarget(self):
+		#To stop antenna while going to a target, it ends the observation
 		self.SRTTrack = False
 		self.newAzEl = False
 		self.stopAzEl()
@@ -751,6 +755,14 @@ class SRT():
 		print "initialized: " + str(self.initialized)
 		print "toStow: " + str(self.tostow)
 		print "obsTarget: " + str(self.obsTarget)
+		
+	def getThreads(self):
+		SRTthreads = []
+		th = threading.enumerate()
+		for t in th:
+			if (t.name != 'MainThread' or t.name != 'Thread-1' or t.name != 'Dummy-2'):
+				SRTthreads.append(t.name)
+		print "Active SRT Threads "+str(SRTthreads)
 
 
 
