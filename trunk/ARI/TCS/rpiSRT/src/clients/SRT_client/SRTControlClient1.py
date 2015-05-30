@@ -66,7 +66,7 @@ class SRT():
 		self.enSRT = True
 		self.enSpec = True
 		self.getStatus = True
-		self.enObs = True
+		self.enObs = False
 		self.SRTState = ''
 		self.SRTMode = ''
 		self.SRTTarget =''
@@ -90,6 +90,9 @@ class SRT():
 	def find_stars(self):
 		self.stars = sites.find_stars(sites.star_list, self.site)
 		print str(len(self.stars)) + " observabable stars: " + str(self.stars)
+	
+	def find_radec(self):
+	
 	
 	def getTrackingStatus(self):
 		print self.name + " Antenna slewing: " + str(self.IsMoving)
@@ -384,6 +387,7 @@ class SRT():
 		if self.SRTMode=='GoTo':
 			self.SRTState = 'On target position'
 			self.SRTonTarget = True
+			self.enObs = False
 		if self.SRTMode == 'Track':
 			self.toSource = self.toSource + 1
 			if self.toSource == 2:
@@ -641,6 +645,12 @@ class SRT():
 	def obswSRT(self, mode, target):
 	# mode: 'GoTo' --> target = position
 	# mode: 'Track' --> target = 'Source'
+		if self.enObs:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + "Observation thread already started, wait for antenna for reach target or stop track source"
+			return
+		else:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + "starting Observation thread"
+			self.enObs = True
 		#### SRT starts in STOP state ###
 		self.SRTState = 'Idle'
 		self.SRTonTarget = False
