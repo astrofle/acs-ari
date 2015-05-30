@@ -406,6 +406,7 @@ class SRT():
 			self.cmdstop = False
 			self.SRTonTarget = False
 			self.status(False)
+			self.enObs = False
 
 
 	def AzEl1CB(self, a):
