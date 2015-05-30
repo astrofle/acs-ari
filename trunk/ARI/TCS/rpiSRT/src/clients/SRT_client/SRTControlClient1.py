@@ -29,6 +29,7 @@ class SRT():
 		self.aznow = 0.0
 		self.elnow = 0.0
 		self.axis = 0
+		self.tostow = 0
 		self.azatstow = 0
 		self.slew = 0
 		self.serialport = ''
