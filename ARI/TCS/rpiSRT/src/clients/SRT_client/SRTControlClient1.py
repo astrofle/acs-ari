@@ -87,11 +87,11 @@ class SRT():
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
 		
-	def find_stars(self):
+	def find_stars(self, disp):
 		self.stars = sites.find_stars(sites.star_list, self.site, disp)
 		print str(len(self.stars)) + " observabable stars: " + str(self.stars)
 	
-	def find_radec(self):
+	def find_radec(self, disp):
 		self.radecSources = sites.find_SRTsources(sites.SRTsources, sites.site, disp)
 		print str(len(self.radecSources)) + " observabable stars: " + str(self.radecSources)
 
