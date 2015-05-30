@@ -114,8 +114,8 @@ site.elevation = elevation
 
 
 # Find observable planets
-planets = find_planets(planet_list, site)
+planets = find_planets(planet_list, site, False)
 # Find observable stars
-stars = find_stars(star_list, site)
+stars = find_stars(star_list, site, False)
 # Find observable SRT sources
-SRTsources = find_SRTsources(SRT_sources_list, site)
+SRTsources = find_SRTsources(SRT_sources_list, site, False)
