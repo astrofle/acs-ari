@@ -56,7 +56,7 @@ class SRT():
 		self.statusDisp = False
 		self.name = ''
 		self.SRTinitialized = False #This variable check if SRT was initialised in a previous session
-		self.mode = 'SD'
+		self.RxSwitchMode = 'SD'
 		########## 
 		self.slewing = False
 		self.newAzEl = False
@@ -562,7 +562,7 @@ class SRT():
 		
 	def setModeCB(self, a):
 		print a
-		self.mode = a
+		self.RxSwitchMode = a
 		
 	def operSRT(self):
 		operSRT_thread = threading.Thread(target = self.operSRTLoop, name = 'operSRTLoop')
@@ -709,5 +709,28 @@ class SRT():
 		self.getStatus = False
 		#disconnect ICe
 		self.disconnect()
+		
+	def state(self):
+		print "SRTState: "+ self.SRTState
+		print "SRTonTarget: " + self.SRTonTarget
+		print "SRTMode: " + self.SRTMode
+		print "SRTTarget: " + self.SRTTarget
+		print "SRTTrack: "+ self.SRTTrack
+		print "enObs: " + self.enObs
+		print "newAzEl: " + self.newAzEl
+		print "enSRT: " + self.enSRT
+		print "enSpec: " + self.enSpec
+		print "slewing: " + self.slewing
+		print "cmdstop: " + self.cmdstop
+		print "InMoving: " + self.IsMoving
+		print "getStatus: " + self.getStatus
+		print "portInUse: " + self.portInUse
+		print "spectra: " + self.spectra
+		print "RxSwitchMode: "  + self.RxSwitchMode
+		print "toSource: " + self.toSource
+		print "SRTinitialized: " + self.SRTinitialized
+		print "initialized: " + self.initialized 
+		print "toStow: " + self.tostow 
+
 
 
