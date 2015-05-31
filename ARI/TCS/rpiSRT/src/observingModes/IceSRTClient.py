@@ -126,11 +126,11 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return self.name + " receiver set" 
 
 	def stopSpectrum(self, current = None):
-		self.DisableSpectrum()
+		self.disableSpectrum()
 		return self.name + " Stopped spectrum reading"
 
 	def startSpectrum(self, current = None):
-		self.EnableSpectrum()
+		self.enableSpectrum()
 		return self.name + " Stopped spectrum reading"
 		
 	def setRxMode(self, mode, current = None):
