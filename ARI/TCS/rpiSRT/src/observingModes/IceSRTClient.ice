@@ -34,6 +34,6 @@ module SRTClient{
 		void setFreq(float freq, string rmode, out string r);
 		void stopSpectrum(out string r);
 		void startSpectrum(out string r);
-		void setMode(string mode, out string r);
+		void setRxMode(string mode, out string r);
 	};
 };
