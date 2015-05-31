@@ -103,7 +103,7 @@ class ObsBase():
 	def genericCB(self, a):
 		#generic callback
 		print a
-		return	
+		return
 
 	def setupCB(self, a):
 		#generic callback

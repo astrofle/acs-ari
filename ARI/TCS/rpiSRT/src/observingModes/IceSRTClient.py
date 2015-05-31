@@ -19,7 +19,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.site = sites.site
 		self.planets = sites.planets
 		self.stars = sites.stars
-		self.SRTsources = sites.SRTsources		
+		self.SRTsources = sites.SRTsources
 		print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())
@@ -126,11 +126,11 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return self.name + " receiver set" 
 
 	def stopSpectrum(self, current = None):
-		self.StopSpectrum()
+		self.DisableSpectrum()
 		return self.name + " Stopped spectrum reading"
 
 	def startSpectrum(self, current = None):
-		self.StartSpectrum()
+		self.EnableSpectrum()
 		return self.name + " Stopped spectrum reading"
 		
 	def setRxMode(self, mode, current = None):
