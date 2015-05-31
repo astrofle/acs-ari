@@ -11,10 +11,10 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 	def __init__(self):
 		self.serialport = None
 		self.antennaInit = False
-		self.az = ''
-		self.el = ''
-		self.aznow = ''
-		self.elnow = ''
+		self.az = 0.0
+		self.el = 0.0
+		self.aznow = 0.0
+		self.elnow = 0.0
 		self.azcount = 0
 		self.elcount = 0
 		self.azzcount = 0
