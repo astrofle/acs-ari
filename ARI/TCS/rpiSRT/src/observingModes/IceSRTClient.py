@@ -11,6 +11,7 @@ import sites
 
 class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def __init__(self):
+		self.Defaultserialport = 'ttyUSB0'
 		self.serialport = 'ttyUSB0'
 		self.parameters = 'parametersV01'
 		self.IP = 'default -h localhost -p 10011'
@@ -78,10 +79,11 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.elcmd = None
 		self.Target = ''
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
+	
 	def setup(self, current = None):
 		print self.SRTinitialized
 		if (not self.SRTinitialized):
-			self.SetSerialPort(self.serialport)
+			self.SetSerialPort(self.Defaultserialport)
 			print self.name + " sending antenna to Stow"
 			self.Init(self.parameters)
 		else:
