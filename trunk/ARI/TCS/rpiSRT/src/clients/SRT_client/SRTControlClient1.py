@@ -24,10 +24,10 @@ class SRT():
 	def __init__(self):
 		self.IP = '192.168.0.6 -p 1000'
 		self.IP_string = "SRTController:default -h " + self.IP
-		self.az = 0.0
-		self.el = 0.0
-		self.aznow = 0.0
-		self.elnow = 0.0
+		self.az = None
+		self.el = None
+		self.aznow = None
+		self.elnow = None
 		self.axis = 0
 		self.tostow = 0
 		self.azatstow = 0
