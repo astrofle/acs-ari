@@ -108,14 +108,14 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return s
 		
 	def getSpectrum(self, current = None):
-		if not self.track:
-			self.StartSpectrum()
+		#if not self.track:
+		#	self.StartSpectrum()
 		print self.name + " Getting new spectrum"
 		while(self.spectra):
 			sleep(0.5)
 		print self.name + " New spectrum acquired"
-		if not self.track:
-			self.StopSpectrum()
+		#if not self.track:
+		#	self.StopSpectrum()
 		_sS = SRTClient.stamp(self.spectrum.sampleStamp.name, self.spectrum.sampleStamp.timdate, self.spectrum.sampleStamp.aznow, self.spectrum.sampleStamp.elnow, self.spectrum.sampleStamp.temperature, self.spectrum.sampleStamp.freq0, self.spectrum.sampleStamp.av, self.spectrum.sampleStamp.avc, self.spectrum.sampleStamp.nfreq, self.spectrum.sampleStamp.freqsep)
 		_sp = SRTClient.specs(_sS , self.spectrum.specd, self.spectrum.spec, self.spectrum.avspec, self.spectrum.avspecc)
 		return _sp
