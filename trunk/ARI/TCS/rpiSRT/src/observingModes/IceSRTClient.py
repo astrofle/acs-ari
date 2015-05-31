@@ -131,10 +131,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.StartSpectrum()
 		return self.name + " Stopped spectrum reading"
 		
-	def setMode(self, mode, current = None):
+	def setRxMode(self, mode, current = None):
 	    print "setting " + self.name + "to " + mode + "mode"
 	    self.mode = mode
-	    self.SetMode(mode)
+	    self.SetRxMode(mode)
 	    return self.name + "set for " + self.mode
 #try:
 #	if len(sys.argv)<2:
