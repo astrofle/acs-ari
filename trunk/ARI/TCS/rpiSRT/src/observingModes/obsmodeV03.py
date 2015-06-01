@@ -35,7 +35,8 @@ class ObsBase():
 		self.tracking = False
 		self.OnSource = False
 		self.Target = ""
-		self.spectrum = SRTClient.specs()
+		self.spec = SRTClient.specs()
+		self.spectrum ={}
 		self.SHspectrum = SHControl.SHspectrum()
 		self.observe = False
 		self.getSHsp = False
@@ -179,14 +180,14 @@ class ObsBase():
 		
 	def getSpectrum(self):
 		while(self.readSpectrum):
-			self.waitSpectrum = True
 			statusIC = 0
 			ic = None
 			try:
 				for node in self.nodes:
+					self.waitSpectrum = True
 					if node.startswith('SRT'):
 						self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
-						print node + "Getting spectrum"
+						print node + " Getting spectrum"
 						while(self.waitSpectrum):
 							time.sleep(1)
 			except:
@@ -194,7 +195,8 @@ class ObsBase():
 				self.statusIC = 1
 		
 	def spectrumCB(self, sp):
-		self.spectrum = sp
+		self.spec = sp
+		self.spectrum[sp.sampleStamp.name] = self.spec
 		print sp.sampleStamp.name + " Spectrum Obtained"
 		self.waitSpectrum = False
 		return
@@ -203,12 +205,13 @@ class ObsBase():
 		statusIC = 0
 		ic = None
 		try:
-			self.readSpectrum = True
-			print "starting spectrum reading"
-			self.ARI_controllers[self.nodes[0]].begin_startSpectrum(self.stopspCB, self.failureCB)
-			print "starting spectrum reading thread"
-			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
-			getSpec_thread.start()
+			for node in self.nodes:
+				self.readSpectrum = True
+				print "starting spectrum reading"
+				self.ARI_controllers[node].begin_startSpectrum(self.stopspCB, self.failureCB)
+				print "starting spectrum reading thread"
+				getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
+				getSpec_thread.start()
 
 		except:
 			traceback.print_exc()
@@ -218,9 +221,10 @@ class ObsBase():
 		statusIC = 0
 		ic = None
 		try:
-			print "stopping spectrum reading"
-			self.ARI_controllers[self.nodes[0]].begin_stopSpectrum(self.stopspCB, self.failureCB)
-			self.readSpectrum = False
+			for node in self.nodes:
+				print "stopping spectrum reading"
+				self.ARI_controllers[node].begin_stopSpectrum(self.stopspCB, self.failureCB)
+				self.readSpectrum = False
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -261,7 +265,7 @@ class SRTSingleDish(ObsBase):
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
-		return	
+		return
 		
 	def status(self):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
@@ -302,12 +306,12 @@ class SRTDoubleSingleDish(ObsBase):
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
-		return	
+		return
 
 		
 	def status(self):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
-		return statusList	
+		return statusList
 
 	
 class ARI_SignalHound(ObsBase):
