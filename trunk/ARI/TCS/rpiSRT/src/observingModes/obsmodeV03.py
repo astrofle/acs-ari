@@ -187,7 +187,7 @@ class ObsBase():
 					if node.startswith('SRT'):
 						self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
 						print node + "Getting spectrum"
-						while(self.waitSpectrum)
+						while(self.waitSpectrum):
 							time.sleep(1)
 			except:
 				traceback.print_exc()
