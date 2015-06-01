@@ -179,13 +179,16 @@ class ObsBase():
 		
 	def getSpectrum(self):
 		while(self.readSpectrum):
+			self.waitSpectrum = True
 			statusIC = 0
 			ic = None
 			try:
 				for node in self.nodes:
 					if node.startswith('SRT'):
-						self.ARI_controllers[node].getSpectrum(self.spectrumCB, self.failureCB);
+						self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
 						print node + "Getting spectrum"
+						while(self.waitSpectrum)
+							time.sleep(1)
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
@@ -193,6 +196,7 @@ class ObsBase():
 	def spectrumCB(self, sp):
 		self.spectrum = sp
 		print sp.sampleStamp.name + " Spectrum Obtained"
+		self.waitSpectrum = False
 		return
 		
 	def enableSpectrum(self):
