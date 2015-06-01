@@ -199,12 +199,13 @@ class ObsBase():
 		statusIC = 0
 		ic = None
 		try:
+			self.readSpectrum = True
 			print "starting spectrum reading"
 			self.ARI_controllers[self.nodes[0]].begin_startSpectrum(self.stopspCB, self.failureCB)
 			print "starting spectrum reading thread"
 			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
 			getSpec_thread.start()
-			self.readSpectrum = True
+
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
