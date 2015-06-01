@@ -211,8 +211,8 @@ class ObsBase():
 				print "starting spectrum reading"
 				self.ARI_controllers[node].begin_startSpectrum(self.stopspCB, self.failureCB)
 				print "starting spectrum reading thread"
-				getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
-				getSpec_thread.start()
+			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
+			getSpec_thread.start()
 
 		except:
 			traceback.print_exc()
