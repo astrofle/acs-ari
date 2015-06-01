@@ -176,22 +176,37 @@ class ObsBase():
 		print "Antenna Stopped"
 		
 	def getSpectrum(self):
-		statusIC = 0
-		ic = None
-		try:
-			for node in self.nodes:
-				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
-					print node + "Getting spectrum"
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		while(self.readSpectrum)
+			statusIC = 0
+			ic = None
+			try:
+				for node in self.nodes:
+					if node.startswith('SRT'):
+						self.ARI_controllers[node].getSpectrum(self.spectrumCB, self.failureCB);
+						print node + "Getting spectrum"
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
 		
 	def spectrumCB(self, sp):
 		self.spectrum = sp
 		print sp.sampleStamp.name + " Spectrum Obtained"
 		return
-	def stopSpectrum(self):
+		
+	def enableSpectrum(self):
+		statusIC = 0
+		ic = None
+		try:
+			print "starting spectrum reading"
+			self.ARI_controllers[self.nodes[0]].begin_startSpectrum(self.stopspCB, self.failureCB)
+			print "starting spectrum reading thread"
+			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
+			getSpec_thread.start()
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def disableSpectrum(self):
 		statusIC = 0
 		ic = None
 		try:
@@ -243,15 +258,7 @@ class SRTSingleDish(ObsBase):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
 		return statusList
 	
-	def startSpectrum(self):
-		statusIC = 0
-		ic = None
-		try:
-			print "starting spectrum reading"
-			self.ARI_controllers[self.nodes[0]].begin_startSpectrum(self.stopspCB, self.failureCB)
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+
 
 
 class SRTDoubleSingleDish(ObsBase):
