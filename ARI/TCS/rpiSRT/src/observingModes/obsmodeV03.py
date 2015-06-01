@@ -39,6 +39,8 @@ class ObsBase():
 		self.SHspectrum = SHControl.SHspectrum()
 		self.observe = False
 		self.getSHsp = False
+		#######
+		self.readSpectrum = False
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -176,7 +178,7 @@ class ObsBase():
 		print "Antenna Stopped"
 		
 	def getSpectrum(self):
-		while(self.readSpectrum)
+		while(self.readSpectrum):
 			statusIC = 0
 			ic = None
 			try:
@@ -202,6 +204,7 @@ class ObsBase():
 			print "starting spectrum reading thread"
 			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
 			getSpec_thread.start()
+			self.readSpectrum = True
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -212,6 +215,7 @@ class ObsBase():
 		try:
 			print "stopping spectrum reading"
 			self.ARI_controllers[self.nodes[0]].begin_stopSpectrum(self.stopspCB, self.failureCB)
+			self.readSpectrum = False
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
