@@ -198,6 +198,7 @@ class ObsBase():
 		self.spec = sp
 		#self.spectrum[sp.sampleStamp.name] = self.spec
 		print sp.sampleStamp.name + " Spectrum Obtained"
+		self.spectrum[sp.sampleStamp.name] = self.spec
 		self.waitSpectrum = False
 		return
 		
