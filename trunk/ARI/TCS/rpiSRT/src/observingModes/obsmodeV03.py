@@ -196,7 +196,7 @@ class ObsBase():
 		
 	def spectrumCB(self, sp):
 		self.spec = sp
-		self.spectrum[sp.sampleStamp.name] = self.spec
+		#self.spectrum[sp.sampleStamp.name] = self.spec
 		print sp.sampleStamp.name + " Spectrum Obtained"
 		self.waitSpectrum = False
 		return
