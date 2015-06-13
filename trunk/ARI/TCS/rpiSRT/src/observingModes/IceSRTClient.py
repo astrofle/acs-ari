@@ -48,7 +48,6 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.mode =''
 
 		self.IP_string = "SRTController:default -h " + self.IP
-		self.spectrum = []
 		self.ic = None
 		self.portInUse = [False, '']
 		self.rGraph = True
