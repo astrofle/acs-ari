@@ -18,6 +18,10 @@ class ObsBase():
 		'SH':"SHController:default -h localhost -p 10013",
 		'ROACH':"SRTClient:default -h localhost -p 10014"
 		}
+		self.trackCBdict = {
+		'SRT1':self.trackCBSRT1,
+		'SRT2':self.trackCBSRT2
+		}
 		self.observingMode = ""
 		self.antenna = ''
 		self.site = sites.site
@@ -45,6 +49,7 @@ class ObsBase():
 		self.readSpectrum = False
 		self.rcvSpec = [0,0]
 		self.setupInProgress = False
+		self.OnSrc =[0,0]
 		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
@@ -150,13 +155,14 @@ class ObsBase():
 			traceback.print_exc()
 			self.statusIC = 1
 
-	def trackSource(self, target):
+	def obswSRT(self, mode, target):
 		statusIC = 0
 		ic = None
+		self.onSource = False
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_trackSource(target, self.trackCB, self.failureCB);
+					self.ARI_controllers[node].begin_obsSRT(mode, str(target), self.trackCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving antenna" + node + " to target"
 			self.tracking
 		except:
@@ -166,8 +172,18 @@ class ObsBase():
 	
 	def trackCB(self, a):
 		print a
+		name = a.split()
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna on source"
-		self.OnSource
+		if self.observingMode = 'SRT-SD':
+			self.OnSource = True
+		elif self.observingMode = 'SRT-DSD':
+			if name == 'srt1':
+				self.OnSrc[0] = 1
+			elif name == 'srt2':
+				self.OnSrc[1] = 1
+		if sum(self.OnSrc) == 2:
+			self.OnSrc =[0,0]
+			self.OnSource = True
 		#call by getSpectrum
 		if self.mode == 'ARI':
 			self.stopSpectrum()
