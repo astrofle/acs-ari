@@ -188,7 +188,7 @@ class ObsBase():
 			ic = None
 			if self.observingMode == 'SRT-SD':
 				rep = 0
-			elif self.observingMode = 'SRT-DSD':
+			elif self.observingMode == 'SRT-DSD':
 				rep = 1
 			try:
 				for node in self.nodes:
