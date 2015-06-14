@@ -77,6 +77,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.azcmd = None
 		self.elcmd = None
 		self.Target = ''
+		self.STOP = False
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 	
 	def setup(self, current = None):
@@ -107,6 +108,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return self.name + " Track Stopped"
 		self.spectra = False
 		self.slew = False
+		self.STOP = True
 		return
 
 	def message(self, s, current = None):
@@ -118,7 +120,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		#	self.StartSpectrum()
 		self.spectra = True
 		print self.name + " Getting new spectrum"
-		while(self.spectra or self.slew):
+		while((self.spectra or self.slew) and not self.STOP):
 			print self.name + " waiting"
 			print self.spectra
 			print self.slew
@@ -141,6 +143,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return self.name + " Stopped spectrum reading"
 
 	def startSpectrum(self, current = None):
+		self.STOP = False
 		self.enableSpectrum()
 		return self.name + " Stopped spectrum reading"
 		
