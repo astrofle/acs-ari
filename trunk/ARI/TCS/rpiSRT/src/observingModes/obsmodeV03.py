@@ -242,7 +242,7 @@ class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
 		ObsBase.__init__(self)
 		self.nodes = [antenna]
-		self.observingMode = 'SRT Single Dish: ' + str(self.nodes)
+		self.observingMode = 'SRT Single Dish: ' + str(self.nodes)
 		self.mode = 'SD'
 		
 	def radioSetup(self, freq, rec_mode):
