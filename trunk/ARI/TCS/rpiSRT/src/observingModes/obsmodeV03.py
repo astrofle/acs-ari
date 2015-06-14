@@ -307,7 +307,7 @@ class ObsBase():
 			
 	def statusCB(self,a):
 		self.status[a.name] = a
-	    return
+		return
 
 
 
