@@ -190,7 +190,7 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_stopTrack(self.stopTrackCB, self.failureCB);
+					self.ARI_controllers[node].begin_StopObs(self.stopTrackCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stopping Antenna " + node
 		except:
 			traceback.print_exc()
