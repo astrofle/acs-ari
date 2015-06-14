@@ -174,9 +174,9 @@ class ObsBase():
 		print a
 		name = a.split()
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna on source"
-		if self.observingMode = 'SRT-SD':
+		if self.observingMode == 'SRT-SD':
 			self.OnSource = True
-		elif self.observingMode = 'SRT-DSD':
+		elif self.observingMode == 'SRT-DSD':
 			if name == 'srt1':
 				self.OnSrc[0] = 1
 			elif name == 'srt2':
