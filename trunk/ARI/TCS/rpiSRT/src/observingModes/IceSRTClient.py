@@ -153,7 +153,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	    return self.name + "set for " + self.mode
 	    
 	def SRTstate(self, current = None):
-		_st = state(str(self.SRTState),str(self.SRTonTarget), str(self.SRTMode),\
+		_st = SRTClient.state(str(self.SRTState),str(self.SRTonTarget), str(self.SRTMode),\
 		str(self.SRTTarget),str(self.SRTTrack),str(self.enObs),str(self.newAzEl),\
 		str(self.enSRT), str(self.enSpec),str(self.slewing),str(self.cmdstop),\
 		str(self.IsMoving),str(self.getStatus),str(self.portInUse),str(self.spectra),\
