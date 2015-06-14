@@ -23,6 +23,31 @@ module SRTClient{
 		spectrum specd;
 		};
 
+    struct state{
+        string SRTState;
+		string SRTonTarget; 
+		string SRTMode; 
+		string SRTTarget; 
+		string SRTTrack; 
+		string enObs; 
+		string newAzEl; 
+		string enSRT; 
+		string enSpec; 
+		string slewing; 
+		string cmdstop; 
+		string InMoving;  
+		string getStatus;  
+		string portInUse;  
+		string spectra; 
+		string RxSwitchMode;  
+		string toSource; 
+		string SRTinitialized; 
+		string initialized; 
+		string toStow;  
+		string Target;  
+		string obsTarget;  
+    };
+
 	sequence<specs> spectrums;
 
 	interface Client{
@@ -35,5 +60,6 @@ module SRTClient{
 		void stopSpectrum(out string r);
 		void startSpectrum(out string r);
 		void setRxMode(string mode, out string r);
+		void SRTstate(out state st);
 	};
 };

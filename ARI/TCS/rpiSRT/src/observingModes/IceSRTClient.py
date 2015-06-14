@@ -151,6 +151,14 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	    self.mode = mode
 	    self.SetRxMode(mode)
 	    return self.name + "set for " + self.mode
+	    
+	def SRTstate(self, current = None):
+    	_st = state(str(self.SRTState),str(self.SRTonTarget), str(self.SRTMode),\
+		str(self.SRTTarget),str(self.SRTTrack),str(self.enObs),str(self.newAzEl),\
+		str(self.enSRT), str(self.enSpec),str(self.slewing),str(self.cmdstop),\
+		str(self.IsMoving),str(self.getStatus),str(self.portInUse),str(self.spectra),\
+		str(self.RxSwitchMode),str(self.toSource),str(self.SRTinitialized),\
+		str(self.initialized),str(self.tostow),str(self.Target),str(self.obsTarget))
 #try:
 #	if len(sys.argv)<2:
 #		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
