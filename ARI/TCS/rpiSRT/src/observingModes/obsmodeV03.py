@@ -18,10 +18,6 @@ class ObsBase():
 		'SH':"SHController:default -h localhost -p 10013",
 		'ROACH':"SRTClient:default -h localhost -p 10014"
 		}
-		self.trackCBdict = {
-		'SRT1':self.trackCBSRT1,
-		'SRT2':self.trackCBSRT2
-		}
 		self.observingMode = ""
 		self.antenna = ''
 		self.site = sites.site
