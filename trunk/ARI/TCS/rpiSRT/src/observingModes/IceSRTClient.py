@@ -2,6 +2,7 @@ import sys, traceback, Ice
 sys.path.insert(0,'../clients/SRT_client/')
 
 from time import sleep
+import time
 import SRTClient
 import SRTControlClient1 as SRTControl
 import threading
@@ -153,7 +154,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	    return self.name + "set for " + self.mode
 	    
 	def SRTstate(self, current = None):
-		_st = SRTClient.state(str(self.SRTState),str(self.SRTonTarget), str(self.SRTMode),\
+		_st = SRTClient.state(str(self.name),time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),str(self.SRTState),str(self.SRTonTarget), str(self.SRTMode),\
 		str(self.SRTTarget),str(self.SRTTrack),str(self.enObs),str(self.newAzEl),\
 		str(self.enSRT), str(self.enSpec),str(self.slewing),str(self.cmdstop),\
 		str(self.IsMoving),str(self.getStatus),str(self.portInUse),str(self.spectra),\

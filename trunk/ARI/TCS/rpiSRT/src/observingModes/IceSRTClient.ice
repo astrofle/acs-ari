@@ -24,6 +24,8 @@ module SRTClient{
 		};
 
     struct state{
+        string name;
+        string time;
         string SRTState;
 		string SRTonTarget; 
 		string SRTMode; 
