@@ -91,14 +91,14 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 			sleep(1)
 		return self.name + " Antenna initialized"
 	
-	def trackSource(self, s, current = None):
-		self.tracking(s)
-		while(not self.OnSource and (self.toSource != -1)):
+	def obsSRT(self, mode, target, current = None):
+		self.obswSRT(mode, target)
+		while(not self.SRTonTarget):
 			sleep(1)
 		return self.name + " Antenna On Source and Tracking"
 	
-	def stopTrack(self, current = None):
-		self.Stop()
+	def StopObs(self, current = None):
+		self.stopObs()
 		print self.name + " Stopping antenna and spectrum read"
 		return self.name + " Track Stopped"
 

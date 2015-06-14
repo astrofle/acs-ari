@@ -28,8 +28,8 @@ module SRTClient{
 	interface Client{
 		void message(string s, out string r);
 		void setup(out string r);
-		void trackSource(string s, out string r);
-		void stopTrack(out string r);
+		void obsSRT(string mode, string target, out string r);
+		void StopObs(out string r);
 		void getSpectrum(out specs sp);
 		void setFreq(float freq, string rmode, out string r);
 		void stopSpectrum(out string r);
