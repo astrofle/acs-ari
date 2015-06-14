@@ -46,7 +46,7 @@ class ObsBase():
 		self.rcvSpec = [0,0]
 		self.setupInProgress = False
 		self.OnSrc =[0,0]
-		self.lastSpd =[name, tim]
+		self.lastSpd =[]
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
