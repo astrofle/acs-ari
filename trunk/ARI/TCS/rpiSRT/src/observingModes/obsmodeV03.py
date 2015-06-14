@@ -298,7 +298,7 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"getting status"
-				self.ARI_controllers[node].begin_STRstatus(self.statusCB, self.failureCB)
+				self.ARI_controllers[node].begin_STRstate(self.statusCB, self.failureCB)
 				self.readSpectrum = False
 				self.waitSpectrum = False
 		except:
