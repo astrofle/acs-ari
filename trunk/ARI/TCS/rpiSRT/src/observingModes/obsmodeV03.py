@@ -46,7 +46,7 @@ class ObsBase():
 		self.rcvSpec = [0,0]
 		self.setupInProgress = False
 		self.OnSrc =[0,0]
-		self.lastSpd =[]
+		self.lastSpd =[0,0]
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -228,9 +228,10 @@ class ObsBase():
 		#self.spectrum[sp.sampleStamp.name] = self.spec
 		name = sp.sampleStamp.name
 		tim = sp.sampleStamp.timdate
-		Spd = [name, tim]
-		if Spd == self.lastSpd:
-			print "Repetido"
+		if (name == 'srt1' and tim == self.lastSpd[0]):
+			print name + " Repetido"
+		elif (name == 'srt2' and tim == self.lastSpd[0])
+			print name + " Repetido"
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
 		print name+" "+tim
 		self.lastSpd =[name, tim]
@@ -240,11 +241,17 @@ class ObsBase():
 			if name == self.nodes[0].lower():
 				print "yes2"
 				self.waitSpectrum = False
+				if name == 'srt1':
+					self.lastSpd[0] = tim
+				else:
+					self.lastSpd[1] = tim
 		elif self.observingMode == 'SRT-DSD':
 			if name == 'srt1':
 				self.rcvSpec[0] = 1
+				self.lastSpd[0] = tim
 			elif name == 'srt2':
 				self.rcvSpec[1] = 1
+				self.lastSpd[1] = tim
 			if sum(self.rcvSpec) == 2:
 				self.rcvSpec = [0,0]
 				self.waitSpectrum = False
