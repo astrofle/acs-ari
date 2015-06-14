@@ -231,7 +231,7 @@ class ObsBase():
 		self.spectrum[name] = self.spec
 		if self.observingMode == 'SRT-SD':
 			print "yes"
-			if name == self.nodes[0].lower:
+			if name == self.nodes[0].lower():
 				print "yes2"
 				self.waitSpectrum = False
 		elif self.observingMode == 'SRT-DSD':
