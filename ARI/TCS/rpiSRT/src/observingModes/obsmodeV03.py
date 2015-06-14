@@ -43,6 +43,7 @@ class ObsBase():
 		self.getSHsp = False
 		#######
 		self.readSpectrum = False
+		self.rcvSpec = [0,0]
 		
 	def find_planets(self):
 		self.planets = sites.find_planets(sites.planet_list, self.site)
@@ -185,14 +186,21 @@ class ObsBase():
 		while(self.readSpectrum):
 			statusIC = 0
 			ic = None
+			if self.observingMode == 'SRT-SD':
+				rep = 0
+			elif self.observingMode = 'SRT-DSD':
+				rep = 1
 			try:
 				for node in self.nodes:
 					self.waitSpectrum = True
 					if node.startswith('SRT'):
 						self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
 						print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ node + " Getting spectrum"
-						while(self.waitSpectrum):
-							time.sleep(1)
+						if not rep:
+							while(self.waitSpectrum):
+								time.sleep(1)
+						else:
+							rep = 0
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
@@ -200,9 +208,21 @@ class ObsBase():
 	def spectrumCB(self, sp):
 		self.spec = sp
 		#self.spectrum[sp.sampleStamp.name] = self.spec
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+sp.sampleStamp.name + " Spectrum Obtained"
-		self.spectrum[sp.sampleStamp.name] = self.spec
-		self.waitSpectrum = False
+		name = sp.sampleStamp.name
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
+		self.spectrum[name] = self.spec
+		if self.observingMode = 'SRT-SD':
+			if name == self.nodes[0]:
+				self.waitSpectrum = False
+		elif self.observingMode = 'SRT-DSD':
+			if name == 'srt1':
+				self.rcvSpec[0] = 1
+			elif name == 'srt2':
+				self.rcvSpec[1] = 1
+			if sum(self.rcvSpec) == 2:
+				self.rcvSpec = [0,0]
+				self.waitSpectrum = False
+		
 		return
 		
 	def enableSpectrum(self):
@@ -211,9 +231,9 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				self.readSpectrum = True
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" starting spectrum reading"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ node + " starting spectrum reading"
 				self.ARI_controllers[node].begin_startSpectrum(self.stopspCB, self.failureCB)
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" starting spectrum reading thread"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+node+" starting spectrum reading thread"
 			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
 			getSpec_thread.start()
 
@@ -242,7 +262,7 @@ class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
 		ObsBase.__init__(self)
 		self.nodes = [antenna]
-		self.observingMode = 'SRT Single Dish: ' + str(self.nodes)
+		self.observingMode = 'SRT-SD'
 		self.mode = 'SD'
 		
 	def radioSetup(self, freq, rec_mode):
@@ -280,7 +300,7 @@ class SRTDoubleSingleDish(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
 		self.nodes = ['SRT1', 'SRT2']
-		self.observingMode = 'SRT Double Single Dish: ' + str(self.nodes)
+		self.observingMode = 'SRT-DSD'
 		self.mode = 'SD'
 	
 	def radioSetup(self, freq, rec_mode):
@@ -323,7 +343,7 @@ class ARI_SignalHound(ObsBase):
 		#self.nodes =['SH']
 		self.mode = 'ARI'
 		self.nodes =['SRT1', 'SRT2', 'SH']
-		self.observingMode = 'ARI Signal Hound: ' + str(self.nodes)
+		self.observingMode = 'ARI-SH'
 		self.SH_initialized = False
 		self.bw = 40e6
 		self.SH_bwSetup = False
@@ -504,7 +524,7 @@ class ARI_ROACH(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
 		self.nodes =['SRT1', 'SRT2', 'ROACH']
-		self.observingMode = 'ARI ROACH' + str(self.nodes)
+		self.observingMode = 'ARI-ROACH'
 
 
 
