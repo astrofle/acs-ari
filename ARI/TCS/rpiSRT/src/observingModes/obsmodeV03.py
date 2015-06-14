@@ -230,7 +230,7 @@ class ObsBase():
 		tim = sp.sampleStamp.timdate
 		if (name == 'srt1' and tim == self.lastSpd[0]):
 			print name + " Repetido"
-		elif (name == 'srt2' and tim == self.lastSpd[0])
+		elif (name == 'srt2' and tim == self.lastSpd[0]):
 			print name + " Repetido"
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
 		print name+" "+tim
