@@ -230,7 +230,7 @@ class ObsBase():
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
 		self.spectrum[name] = self.spec
 		if self.observingMode == 'SRT-SD':
-			if name == self.nodes[0]:
+			if name == self.nodes[0].lower:
 				self.waitSpectrum = False
 		elif self.observingMode == 'SRT-DSD':
 			if name == 'srt1':
