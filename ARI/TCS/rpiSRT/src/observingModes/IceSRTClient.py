@@ -105,6 +105,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.stopObs()
 		print self.name + " Stopping antenna and spectrum read"
 		return self.name + " Track Stopped"
+		self.spectra = False
+		self.slew = False
 
 	def message(self, s, current = None):
 		print s
