@@ -47,6 +47,7 @@ class ObsBase():
 		self.setupInProgress = False
 		self.OnSrc =[0,0]
 		self.lastSpd =[0,0]
+		self.status ={}
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -290,6 +291,23 @@ class ObsBase():
 	def stopspCB(self, a):
 		print a
 		return
+		
+	def SRTStatus(self):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"getting status"
+				self.ARI_controllers[node].begin_STRstatus(self.statusCB, self.failureCB)
+				self.readSpectrum = False
+				self.waitSpectrum = False
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+			
+	def statusCB(self,a):
+	    return
+
 
 
 class SRTSingleDish(ObsBase):
