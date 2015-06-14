@@ -251,7 +251,7 @@ class SRTSingleDish(ObsBase):
 		try:
 			self.new_freq = freq
 			self.new_rec_mode = str(rec_mode)
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + str(self.nodes)+" "+ setting receiver
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + str(self.nodes)+" "+ "setting receiver'
 			self.ARI_controllers[self.nodes[0]].begin_setFreq(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
 		except:
 			traceback.print_exc()
