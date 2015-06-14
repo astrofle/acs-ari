@@ -92,6 +92,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return self.name + " Antenna initialized"
 	
 	def obsSRT(self, mode, target, current = None):
+		if mode == 'GoTo':
+			target = target.strip('[').strip(']').split(',')
+			target[0] = float(target[0])
+			target[1] = float(target[1])
 		self.obswSRT(mode, target)
 		while(not self.SRTonTarget):
 			sleep(1)
