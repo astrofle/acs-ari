@@ -306,6 +306,7 @@ class ObsBase():
 			self.statusIC = 1
 			
 	def statusCB(self,a):
+		self.status[a.name] = a
 	    return
 
 
