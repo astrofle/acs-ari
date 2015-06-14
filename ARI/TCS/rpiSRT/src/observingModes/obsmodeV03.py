@@ -211,10 +211,10 @@ class ObsBase():
 		name = sp.sampleStamp.name
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
 		self.spectrum[name] = self.spec
-		if self.observingMode = 'SRT-SD':
+		if self.observingMode == 'SRT-SD':
 			if name == self.nodes[0]:
 				self.waitSpectrum = False
-		elif self.observingMode = 'SRT-DSD':
+		elif self.observingMode == 'SRT-DSD':
 			if name == 'srt1':
 				self.rcvSpec[0] = 1
 			elif name == 'srt2':
