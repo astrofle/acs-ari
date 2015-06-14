@@ -138,7 +138,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 
 	def stopSpectrum(self, current = None):
 		self.disableSpectrum()
-		time.sleep(10)
+		sleep(10)
 		self.spectra = False
 		return self.name + " Stopped spectrum reading"
 
