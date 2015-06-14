@@ -205,9 +205,9 @@ class ObsBase():
 			statusIC = 0
 			ic = None
 			if self.observingMode == 'SRT-SD':
-				rep = 0
+				rep = False
 			elif self.observingMode == 'SRT-DSD':
-				rep = 1
+				rep = True
 			try:
 				for node in self.nodes:
 					self.waitSpectrum = True
@@ -218,7 +218,7 @@ class ObsBase():
 							while(self.waitSpectrum):
 								time.sleep(1)
 						else:
-							rep = 0
+							rep = False
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
@@ -232,6 +232,7 @@ class ObsBase():
 		if self.observingMode == 'SRT-SD':
 			print "yes"
 			if name == self.nodes[0].lower:
+				print "yes2"
 				self.waitSpectrum = False
 		elif self.observingMode == 'SRT-DSD':
 			if name == 'srt1':
