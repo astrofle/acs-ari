@@ -18,6 +18,7 @@ class ObsBase():
 		'SH':"SHController:default -h localhost -p 10013",
 		'ROACH':"SRTClient:default -h localhost -p 10014"
 		}
+		self.observingMode = ""
 		self.antenna = ''
 		self.site = sites.site
 		self.planets = sites.planets
@@ -83,10 +84,10 @@ class ObsBase():
 			base = ic.stringToProxy(IP_string)
 			if IP_string.startswith('SRT'):
 				controller = SRTClient.ClientPrx.checkedCast(base)
-				print "Connecting to SRT Client"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Connecting to SRT Client"
 			if IP_string.startswith('SH'):
 				controller = SHControl.SignalHoundPrx.checkedCast(base)
-				print "Connecting to Signal hound Client"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Connecting to Signal hound Client"
 			controller.begin_message("connected to client", self.genericCB, self.failureCB);
 
 			#self.controller.begin_serverState(self.serverCB, self.failureCB);
@@ -117,11 +118,13 @@ class ObsBase():
 
 	def createObsMode(self):
 		self.ARI_controllers = {}
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" creating "+ self.observingMode
 		for node in self.nodes:
-			print "Connecting to "+ node
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Connecting to "+ node
 			controller = self.connect(self.ARI_nodes[node])
 			self.ARI_controllers[node] = controller
 			if node.startswith('SRT'):
+			#Set SRT receiver switch mode
 				self.ARI_controllers[node].begin_setRxMode(self.mode, self.modeCB, self.failureCB);
 			
 	def modeCB(self, a):
@@ -135,7 +138,7 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_setup(self.setupCB, self.failureCB);
-					print "initializing antenna " + node
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" initializing antenna " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -147,7 +150,7 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_trackSource(target, self.trackCB, self.failureCB);
-					print "moving antenna" + node + " to target"
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving antenna" + node + " to target"
 			self.tracking
 		except:
 			traceback.print_exc()
@@ -156,7 +159,7 @@ class ObsBase():
 	
 	def trackCB(self, a):
 		print a
-		print "Antenna on source"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna on source"
 		self.OnSource
 		#call by getSpectrum
 		if self.mode == 'ARI':
@@ -169,14 +172,14 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_stopTrack(self.stopTrackCB, self.failureCB);
-					print "Stopping Antenna " + node
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stopping Antenna " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 	
 	def stopTrackCB(self, a):
 		print a
-		print "Antenna Stopped"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna Stopped"
 		
 	def getSpectrum(self):
 		while(self.readSpectrum):
@@ -187,7 +190,7 @@ class ObsBase():
 					self.waitSpectrum = True
 					if node.startswith('SRT'):
 						self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
-						print node + " Getting spectrum"
+						print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ node + " Getting spectrum"
 						while(self.waitSpectrum):
 							time.sleep(1)
 			except:
@@ -197,7 +200,7 @@ class ObsBase():
 	def spectrumCB(self, sp):
 		self.spec = sp
 		#self.spectrum[sp.sampleStamp.name] = self.spec
-		print sp.sampleStamp.name + " Spectrum Obtained"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+sp.sampleStamp.name + " Spectrum Obtained"
 		self.spectrum[sp.sampleStamp.name] = self.spec
 		self.waitSpectrum = False
 		return
@@ -208,9 +211,9 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				self.readSpectrum = True
-				print "starting spectrum reading"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" starting spectrum reading"
 				self.ARI_controllers[node].begin_startSpectrum(self.stopspCB, self.failureCB)
-				print "starting spectrum reading thread"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" starting spectrum reading thread"
 			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
 			getSpec_thread.start()
 
@@ -223,7 +226,7 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				print "stopping spectrum reading"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" stopping spectrum reading"
 				self.ARI_controllers[node].begin_stopSpectrum(self.stopspCB, self.failureCB)
 				self.readSpectrum = False
 		except:
@@ -237,8 +240,9 @@ class ObsBase():
 
 class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
-		ObsBase.__init__(self)	
+		ObsBase.__init__(self)
 		self.nodes = [antenna]
+		self.observingMode = 'SRT Single Dish: ' + str(self.nodes)
 		self.mode = 'SD'
 		
 	def radioSetup(self, freq, rec_mode):
@@ -247,7 +251,7 @@ class SRTSingleDish(ObsBase):
 		try:
 			self.new_freq = freq
 			self.new_rec_mode = str(rec_mode)
-			print "setting receiver"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + str(self.nodes)+" "+ setting receiver
 			self.ARI_controllers[self.nodes[0]].begin_setFreq(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
 		except:
 			traceback.print_exc()
@@ -262,7 +266,7 @@ class SRTSingleDish(ObsBase):
 	def rsetupCB(self,a):
 		#generic callback
 		print a
-		print "Setup finished"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ str(self.nodes)+ "Setup finished"
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
@@ -272,13 +276,11 @@ class SRTSingleDish(ObsBase):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
 		return statusList
 	
-
-
-
 class SRTDoubleSingleDish(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
 		self.nodes = ['SRT1', 'SRT2']
+		self.observingMode = 'SRT Double Single Dish: ' + str(self.nodes)
 		self.mode = 'SD'
 	
 	def radioSetup(self, freq, rec_mode):
@@ -288,8 +290,8 @@ class SRTDoubleSingleDish(ObsBase):
 			self.new_freq = freq
 			self.new_rec_mode = rec_mode
 			for node in self.nodes:
-				print "setting receiver " + node
-				self.rsetupCB("frequency and mode set")
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " "+node+" "+setting receiver "
+				self.ARI_controllers[node].begin_setFreq(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -302,8 +304,8 @@ class SRTDoubleSingleDish(ObsBase):
 			
 	def rsetupCB(self,a):
 		#generic callback
-		print a
-		print "Setup finished"
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " "+a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Radio Setup finished"
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
@@ -321,6 +323,7 @@ class ARI_SignalHound(ObsBase):
 		#self.nodes =['SH']
 		self.mode = 'ARI'
 		self.nodes =['SRT1', 'SRT2', 'SH']
+		self.observingMode = 'ARI Signal Hound: ' + str(self.nodes)
 		self.SH_initialized = False
 		self.bw = 40e6
 		self.SH_bwSetup = False
@@ -501,6 +504,7 @@ class ARI_ROACH(ObsBase):
 	def __init__(self):
 		ObsBase.__init__(self)
 		self.nodes =['SRT1', 'SRT2', 'ROACH']
+		self.observingMode = 'ARI ROACH' + str(self.nodes)
 
 
 
