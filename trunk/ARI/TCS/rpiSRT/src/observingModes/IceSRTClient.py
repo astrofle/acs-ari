@@ -108,7 +108,6 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return self.name + " Track Stopped"
 		self.spectra = False
 		self.slew = False
-		self.STOP = True
 		return
 
 	def message(self, s, current = None):
@@ -120,7 +119,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		#	self.StartSpectrum()
 		self.spectra = True
 		print self.name + " Getting new spectrum"
-		while((self.spectra or self.slew) and not self.STOP):
+		while(self.spectra or self.slew):
 			print self.name + " waiting"
 			print self.spectra
 			print self.slew
@@ -144,7 +143,6 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return self.name + " Stopped spectrum reading"
 
 	def startSpectrum(self, current = None):
-		self.STOP = False
 		self.enableSpectrum()
 		return self.name + " Stopped spectrum reading"
 		
