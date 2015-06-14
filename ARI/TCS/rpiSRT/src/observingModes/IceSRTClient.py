@@ -115,7 +115,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		#	self.StartSpectrum()
 		self.spectra = True
 		print self.name + " Getting new spectrum"
-		while(self.spectra):
+		while(self.spectra or self.slew):
+			print self.name + " waiting"
 			sleep(0.5)
 		print self.name + " New spectrum acquired"
 		#if not self.track:
