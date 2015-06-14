@@ -227,7 +227,9 @@ class ObsBase():
 		self.spec = sp
 		#self.spectrum[sp.sampleStamp.name] = self.spec
 		name = sp.sampleStamp.name
+		tim = sp.sampleStamp.timdate
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
+		print name+" "+tim
 		self.spectrum[name] = self.spec
 		if self.observingMode == 'SRT-SD':
 			print "yes"
