@@ -113,6 +113,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def getSpectrum(self, current = None):
 		#if not self.track:
 		#	self.StartSpectrum()
+		self.spectra = True
 		print self.name + " Getting new spectrum"
 		while(self.spectra):
 			sleep(0.5)
