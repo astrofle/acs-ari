@@ -44,6 +44,7 @@ class ObsBase():
 		#######
 		self.readSpectrum = False
 		self.rcvSpec = [0,0]
+		self.setupInProgress = False
 		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
@@ -114,6 +115,7 @@ class ObsBase():
 		print a
 		print "Setup finished"
 		self.initialized = True
+		self.setupInProgress = False
 		return	
 
 	def createObsMode(self):
@@ -134,6 +136,11 @@ class ObsBase():
 	def setup(self):
 		statusIC = 0
 		ic = None
+		if self.setupInProgress:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " setup process in progress, wait"
+			return
+		else:
+			self.setupInProgress = True
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
@@ -525,6 +532,10 @@ class ARI_ROACH(ObsBase):
 		self.nodes =['SRT1', 'SRT2', 'ROACH']
 		self.observingMode = 'ARI-ROACH'
 
-
-
+class Engineering(ObsBase):
+	def __init__(self):
+		ObsBase.__init__(self)
+		self.nodes = ['SRT1', 'SRT2', 'SH', 'ROACH']
+		self.observingMode = 'Engineering'
+	
 	
