@@ -120,6 +120,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print self.name + " Getting new spectrum"
 		while(self.spectra or self.slew):
 			print self.name + " waiting"
+			print self.spectra
+			print self.slew
 			sleep(0.5)
 		print self.name + " New spectrum acquired"
 		#if not self.track:

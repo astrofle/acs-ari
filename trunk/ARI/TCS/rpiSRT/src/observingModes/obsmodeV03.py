@@ -282,6 +282,7 @@ class ObsBase():
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" stopping spectrum reading"
 				self.ARI_controllers[node].begin_stopSpectrum(self.stopspCB, self.failureCB)
 				self.readSpectrum = False
+				self.waitSpectrum = False
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
