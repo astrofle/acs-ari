@@ -45,18 +45,17 @@ class ObsBase():
 		self.readSpectrum = False
 		self.rcvSpec = [0,0]
 		
-	def find_planets(self):
-		self.planets = sites.find_planets(sites.planet_list, self.site)
+	def find_planets(self, disp):
+		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
 		
-	def find_stars(self):
-		self.stars = sites.find_stars(sites.star_list, self.site)
+	def find_stars(self, disp):
+		self.stars = sites.find_stars(sites.star_list, self.site, disp)
 		print str(len(self.stars)) + " observabable stars: " + str(self.stars)
-		
-	def find_SRTsources(self):
-		#This method search for sources in RaDec originally defined in the SRT.cat file
-		self.SRTsources = sites.find_SRTsources(sites.SRT_sources_list, self.site)
-		print str(len(self.SRTsources)) + " observabable SRT sources: " + str(self.SRTsources)		
+	
+	def find_radec(self, disp):
+		self.radecSources = sites.find_SRTsources(sites.SRTsources, sites.site, disp)
+		print str(len(self.radecSources)) + " observabable stars: " + str(self.radecSources)
 
 	def clean(self):
 		try:
