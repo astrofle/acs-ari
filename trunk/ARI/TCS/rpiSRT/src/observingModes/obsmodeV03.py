@@ -184,7 +184,7 @@ class ObsBase():
 		if self.mode == 'ARI':
 			self.stopSpectrum()
 	
-	def stopTrack(self):
+	def stopSRT(self):
 		statusIC = 0
 		ic = None
 		try:
