@@ -135,7 +135,7 @@ class ObsBase():
 		print a
 	
 	def SwRxMode(self, node, mode):
-		self.ARI_controllers[node].begin_setRxMode(self.mode, self.modeCB, self.failureCB);
+		self.ARI_controllers[node].begin_setRxMode(mode, self.modeCB, self.failureCB);
 
 	def setup(self):
 		statusIC = 0
