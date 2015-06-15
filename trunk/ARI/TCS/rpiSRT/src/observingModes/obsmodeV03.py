@@ -134,6 +134,8 @@ class ObsBase():
 	def modeCB(self, a):
 		print a
 	
+	def SwRxMode(self, node, mode)
+		self.ARI_controllers[node].begin_setRxMode(self.mode, self.modeCB, self.failureCB);
 
 	def setup(self):
 		statusIC = 0
@@ -568,11 +570,17 @@ class ARI_SignalHound(ObsBase):
 				self.SH_getSpectralPower()
 				while(not self.SH_powerRead):
 					time.sleep(0.5)
+				time.sleep(2)
 	
-	def observation(self, mode, target, freq, bw):
+	def ARI_observation(self, mode, target, freq, bw):
 		self.observe = True
 		obs_Thread = threading.Thread(target = self.observation_thread, args=(mode, target, freq, bw), name='observation')
 		obs_Thread.start()
+		
+	def stop_ARI_obs(self):
+		self.observe = False
+		self.getSHsp = False
+		self.stopSRT()
 
 class ARI_ROACH(ObsBase):
 	def __init__(self):
