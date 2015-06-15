@@ -726,6 +726,7 @@ class SRT():
 	def setOffsetPointing(self, azoff, eloff):
 		self.azoffset = azoff
 		self.eloffset = eloff
+		print self.azoffset
 		
 	def resetOffsetPointing(self):
 		self.azoffset = 0.0
