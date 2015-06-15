@@ -558,8 +558,8 @@ class ARI_SignalHound(ObsBase):
 		while(not self.SH_powerRead):
 			time.sleep(0.5)
 		
-	def observation_thread(self, source, freq, bw):
-		self.trackSource(source)
+	def observation_thread(self, mode, target, freq, bw):
+		self.obswSRT(mode, target)
 		while(self.observe):
 			while(self.getSHsp):
 				self.SH_getSpectrum()
@@ -569,8 +569,9 @@ class ARI_SignalHound(ObsBase):
 				while(not self.SH_powerRead):
 					time.sleep(0.5)
 	
-	def observation(self, source, freq, bw):
-		obs_Thread = threading.Thread(target = self.observation_thread, args=(source, freq, bw), name='observation')
+	def observation(self, mode, target, freq, bw):
+		self.observe = True
+		obs_Thread = threading.Thread(target = self.observation_thread, args=(mode, target, freq, bw), name='observation')
 		obs_Thread.start()
 
 class ARI_ROACH(ObsBase):
