@@ -184,8 +184,7 @@ class ObsBase():
 			self.OnSrc =[0,0]
 			self.OnSource = True
 		#call by getSpectrum
-		if self.mode == 'ARI':
-			self.stopSpectrum()
+
 	
 	def stopSRT(self):
 		statusIC = 0
@@ -581,6 +580,13 @@ class ARI_SignalHound(ObsBase):
 		self.observe = False
 		self.getSHsp = False
 		self.stopSRT()
+	
+	def enableSHspectrum(self):
+		self.getSHsp = True
+		
+	def disableSHspectrum(self):
+		self.getSHsp = False
+	
 
 class ARI_ROACH(ObsBase):
 	def __init__(self):
