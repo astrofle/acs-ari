@@ -310,7 +310,21 @@ class ObsBase():
 		self.status[a.name] = a
 		return
 
-
+	def SetOffsetPointing(self, azoff, eloff):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"setting pointing offset"
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_offsetPointing(azoff, eloff, self.offsetCB, self.failureCB);
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+	
+	def offsetCB(self,a)
+		print a
+		
 
 class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):

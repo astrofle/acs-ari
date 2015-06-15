@@ -161,6 +161,11 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		str(self.RxSwitchMode),str(self.toSource),str(self.SRTinitialized),\
 		str(self.initialized),str(self.tostow),str(self.Target),str(self.obsTarget))
 		return _st
+		
+	def offsetPointing(self, azoff, eloff, current = None):
+		print "setting offset to az:" + str(azoff)+" el:"+str(eloff)
+		setOffsetPointing(self, azoff, eloff)
+		return self.name +  "offset set to az:" + str(azoff)+" el:"+str(eloff)
 #try:
 #	if len(sys.argv)<2:
 #		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"

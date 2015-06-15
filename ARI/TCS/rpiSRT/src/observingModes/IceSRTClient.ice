@@ -63,5 +63,6 @@ module SRTClient{
 		void startSpectrum(out string r);
 		void setRxMode(string mode, out string r);
 		void SRTstate(out state st);
+		void offsetPointing(float azoff, float eloff, out string r);
 	};
 };
