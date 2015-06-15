@@ -164,7 +164,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		
 	def offsetPointing(self, azoff, eloff, current = None):
 		print "setting offset to az:" + str(azoff)+" el:"+str(eloff)
-		self.setOffsetPointing(self, azoff, eloff)
+		self.setOffsetPointing(azoff, eloff)
 		return self.name +  "offset set to az:" + str(azoff)+" el:"+str(eloff)
 #try:
 #	if len(sys.argv)<2:
