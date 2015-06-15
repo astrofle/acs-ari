@@ -322,7 +322,7 @@ class ObsBase():
 			traceback.print_exc()
 			self.statusIC = 1
 	
-	def offsetCB(self,a)
+	def offsetCB(self,a):
 		print a
 		
 
