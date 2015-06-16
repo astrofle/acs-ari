@@ -744,8 +744,7 @@ class SRT():
 		j = 0
 		x = range(points)
 		X = len(x)*[0]
-		center = points/2 +1
-		mid = x[center]
+		mid = int(points)/2
 		for i in x:
 			X[j] = i - mid
 			j = j+1
