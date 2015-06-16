@@ -331,10 +331,10 @@ class ObsBase():
 		onSrc = [0,0]
 		if points%2 == 0:
 			point =points+1
-		X = []
 		map = []
 		j = 0
 		x = range(points)
+		X = len(x)*[0]
 		center = points/2 +1
 		mid = x[center]
 		for i in x:
