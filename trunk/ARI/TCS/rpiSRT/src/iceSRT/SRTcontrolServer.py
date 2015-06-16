@@ -217,7 +217,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.clear()
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Clear Done!"
 
-	def SRTSetazeloff(self, azoff, eloff):
+	def SRTSetazeloff(self, azoff, eloff, current = None):
 		self.azoff = azoff
 		self.eloff = eloff
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Corrections updated"
