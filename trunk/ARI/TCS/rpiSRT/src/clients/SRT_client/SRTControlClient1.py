@@ -752,7 +752,7 @@ class SRT():
 		for k in X:
 			for l in X:
 				print "offset: " + str(k*delta)+","+str(l*delta)
-				self.SetOffsetPointing(k*delta, l*delta)
+				self.setOffsetPointing(k*delta, l*delta)
 				while(self.SRTState != 'Slewing to source'):
 					time.sleep(0.5)
 				print "p1"
