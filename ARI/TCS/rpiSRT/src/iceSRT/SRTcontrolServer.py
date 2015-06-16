@@ -143,7 +143,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			inLimits = self.get_cmd_inLimits()
 			if inLimits:
 				self.azel_thread(az+ self.azoff, el+self.azoff)
-				return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
+				return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff1) + "," + str(self.eloff1)+")"
 				#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Commanding antenna movement to ("+str(az)+","+str(el)+") with offset: (" + str(self.azoff) + "," + str(self.eloff)+")"
 				#while(not self.OnTarget):
 				#	sleep(1)
@@ -218,8 +218,8 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Clear Done!"
 
 	def SRTSetazeloff(self, azoff, eloff, current = None):
-		self.azoff = azoff
-		self.eloff = eloff
+		self.azoff1 = azoff
+		self.eloff1 = eloff
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ self.name + " Corrections updated"
 	
 	def SRTGetName(self, current = None):
