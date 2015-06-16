@@ -729,7 +729,7 @@ class SRT():
 		print self.azoffset
 		self.SRTonTarget = False
 		print "setting offset"
-		self.controller.begin_SRTSetazeloff(azoff, eloff, genericCB, failureCB)
+		self.controller.begin_SRTSetazeloff(azoff, eloff, self.genericCB, self.failureCB)
 
 		
 	def resetOffsetPointing(self):
