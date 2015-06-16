@@ -83,6 +83,7 @@ class SRT():
 		self.elcmd = None
 		self.Target = ''
 		self.map = []
+		self.mapStarted = False
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 
 	def find_planets(self, disp):
@@ -738,7 +739,7 @@ class SRT():
 		self.eloffset = 0.0
 	
 	def npointScan(self, points, delta, sp):
-		onSrc = [0,0]
+		self.mapStarted = True
 		if points%2 == 0:
 			point =points+1
 		self.map = []
@@ -755,7 +756,7 @@ class SRT():
 				self.setOffsetPointing(k*delta, l*delta)
 				while(self.SRTState != 'Slewing to source'):
 					time.sleep(0.5)
-				print "p1"
+				print "On offset source"
 				while(self.SRTState != 'On target source'):
 					time.sleep(0.5)
 				print str(k)+","+str(l)
@@ -766,6 +767,7 @@ class SRT():
 					self.disableSpectrum()
 					while(self.spectra):
 						time.sleep(0.5)
+					self.spectrum.sampleStamp.timdate
 					self.map.append([[k*delta, l*delta],self.spectrum])
 #				map.append(self.spectrum['srt1'].sampleStamp.temperature)
 #				map.append(self.spectrum['srt2'].sampleStamp.temperature)
@@ -773,7 +775,7 @@ class SRT():
 				
 		self.setOffsetPointing(0.,0.)
 		print "scan end"
-		
+		self.mapStarted = False
 	
 	def shutdown(self):
 		#Observation loop
