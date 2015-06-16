@@ -736,6 +736,37 @@ class SRT():
 		self.azoffset = 0.0
 		self.eloffset = 0.0
 	
+	def npointScan(self, points, delta):
+		onSrc = [0,0]
+		if points%2 == 0:
+			point =points+1
+		map = []
+		j = 0
+		x = range(points)
+		X = len(x)*[0]
+		center = points/2 +1
+		mid = x[center]
+		for i in x:
+			X[j] = i - mid
+			j = j+1
+		for k in X:
+			for l in X:
+				print "offset: " + str(k*delta)+","+str(l*delta)
+				self.SetOffsetPointing(k*delta, l*delta)
+				while(self.SRTState != 'Slewing to source'):
+					time.sleep(0.5)
+				print "p1"
+				while((self.SRTState != 'On target source'):
+					time.sleep(0.5)
+				print "p2"
+				time.sleep(3)
+				print str(k)+","+str(l)
+#				map.append(self.spectrum['srt1'].sampleStamp.temperature)
+#				map.append(self.spectrum['srt2'].sampleStamp.temperature)
+				time.sleep(3)
+		self.SetOffsetPointing(0.,0.)
+		print "scan end"
+		
 	
 	def shutdown(self):
 		#Observation loop
@@ -747,6 +778,8 @@ class SRT():
 		self.getStatus = False
 		#disconnect ICe
 		self.disconnect()
+		#cmdStop
+		self.cmdstop = False
 		
 	def state(self):
 		print "SRTState: "+ str(self.SRTState)
