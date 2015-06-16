@@ -345,16 +345,18 @@ class ObsBase():
 				print "offset: " + str(k*delta)+","+str(l*delta)
 				self.SetOffsetPointing(k*delta, l*delta)
 				self.SRTStatus()
-				while((self.status['srt1'].State != 'Slewing to source') and (self.status['srt2'].State != 'Slewing to source')):
+				while((self.status['srt1'].SRTState != 'Slewing to source') and (self.status['srt2'].SRTState != 'Slewing to source')):
 					self.SRTStatus()
 					time.sleep(0.2)
 				print "p1"
-				while((self.status['srt1'].State != 'On target source') and (self.status['srt2'].State != 'On target source')):
+				while((self.status['srt1'].SRTState != 'On target source') and (self.status['srt2'].SRTState != 'On target source')):
 					self.SRTStatus()
 					time.sleep(0.2)
+				print "p2"
 				self.enableSpectrum()
 				while(self.waitSpectrum):
 					time.sleep(0.5)
+				print "p3"
 				map.append(self.spectrum['srt1'].sampleStamp.temperature)
 				map.append(self.spectrum['srt2'].sampleStamp.temperature)
 				self.disableSpectrum()
