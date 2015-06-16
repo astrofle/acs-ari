@@ -127,7 +127,7 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 			
 	def SRTStatus(self, current = None):
 		_st = self.status(disp = False)
-		realStatus = SRTControl.AntennaStatus(now=_st[12], name=_st[13] , az=self.az], el=self.el, aznow=self.aznow, elnow=self.elnow,
+		realStatus = SRTControl.AntennaStatus(now=_st[12], name=_st[13] , az=self.az, el=self.el, aznow=self.aznow, elnow=self.elnow,
 		 axis=_st[4], tostow=_st[5], elatstow=_st[6], azatstow=_st[7], slew=_st[8], serialport=_st[9], 
 		lastSRTCom=_st[10], lastSerialMsg=_st[11])
 		return realStatus
