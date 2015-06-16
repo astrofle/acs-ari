@@ -75,6 +75,8 @@ class SRTControlI(SRTControl.telescope, SRT.Antenna):
 		self.azlim2 = None
 		self.ellim1 = None
 		self.ellim2 = None
+		self.azoff1 = 0
+		self.eloff1 = 0 
 
 
 	def message(self, s, current = None):
