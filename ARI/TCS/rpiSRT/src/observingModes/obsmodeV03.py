@@ -298,10 +298,11 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"getting status"
-				self.ARI_controllers[node].begin_SRTstate(self.statusCB, self.failureCB)
-				self.readSpectrum = False
-				self.waitSpectrum = False
+				if node.startswith('SRT'):
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"getting status"
+					self.ARI_controllers[node].begin_SRTstate(self.statusCB, self.failureCB)
+#				self.readSpectrum = False
+#				self.waitSpectrum = False
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -324,6 +325,40 @@ class ObsBase():
 	
 	def offsetCB(self,a):
 		print a
+		
+	def npointScan(self, points, delta):
+		self.SRTStatus()
+		onSrc = [0,0]
+		if points%2 == 0:
+			point =points+1
+		X = []
+		map = []
+		j = 0
+		x = range(points)
+		center = points/2 +1
+		mid = x[center]
+		for i in x:
+			X[j] = i - mid
+			j = j+1
+		for k in X:
+			for l in X:
+				print "offset: " + str(k*delta)+","+str(l*delta)
+				self.SetOffsetPointing(k*delta, l*delta)
+				self.SRTStatus()
+				while((self.status['srt1'].State != 'Slewing to source') and (self.status['srt2'].State != 'Slewing to source')):
+					self.SRTStatus()
+					time.sleep(0.2)
+				print "p1"
+				while((self.status['srt1'].State != 'On target source') and (self.status['srt2'].State != 'On target source')):
+					self.SRTStatus()
+					time.sleep(0.2)
+				self.enableSpectrum()
+				while(self.waitSpectrum):
+					time.sleep(0.5)
+				map.append(self.spectrum['srt1'].sampleStamp.temperature)
+				map.append(self.spectrum['srt2'].sampleStamp.temperature)
+				self.disableSpectrum()
+				time.sleep(3)
 		
 
 class SRTSingleDish(ObsBase):
