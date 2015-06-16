@@ -171,7 +171,7 @@ class Antenna:
 		#This function is not used for antenna stow.
 		if ((cmd_r[0] !="M") & (cmd_r[0] !="T")):
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " error, comandar a stow position"
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + cmd_r
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + str(cmd_r)
 			sys.exit()
 		else:
 			#print "OK"
