@@ -728,6 +728,9 @@ class SRT():
 		self.eloffset = eloff
 		print self.azoffset
 		self.SRTonTarget = False
+		print "setting offset"
+		self.controller.begin_SRTSetazeloff(azoff, eloff, genericCB, failureCB)
+
 		
 	def resetOffsetPointing(self):
 		self.azoffset = 0.0
