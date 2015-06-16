@@ -756,7 +756,7 @@ class SRT():
 				while(self.SRTState != 'Slewing to source'):
 					time.sleep(0.5)
 				print "p1"
-				while((self.SRTState != 'On target source'):
+				while(self.SRTState != 'On target source'):
 					time.sleep(0.5)
 				print "p2"
 				time.sleep(3)
