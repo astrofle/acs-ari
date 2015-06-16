@@ -329,6 +329,7 @@ class ObsBase():
 		
 	def npointScan(self, points, delta):
 		self.SRTStatus()
+		self.enableSpectrum()
 		onSrc = [0,0]
 		if points%2 == 0:
 			point =points+1
@@ -354,14 +355,13 @@ class ObsBase():
 					self.SRTStatus()
 					time.sleep(0.2)
 				print "p2"
-				self.enableSpectrum()
-				while(self.waitSpectrum):
-					time.sleep(0.5)
-				print "p3"
+				time.sleep(3)
 				map.append(self.spectrum['srt1'].sampleStamp.temperature)
 				map.append(self.spectrum['srt2'].sampleStamp.temperature)
-				self.disableSpectrum()
 				time.sleep(3)
+		self.disableSpectrum()
+		self.SetOffsetPointing(0.,0.)
+		print "scan end"
 		
 
 class SRTSingleDish(ObsBase):
