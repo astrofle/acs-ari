@@ -766,7 +766,7 @@ class SRT():
 					self.disableSpectrum()
 					while(self.spectra):
 						time.sleep(0.5)
-					self.map.append(self.spectrum)
+					self.map.append([[k*delta, l*delta],self.spectrum])
 #				map.append(self.spectrum['srt1'].sampleStamp.temperature)
 #				map.append(self.spectrum['srt2'].sampleStamp.temperature)
 				time.sleep(3)
