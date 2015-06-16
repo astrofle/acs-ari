@@ -48,6 +48,7 @@ class ObsBase():
 		self.OnSrc =[0,0]
 		self.lastSpd =[0,0]
 		self.status ={}
+		self.waitSpectrum = False
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
