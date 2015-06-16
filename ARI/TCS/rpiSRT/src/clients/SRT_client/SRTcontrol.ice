@@ -66,6 +66,7 @@ module SRTControl{
 		void SRTSetFreq(float freq, string receiver, out string r);
 		void SRTGetSpectrum(out specs sp);
 		void SRTDoCalibration(string method, out float r);
+		void SRTSet_azeloff(float azoff, float eloff, out string r);
 		void SRTGetName(out string r);
 		void SRTClear(out string r);
 		void SRTsetMode(string mode, out string r);
