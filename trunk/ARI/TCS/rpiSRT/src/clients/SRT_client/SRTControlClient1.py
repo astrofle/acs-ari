@@ -720,7 +720,7 @@ class SRT():
 						print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " new tracking position"
 						self.SRTState = 'Slewing to source'
 						self.setAzEl(az, el)
-					time.sleep(10)
+					time.sleep(2)
 				time.sleep(5)
 
 	def setOffsetPointing(self, azoff, eloff):
