@@ -335,6 +335,21 @@ class ObsBase():
 			
 	def StopTargetCB(self,a):
 		print a
+		
+	def SetOffsetPointing(self, azoff, eloff):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"setting pointing offset"
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_offsetPointing(azoff, eloff, self.offsetCB, self.failureCB);
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+	
+	def offsetCB(self,a):
+		print a
 
 
 
@@ -402,7 +417,6 @@ class SRTSingleDish(ObsBase):
 		print "observing mode:"+ str(self.observingMode)
 		print "nodes:"+ str(self.nodes)
 		print "ARI_controllers:"+ str(self.ARI_controllers)
-		#serverstate??
 		print "setup in progress:"+ str(self.setupInProgress)
 		print "initialized:"+ str(self.initialized)
 		print "atStow:"+ str(self.atStow)
