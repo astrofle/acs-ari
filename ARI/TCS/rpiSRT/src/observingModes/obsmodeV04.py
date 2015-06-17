@@ -70,6 +70,7 @@ class ObsBase():
 		'SRT2':False
 		}
 		self.ArrayMovingToTarget = False
+		self.ArrayStopCmd = False
 		self.Clientstatus ={}
 		self.getClStatus = True
 		####
@@ -257,6 +258,7 @@ class ObsBase():
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array is moving, wait or command Stop before"
 			return
 		else:
+			self.ArrayStopCmd = False
 			self.ArrayMovingToTarget = True
 		try:
 			
@@ -284,15 +286,19 @@ class ObsBase():
 				self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
 				if (self.ArrayOnTarget[node] == 'True'):
 					onTargetnodes += 1
+				if ((node == 'SH') or (node == 'ROACH')):
+					onTargetnodes += 1
 				if onTargetnodes == len(self.nodes):
 					self.ArrayMovingToTarget = False
 			time.sleep(1)
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array on Target"
 	
 	def stopArray(self):
+	#Stop array to track a target - mandatory for pointing the array to a different target
 		statusIC = 0
 		ic = None
 		try:
+			self.ArrayStopCmd = True
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_StopObs(self.stopTrackCB, self.failureCB);
@@ -304,11 +310,34 @@ class ObsBase():
 	def stopTrackCB(self, a):
 		print a
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna Stopped"
+		
+	def stopGoingtoTarget(self):
+	#Stops array to a target - use it only for this purpose - StopArray is still needed after this.
+	#Does not work for stopping stow
+		statusIC = 0
+		ic = None
+		try:
+			self.ArrayStopCmd = True
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_SRTStopGoingToTarget(self.stopTrackCB, self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stopping Antenna " + node
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+			
+	def StopTargetCB(self,a)
+		print a
+
+
+
 ##################################################
 
 	def shutdown(self):
 		#status thread
 		self.getClStatus = False
+		#OnTarget Thread
+		self.ArrayMovingToTarget = False
 	
 	def ClientThreads(self):
 		statusIC = 0
@@ -377,5 +406,6 @@ class SRTSingleDish(ObsBase):
 		print "get Client status:"+ str(self.getClStatus)
 		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
 		print "Array on Target:"+ str(self.ArrayOnTarget)
+		print "Array Stop Command:"+ str(self.ArrayStopCmd = True)
 
 
