@@ -186,8 +186,6 @@ class ObsBase():
 		if initnodes == len(self.nodes):
 			self.setupInProgress = False
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Initialization complete"
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Starting Client Status Thread"
-			
 		else:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Initialization in progress"
 		return
@@ -233,17 +231,19 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_SRTstate(self.getClientStatusCB, self.failureCB);
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
+					#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 	
 	def getClientStatusCB(self, a):
-		node = a.name
+		node = a.name.upper()
 		self.Clientstatus[node] = a
 
-		
-		
+	def shutdown():
+		#status thread
+		self.getClStatus = False
+	
 class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
 		ObsBase.__init__(self)
