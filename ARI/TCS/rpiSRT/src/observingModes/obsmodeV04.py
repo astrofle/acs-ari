@@ -246,7 +246,7 @@ class ObsBase():
 	def getClientStatusCB(self, a):
 		node = a.name.upper()
 		self.Clientstatus[node] = a
-		if ((self.Clientstatus[node].az - self.Clientstatus[node].aznow) >= 3.5):
+		if ((float(self.Clientstatus[node].az) - float(self.Clientstatus[node].aznow)) >= 3.5):
 			self.ArrayOnTarget[node] = False
 #####Antenna Operation##################################################
 	def obswArray(self, mode, target):
