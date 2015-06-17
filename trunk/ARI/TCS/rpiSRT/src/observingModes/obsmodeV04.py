@@ -284,7 +284,7 @@ class ObsBase():
 			for node in self.nodes:
 				self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
 				print self.ArrayOnTarget[node]
-				if self.ArrayOnTarget[node]:
+				if (self.ArrayOnTarget[node] == 'True'):
 					onTargetnodes += 1
 				print onTargetnodes
 				if onTargetnodes == len(self.nodes):
