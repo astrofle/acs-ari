@@ -47,7 +47,7 @@ class ObsBase():
 		self.setupInProgress = False
 		self.OnSrc =[0,0]
 		self.lastSpd =[0,0]
-		self.status ={}
+		self.status =[]
 		self.waitSpectrum = False
 		
 	def find_planets(self, disp):
@@ -131,6 +131,22 @@ class ObsBase():
 	def SwRxMode(self, node, mode):
 		self.ARI_controllers[node].begin_setRxMode(mode, self.modeCB, self.failureCB);
 
+	def setup(self):
+		statusIC = 0
+		ic = None
+		if self.setupInProgress:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " setup process in progress, wait"
+			return
+		else:
+			self.setupInProgress = True
+		try:
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_setup(self.setupCB, self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" initializing antenna " + node
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
 class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
 		ObsBase.__init__(self)
