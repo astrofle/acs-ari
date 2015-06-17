@@ -101,9 +101,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 			target[0] = float(target[0])
 			target[1] = float(target[1])
 		self.obswSRT(mode, target)
-		while(not self.SRTonTarget):
-			sleep(1)
-		return self.name + " Antenna On Source and Tracking"
+		#while(not self.SRTonTarget):
+		#	sleep(1)
+		#return self.name + " Antenna On Source and Tracking"
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " Moving antenna to target"
 	
 	def StopObs(self, current = None):
 		self.stopObs()
