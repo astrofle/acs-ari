@@ -88,5 +88,6 @@ module SRTClient{
 		void offsetPointing(float azoff, float eloff, out string r);
 		void NpointScan(int points, float delta, bool sp, out map ml);
 		void SRTStow(out string r);
+		void ClientThreads(out string r);
 	};
 };

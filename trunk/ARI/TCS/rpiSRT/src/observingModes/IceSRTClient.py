@@ -186,6 +186,11 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		while(self.portInUse[0]):
 			sleep(1)
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " Antenna Stowed"
+		
+	def ClientThreads(self, current = None):
+		th = threading.enumerate()
+		print th
+		return self.name + " client threads"
 
 
 		
