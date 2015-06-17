@@ -1,5 +1,6 @@
 module SRTClient{
 	sequence<float> spectrum;
+	sequence<scan> mapel;
 	
 	struct stamp
 	    {
@@ -76,7 +77,7 @@ module SRTClient{
 		void setRxMode(string mode, out string r);
 		void SRTstate(out state st);
 		void offsetPointing(float azoff, float eloff, out string r);
-		void NpointScan(int points, float delta, int sp, out string l);
+		void NpointScan(int points, float delta, bool sp, out mapel ml);
 		void SRTStow(out string r);
 	};
 };
