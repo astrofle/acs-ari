@@ -187,6 +187,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 			sleep(1)
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " Antenna Stowed"
 		
+	def SRTStopGoingToTarget(self, current = None):
+		stopGoingToTarget()
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " Stopping antenna"
+		
 	def ClientThreads(self, current = None):
 		th = threading.enumerate()
 		print th

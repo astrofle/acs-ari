@@ -89,5 +89,6 @@ module SRTClient{
 		void NpointScan(int points, float delta, bool sp, out map ml);
 		void SRTStow(out string r);
 		void ClientThreads(out string r);
+		void SRTStopGoingToTarget(out string r);
 	};
 };
