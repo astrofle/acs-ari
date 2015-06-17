@@ -772,7 +772,9 @@ class SRT():
 						time.sleep(0.5)
 					self.spectrum.sampleStamp.timdate
 					azeloff = [k*delta, l*delta]
-					mel = SRTClient.mapel(azeloff, self.spectrum)
+					sp = SRTClient.specs(self.spectrum.sampleStamp, self.spectrum.spec,\
+					self.spectrum.avspec, self.spectrum.avspecc, self.spectrum.specd)
+					mel = SRTClient.mapel(azeloff, sp)
 					self.map.append(mel)
 				time.sleep(3)
 		self.setOffsetPointing(0.,0.)
