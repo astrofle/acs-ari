@@ -326,7 +326,7 @@ class ObsBase():
 			traceback.print_exc()
 			self.statusIC = 1
 			
-	def StopTargetCB(self,a)
+	def StopTargetCB(self,a):
 		print a
 
 
