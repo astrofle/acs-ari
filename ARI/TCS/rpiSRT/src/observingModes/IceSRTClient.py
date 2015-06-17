@@ -180,6 +180,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def SRTStow(self, current = None):
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + self.name + " sending antenna to Stow"
 		self.Stow()
+		sleep(0.5)
 		while(self.portInUse[0] and self.portInUse[1] == 'stow'):
 			sleep(1)
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " Antenna Stowed"
