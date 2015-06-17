@@ -251,16 +251,16 @@ class SRTSingleDish(ObsBase):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
 		return statusList
 		
-    def states(self):
-        self.observingMode
-        self.nodes
-        self.ARI_controllers
-        #serverstate??
-        self.setupInProgress
-        self.initialized
-        self.atStow
-        self.stowInProgress
-        self.mode
-        self.Rxmode
-        
+	def states(self):
+		self.observingMode
+		self.nodes
+		self.ARI_controllers
+		#serverstate??
+		self.setupInProgress
+		self.initialized
+		self.atStow
+		self.stowInProgress
+		self.mode
+		self.Rxmode
+
 
