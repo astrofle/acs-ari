@@ -79,7 +79,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.elcmd = None
 		self.Target = ''
 		self.STOP = False
-		self.map = []
+		self.map = 
 		self.mapStarted = False
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 	
@@ -179,7 +179,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 			sp = True
 		print sp
 		self.npointScan(points, delta, sp)
-		return self.map
+		return []
 	
 	def SRTStow(self, current = None):
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + self.name + " sending antenna to Stow"
