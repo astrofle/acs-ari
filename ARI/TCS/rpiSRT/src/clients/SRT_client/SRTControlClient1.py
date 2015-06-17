@@ -771,6 +771,7 @@ class SRT():
 					self.disableSpectrum()
 					while(self.spectra):
 						time.sleep(0.5)
+					time.sleep(1)
 					#print self.spectrum.sampleStamp.timdate
 					azeloff = [k*delta, l*delta]
 					sp = SRTClient.specs(self.spectrum.sampleStamp, self.spectrum.spec,\
