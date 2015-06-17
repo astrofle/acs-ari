@@ -240,7 +240,7 @@ class ObsBase():
 		node = a.name.upper()
 		self.Clientstatus[node] = a
 
-	def shutdown():
+	def shutdown(self):
 		#status thread
 		self.getClStatus = False
 	
