@@ -47,7 +47,19 @@ module SRTClient{
 		string initialized; 
 		string toStow;  
 		string Target;  
-		string obsTarget;  
+		string obsTarget;
+		string az;
+		string el;
+		string aznow;
+		string elnow;
+		string axis;
+		string tostow;
+		string elatstow;
+		string azatstow;
+		string slew;
+		string serialport;
+		string lastSRTCom;
+		string lastSerialMsg;
     };
 
 	sequence<specs> spectrums;
@@ -64,5 +76,7 @@ module SRTClient{
 		void setRxMode(string mode, out string r);
 		void SRTstate(out state st);
 		void offsetPointing(float azoff, float eloff, out string r);
+		void NpointScan(int points, float delta, bool sp, out sequence l);
+		void SRTStow(out string r);
 	};
 };
