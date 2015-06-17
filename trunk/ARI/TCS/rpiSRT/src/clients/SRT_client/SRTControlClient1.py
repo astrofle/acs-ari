@@ -1,5 +1,8 @@
 import sys, traceback, Ice
+
+sys.path.insert(0,'../../observingModes')
 import SRTControl
+import SRTClient
 import ephem
 import math
 import time
@@ -82,7 +85,7 @@ class SRT():
 		self.azcmd = None
 		self.elcmd = None
 		self.Target = ''
-		self.map = []
+		self.map = SRTClient.map()
 		self.mapStarted = False
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 
@@ -742,7 +745,7 @@ class SRT():
 		self.mapStarted = True
 		if points%2 == 0:
 			point =points+1
-		self.map = []
+		self.map = SRTClient.map()
 		j = 0
 		x = range(points)
 		X = len(x)*[0]
@@ -768,7 +771,9 @@ class SRT():
 					while(self.spectra):
 						time.sleep(0.5)
 					self.spectrum.sampleStamp.timdate
-					self.map.append([[k*delta, l*delta],self.spectrum])
+					azeloff = SRTClient.delta(k*delta, l*delta)
+					mel = SRTClient.mapel(azeloff, self.spectrum)
+					self.map.append(mel)
 				time.sleep(3)
 		self.setOffsetPointing(0.,0.)
 		print "scan end"
