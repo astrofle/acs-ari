@@ -67,6 +67,11 @@ class ObsBase():
 		'SRT1':[],
 		'SRT2':[]
 		}
+		self.ArrayOnSource = {
+		'SRT1':False,
+		'SRT2':False
+		}
+		self.ArrayMovingToTarget = False
 		self.Clientstatus ={}
 		self.getClStatus = True
 		####
@@ -244,9 +249,14 @@ class ObsBase():
 		node = a.name.upper()
 		self.Clientstatus[node] = a
 #####Antenna Operation##################################################
-	def obswSRT(self, mode, target):
+	def obswArray(self, mode, target):
 		statusIC = 0
 		ic = None
+		if self.ArrayMovingToTarget:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array is moving, wait or command Stop before"
+			return
+		else:
+			self.ArrayMovingToTarget = True
 		self.onSource = False
 		try:
 			for node in self.nodes:
@@ -261,7 +271,8 @@ class ObsBase():
 	
 	def trackCB(self, a):
 		print a
-		name = a.split()
+		name = a.split()[2]
+		
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna on source"
 		if self.observingMode == 'SRT-SD':
 			self.OnSource = True
@@ -274,6 +285,11 @@ class ObsBase():
 			self.OnSrc =[0,0]
 			self.OnSource = True
 		#call by getSpectrum
+
+	def onTarget_Thread(self):
+		onTargetnodes = 0
+		for node in self.nodes:
+			if self.Client
 
 	
 	def stopSRT(self):
@@ -297,6 +313,18 @@ class ObsBase():
 		#status thread
 		self.getClStatus = False
 	
+	def ClientThreads(self):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].ClientThreads();
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Client threads"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
 	
 class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
@@ -340,7 +368,7 @@ class SRTSingleDish(ObsBase):
 	def states(self):
 		print "observing mode:"+ str(self.observingMode)
 		print "nodes:"+ str(self.nodes)
-		print "Ari_controllers:"+ str(self.ARI_controllers)
+		print "ARI_controllers:"+ str(self.ARI_controllers)
 		#serverstate??
 		print "setup in progress:"+ str(self.setupInProgress)
 		print "initialized:"+ str(self.initialized)
@@ -350,5 +378,6 @@ class SRTSingleDish(ObsBase):
 		print "Rx Switch mode:"+ str(self.RxSwmode)
 		print "SRT Rx setup:" + str(self.RxSetup)
 		print "get Client status:"+ str(self.getClStatus)
+		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
 
 
