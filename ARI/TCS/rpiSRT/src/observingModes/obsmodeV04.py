@@ -194,7 +194,7 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_SRTStow(self.stowCB, self.failureCB);
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" initializing antenna " + node
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stowing Antenna: " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -252,15 +252,15 @@ class SRTSingleDish(ObsBase):
 		return statusList
 		
 	def states(self):
-		self.observingMode
-		self.nodes
-		self.ARI_controllers
+		print self.observingMode
+		print self.nodes
+		print self.ARI_controllers
 		#serverstate??
-		self.setupInProgress
-		self.initialized
-		self.atStow
-		self.stowInProgress
-		self.mode
-		self.Rxmode
+		print self.setupInProgress
+		print self.initialized
+		print self.atStow
+		print self.stowInProgress
+		print self.mode
+		print self.Rxmode
 
 
