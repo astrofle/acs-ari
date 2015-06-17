@@ -208,7 +208,7 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ArrayOnTarget['node'] = False
+					self.ArrayOnTarget[node] = False
 					self.ARI_controllers[node].begin_SRTStow(self.stowCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stowing Antenna: " + node
 		except:
@@ -280,11 +280,13 @@ class ObsBase():
 		print self.ArrayMovingToTarget
 		while(self.ArrayMovingToTarget):
 			onTargetnodes = 0
+			time.sleep(2)
 			for node in self.nodes:
 				self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
+				print self.ArrayOnTarget[node]
 				if self.ArrayOnTarget[node]:
 					onTargetnodes += 1
-				#print onTargetnodes
+				print onTargetnodes
 				if onTargetnodes == len(self.nodes):
 					self.ArrayMovingToTarget = False
 			time.sleep(1)
