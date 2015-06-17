@@ -208,6 +208,7 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
+					self.ArrayOnTarget['node'] = False
 					self.ARI_controllers[node].begin_SRTStow(self.stowCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stowing Antenna: " + node
 		except:
@@ -266,7 +267,7 @@ class ObsBase():
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving antenna" + node + " to target"
 			OnTrg_Thread = threading.Thread(target = self.onTarget_Thread, name='onTarget')
 			OnTrg_Thread.start()
-			print "starting status thread"
+			print "starting onTarget thread"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -276,8 +277,8 @@ class ObsBase():
 		print a
 		
 	def onTarget_Thread(self):
-		onTargetnodes = 0
 		while(self.ArrayMovingToTarget):
+			onTargetnodes = 0
 			for node in self.nodes:
 				self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
 				if self.ArrayOnTarget[node]:
@@ -374,5 +375,6 @@ class SRTSingleDish(ObsBase):
 		print "SRT Rx setup:" + str(self.RxSetup)
 		print "get Client status:"+ str(self.getClStatus)
 		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
+		print "Array on Target:"+ str(self.ArrayOnTarget)
 
 
