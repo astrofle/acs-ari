@@ -79,6 +79,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.elcmd = None
 		self.Target = ''
 		self.STOP = False
+		self.map = []
+		self.mapStarted = False
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 	
 	def setup(self, current = None):
@@ -159,13 +161,25 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		str(self.enSRT), str(self.enSpec),str(self.slewing),str(self.cmdstop),\
 		str(self.IsMoving),str(self.getStatus),str(self.portInUse),str(self.spectra),\
 		str(self.RxSwitchMode),str(self.toSource),str(self.SRTinitialized),\
-		str(self.initialized),str(self.tostow),str(self.Target),str(self.obsTarget))
+		str(self.initialized),str(self.tostow),str(self.Target),str(self.obsTarget),\
+		str(self.az),str(self.el),str(self.aznow),str(self.elnow),str(self.axis),\
+		str(self.tostow),str(self.elatstow),str(self.azatstow),str(self.slew),\
+		str(self.serialport),str(self.lastSRTCom),str(self.lastSerialMsg ))
 		return _st
-		
+
 	def offsetPointing(self, azoff, eloff, current = None):
 		print "setting offset to az:" + str(azoff)+" el:"+str(eloff)
 		self.setOffsetPointing(azoff, eloff)
 		return self.name +  "offset set to az:" + str(azoff)+" el:"+str(eloff)
+		
+	def NpointScan(self, points, delta, sp, current = None):
+		print "starting n-point map"
+		self.npointScan(points, delta, sp)
+		return self.map
+	
+	def SRTStow(self, current = None):
+		print "Stowing antenna"
+		self.Stow
 #try:
 #	if len(sys.argv)<2:
 #		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
