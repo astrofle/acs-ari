@@ -238,6 +238,7 @@ class ObsBase():
 			self.statusIC = 1
 	
 	def getClientStatusCB(self, a):
+		node = a.name
 		self.Clientstatus[node] = a
 
 		
