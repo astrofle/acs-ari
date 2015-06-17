@@ -175,7 +175,7 @@ class ObsBase():
 		self.initialized[antenna] = True
 		initnodes = 0
 		for node in self.nodes:
-		    if (self.initialilized[node]):
+		    if (self.initialized[node]):
 		        initnodes += 1
 
 		if initnodes == len(nodes):
