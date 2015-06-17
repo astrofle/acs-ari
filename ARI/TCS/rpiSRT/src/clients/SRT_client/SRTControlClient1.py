@@ -776,7 +776,7 @@ class SRT():
 					self.spectrum.avspec, self.spectrum.avspecc, self.spectrum.specd)
 					mel = SRTClient.mapel(azeloff, sp)
 					self.map.append(mel)
-				time.sleep(3)
+				time.sleep(6)
 		self.setOffsetPointing(0.,0.)
 		print "scan end"
 		self.mapStarted = False
