@@ -178,7 +178,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		if sp == 'True':
 			sp = True
 		print sp
-		#self.npointScan(points, delta, sp)
+		self.npointScan(points, delta, sp)
 		return self.map
 	
 	def SRTStow(self, current = None):
