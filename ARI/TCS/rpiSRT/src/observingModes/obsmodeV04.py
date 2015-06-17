@@ -60,9 +60,13 @@ class ObsBase():
 		self.atStow = {
 		'SRT1':False,
 		'SRT2':False}
-		self.Rxmode = {
+		self.RxSwmode = {
 		'SRT1':'',
 		'SRT2':''}
+		self.RxSetup = {
+		'SRT1':[],
+		'SRT2':[]
+		}
 		self.Clientstatus ={}
 		self.getClStatus = True
 		####
@@ -150,7 +154,7 @@ class ObsBase():
 		print a
 		antenna = a.split(' ')[2].upper()
 		mode = a.split(' ')[-1]
-		self.Rxmode[antenna] = mode
+		self.RxSwmode[antenna] = mode
 
 	def SwRxMode(self, node, mode):
 		self.ARI_controllers[node].begin_setRxMode(mode, self.modeCB, self.failureCB);
@@ -239,6 +243,55 @@ class ObsBase():
 	def getClientStatusCB(self, a):
 		node = a.name.upper()
 		self.Clientstatus[node] = a
+#####Antenna Operation##################################################
+	def obswSRT(self, mode, target):
+		statusIC = 0
+		ic = None
+		self.onSource = False
+		try:
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_obsSRT(mode, str(target), self.trackCB, self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving antenna" + node + " to target"
+			self.tracking
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+		
+	
+	def trackCB(self, a):
+		print a
+		name = a.split()
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna on source"
+		if self.observingMode == 'SRT-SD':
+			self.OnSource = True
+		elif self.observingMode == 'SRT-DSD':
+			if name == 'srt1':
+				self.OnSrc[0] = 1
+			elif name == 'srt2':
+				self.OnSrc[1] = 1
+		if sum(self.OnSrc) == 2:
+			self.OnSrc =[0,0]
+			self.OnSource = True
+		#call by getSpectrum
+
+	
+	def stopSRT(self):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_StopObs(self.stopTrackCB, self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stopping Antenna " + node
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+	
+	def stopTrackCB(self, a):
+		print a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna Stopped"
+##################################################
 
 	def shutdown(self):
 		#status thread
@@ -277,6 +330,7 @@ class SRTSingleDish(ObsBase):
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
+		self.RxSetup[self.nodes[0]] = [self.freq, self.rec_mode]
 		return
 		
 	def status(self):
@@ -293,7 +347,8 @@ class SRTSingleDish(ObsBase):
 		print "atStow:"+ str(self.atStow)
 		print "stow in progress:"+ str(self.stowInProgress)
 		print "mode:"+ str(self.mode)
-		print "Rx mode:"+ str(self.Rxmode)
+		print "Rx Switch mode:"+ str(self.RxSwmode)
+		print "SRT Rx setup:" + str(self.RxSetup)
 		print "get Client status:"+ str(self.getClStatus)
 
 
