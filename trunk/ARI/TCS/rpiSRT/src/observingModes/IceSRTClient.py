@@ -153,7 +153,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	    print "setting " + self.name + "to " + mode + "mode"
 	    self.mode = mode
 	    self.SetRxMode(mode)
-	    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + "set for " + self.mode
+	    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " set for " + self.mode
 	    
 	def SRTstate(self, current = None):
 		_st = SRTClient.state(str(self.name),time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),str(self.SRTState),str(self.SRTonTarget), str(self.SRTMode),\
