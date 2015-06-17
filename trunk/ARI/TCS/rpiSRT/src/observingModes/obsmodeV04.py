@@ -174,7 +174,7 @@ class ObsBase():
 		antenna = a.split(' ')[2].upper()
 		self.initialized[antenna] = True
 		initnodes = 0
-		for node in nodes:
+		for node in self.nodes:
 		    if (self.initialilized[node]):
 		        initnodes += 1
 
@@ -204,7 +204,7 @@ class ObsBase():
 		antenna = a.split(' ')[2].upper()
 		self.atStow[antenna] = True
 		stownodes = 0
-		for node in nodes:
+		for node in self.nodes:
 		    if (self.atStow[node]):
 		        stownodes += 1
 		if stownodes == len(nodes):
