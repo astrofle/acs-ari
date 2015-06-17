@@ -178,7 +178,7 @@ class ObsBase():
 		    if (self.initialized[node]):
 		        initnodes += 1
 
-		if initnodes == len(nodes):
+		if initnodes == len(self.nodes):
 			self.setupInProgress = False
 		return	
 
@@ -207,7 +207,7 @@ class ObsBase():
 		for node in self.nodes:
 		    if (self.atStow[node]):
 		        stownodes += 1
-		if stownodes == len(nodes):
+		if stownodes == len(self.nodes):
 			self.stowInProgress = False
 		return	
 
