@@ -163,7 +163,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		str(self.IsMoving),str(self.getStatus),str(self.portInUse),str(self.spectra),\
 		str(self.RxSwitchMode),str(self.toSource),str(self.SRTinitialized),\
 		str(self.initialized),str(self.tostow),str(self.Target),str(self.obsTarget),\
-		str(self.az),str(self.el),str(self.aznow),str(self.elnow),str(self.axis),\
+		str(self.az),str(self.el),str(self.aznow),str(self.elnow),str(self.azoffset), str(self.eloffset),str(self.axis),\
 		str(self.tostow),str(self.elatstow),str(self.azatstow),str(self.slew),\
 		str(self.serialport),str(self.lastSRTCom),str(self.lastSerialMsg ))
 		return _st

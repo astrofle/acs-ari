@@ -37,7 +37,7 @@ module SRTClient{
 		string enSpec; 
 		string slewing; 
 		string cmdstop; 
-		string InMoving;  
+		string IsMoving;  
 		string getStatus;  
 		string portInUse;  
 		string spectra; 
@@ -52,6 +52,8 @@ module SRTClient{
 		string el;
 		string aznow;
 		string elnow;
+		string azoffset;
+		string eloffset;
 		string axis;
 		string tostowS;
 		string elatstow;
