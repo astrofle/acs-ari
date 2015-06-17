@@ -49,7 +49,7 @@ class ObsBase():
 		self.lastSpd =[0,0]
 		self.status =[]
 		self.waitSpectrum = False
-		self.stowInProgress
+		self.stowInProgress = False
 		#######
 		self.setupInProgress = False
 		self.initialized = {
