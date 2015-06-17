@@ -294,7 +294,10 @@ class ObsBase():
 				if onTargetnodes == len(self.nodes):
 					self.ArrayMovingToTarget = False
 			time.sleep(1)
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array on Target"
+		if self.ArrayStopCmd:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array command to stop"
+		else:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array on Target"
 	
 	def stopArray(self):
 	#Stop array to track a target - mandatory for pointing the array to a different target
