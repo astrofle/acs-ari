@@ -277,16 +277,13 @@ class ObsBase():
 		print a
 		
 	def onTarget_Thread(self):
-		print self.ArrayMovingToTarget
 		while(self.ArrayMovingToTarget):
 			onTargetnodes = 0
 			time.sleep(2)
 			for node in self.nodes:
 				self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
-				print self.ArrayOnTarget[node]
 				if (self.ArrayOnTarget[node] == 'True'):
 					onTargetnodes += 1
-				print onTargetnodes
 				if onTargetnodes == len(self.nodes):
 					self.ArrayMovingToTarget = False
 			time.sleep(1)
