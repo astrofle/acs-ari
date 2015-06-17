@@ -33,8 +33,6 @@ class ObsBase():
 		self.rec_mode = '1'
 		self.new_freq = 1420.4
 		self.new_rec_mode = '1'
-		self.tracking = False
-		self.OnSource = False
 		self.Target = ""
 		self.spec = SRTClient.specs()
 		self.spectrum ={}
@@ -257,13 +255,15 @@ class ObsBase():
 			return
 		else:
 			self.ArrayMovingToTarget = True
-		self.onSource = False
 		try:
+			
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_obsSRT(mode, str(target), self.trackCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving antenna" + node + " to target"
-			self.tracking
+			OnTrg_Thread = threading.Thread(target = self.onTarget_Thread, name='onTarget')
+			OnTrg_Thread.start()
+			print "starting status thread"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -271,26 +271,18 @@ class ObsBase():
 	
 	def trackCB(self, a):
 		print a
-		name = a.split()[2]
 		
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna on source"
-		if self.observingMode == 'SRT-SD':
-			self.OnSource = True
-		elif self.observingMode == 'SRT-DSD':
-			if name == 'srt1':
-				self.OnSrc[0] = 1
-			elif name == 'srt2':
-				self.OnSrc[1] = 1
-		if sum(self.OnSrc) == 2:
-			self.OnSrc =[0,0]
-			self.OnSource = True
-		#call by getSpectrum
-
-#	def onTarget_Thread(self):
-#		onTargetnodes = 0
-#		for node in self.nodes:
-#			if self.Client
-
+	def onTarget_Thread(self):
+		onTargetnodes = 0
+		while(self.ArrayMovingToTarget):
+			for node in self.nodes:
+				self.ArrayOnSource[node] = self.Clientstatus[node].SRTonTarget
+				if self.ArrayOnSource[node]:
+					onTargetnodes += 1
+				if onTargetnodes == len(nodes)
+					self.ArrayMovingToTarget = False
+			time.sleep(1)
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array on Target"
 	
 	def stopSRT(self):
 		statusIC = 0
@@ -362,7 +354,7 @@ class SRTSingleDish(ObsBase):
 		return
 		
 	def status(self):
-		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
+		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode]
 		return statusList
 
 	def states(self):
