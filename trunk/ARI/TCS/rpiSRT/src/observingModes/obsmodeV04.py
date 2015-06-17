@@ -64,6 +64,7 @@ class ObsBase():
 		'SRT1':'',
 		'SRT2':''}
 		self.Clientstatus ={}
+		self.getClStatus = True
 		####
 		
 		
@@ -141,7 +142,8 @@ class ObsBase():
 			if node.startswith('SRT'):
 			#Set SRT receiver switch mode
 				self.ARI_controllers[node].begin_setRxMode(self.mode, self.modeCB, self.failureCB);
-			
+			ClientStatus_Thread = threading.Thread(target = self.getClientStatusThread, name='Clientstatus')
+			print "starting status thread"
 	def modeCB(self, a):
 		print a
 		antenna = a.split(' ')[2].upper()
@@ -182,7 +184,12 @@ class ObsBase():
 
 		if initnodes == len(self.nodes):
 			self.setupInProgress = False
-		return	
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Initialization complete"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Starting Client Status Thread"
+			
+		else:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Initialization in progress"
+		return
 
 	def Stow(self):
 		statusIC = 0
@@ -212,6 +219,25 @@ class ObsBase():
 		if stownodes == len(self.nodes):
 			self.stowInProgress = False
 		return	
+	def getClientStatusThread(self):
+		while(self.getClStatus):
+			self.getClientStatus()
+			time.sleep(2)
+	
+	def getClientStatus(self):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_SRTstate(getClientStatusCB, failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+	
+	def getClientStatusCB(self, a)
+		self.Clientstatus[node] = a
 
 		
 		
@@ -252,7 +278,7 @@ class SRTSingleDish(ObsBase):
 	def status(self):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
 		return statusList
-		
+
 	def states(self):
 		print self.observingMode
 		print self.nodes
@@ -264,17 +290,6 @@ class SRTSingleDish(ObsBase):
 		print self.stowInProgress
 		print self.mode
 		print self.Rxmode
-	    
-	def getClientStatus(self):
-		statusIC = 0
-		ic = None
-		try:
-			for node in self.nodes:
-				if node.startswith('SRT'):
-					self.Clientstatus[node] = self.ARI_controllers[node].SRTstate();
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		self.getClStatus
 
 
