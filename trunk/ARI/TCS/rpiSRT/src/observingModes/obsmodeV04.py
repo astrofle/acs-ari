@@ -131,7 +131,7 @@ class ObsBase():
 		#generic callback
 		print a
 		return
-		
+	
 	def createObsMode(self):
 		self.ARI_controllers = {}
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" creating "+ self.observingMode
@@ -145,12 +145,12 @@ class ObsBase():
 			ClientStatus_Thread = threading.Thread(target = self.getClientStatusThread, name='Clientstatus')
 			ClientStatus_Thread.start()
 			print "starting status thread"
+
 	def modeCB(self, a):
 		print a
 		antenna = a.split(' ')[2].upper()
 		mode = a.split(' ')[-1]
 		self.Rxmode[antenna] = mode
-
 
 	def SwRxMode(self, node, mode):
 		self.ARI_controllers[node].begin_setRxMode(mode, self.modeCB, self.failureCB);
@@ -244,6 +244,7 @@ class ObsBase():
 		#status thread
 		self.getClStatus = False
 	
+	
 class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
 		ObsBase.__init__(self)
@@ -283,16 +284,16 @@ class SRTSingleDish(ObsBase):
 		return statusList
 
 	def states(self):
-		print self.observingMode
-		print self.nodes
-		print self.ARI_controllers
+		print "observing mode:"+ str(self.observingMode)
+		print "nodes:"+ str(self.nodes)
+		print "Ari_controllers:"+ str(self.ARI_controllers)
 		#serverstate??
-		print self.setupInProgress
-		print self.initialized
-		print self.atStow
-		print self.stowInProgress
-		print self.mode
-		print self.Rxmode
-		self.getClStatus
+		print "setup in progress:"+ str(self.setupInProgress)
+		print "initialized:"+ str(self.initialized)
+		print "atStow:"+ str(self.atStow)
+		print "stow in progress:"+ str(self.stowInProgress)
+		print "mode:"+ str(self.mode)
+		print "Rx mode:"+ str(self.Rxmode)
+		print "get Client status:"+ str(self.getClStatus)
 
 
