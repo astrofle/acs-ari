@@ -218,7 +218,8 @@ class ObsBase():
 		        stownodes += 1
 		if stownodes == len(self.nodes):
 			self.stowInProgress = False
-		return	
+		return
+		
 	def getClientStatusThread(self):
 		while(self.getClStatus):
 			self.getClientStatus()
@@ -230,7 +231,7 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_SRTstate(getClientStatusCB, failureCB);
+					self.ARI_controllers[node].begin_SRTstate(self.getClientStatusCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
 		except:
 			traceback.print_exc()
