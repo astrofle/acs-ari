@@ -769,10 +769,7 @@ class SRT():
 						time.sleep(0.5)
 					self.spectrum.sampleStamp.timdate
 					self.map.append([[k*delta, l*delta],self.spectrum])
-#				map.append(self.spectrum['srt1'].sampleStamp.temperature)
-#				map.append(self.spectrum['srt2'].sampleStamp.temperature)
 				time.sleep(3)
-				
 		self.setOffsetPointing(0.,0.)
 		print "scan end"
 		self.mapStarted = False
