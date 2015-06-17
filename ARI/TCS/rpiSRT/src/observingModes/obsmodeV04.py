@@ -313,6 +313,7 @@ class ObsBase():
 	def stopTrackCB(self, a):
 		print a
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna Stopped"
+		self.ArrayMovingToTarget = False
 		
 	def stopGoingtoTarget(self):
 	#Stops array to a target - use it only for this purpose - StopArray is still needed after this.
