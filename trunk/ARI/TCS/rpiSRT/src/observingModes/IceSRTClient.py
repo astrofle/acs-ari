@@ -175,7 +175,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		
 	def NpointScan(self, points, delta, sp, current = None):
 		print "starting n-point map"
-		self.npointScan(points, delta, sp)
+		if sp == 'True':
+			sp = True
+		print sp
+		#self.npointScan(points, delta, sp)
 		return self.map
 	
 	def SRTStow(self, current = None):
