@@ -27,7 +27,7 @@ class ObsBase():
 		#print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		#print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		#print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())	
-		self.initialized = False
+
 		self.radio_config = False
 		self.freq = 1420.4
 		self.rec_mode = '1'
@@ -44,11 +44,27 @@ class ObsBase():
 		#######
 		self.readSpectrum = False
 		self.rcvSpec = [0,0]
-		self.setupInProgress = False
+		
 		self.OnSrc =[0,0]
 		self.lastSpd =[0,0]
 		self.status =[]
 		self.waitSpectrum = False
+		self.stowInProgress
+		#######
+		self.setupInProgress = False
+		self.initialized = {
+		'SRT1':False,
+		'SRT2':False,
+		'SH':False,
+		'ROACH':False}
+		self.atStow = {
+		'SRT1':False,
+		'SRT2':False}
+		self.Rxmode = {
+		'SRT1':'',
+		'SRT2':''}
+		####
+		
 		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
@@ -127,6 +143,10 @@ class ObsBase():
 			
 	def modeCB(self, a):
 		print a
+		antenna = a.split(' ')[1].upper()
+		mode = a.split(' ')[3]
+		self.Rxmode[antenna] = mode
+
 
 	def SwRxMode(self, node, mode):
 		self.ARI_controllers[node].begin_setRxMode(mode, self.modeCB, self.failureCB);
@@ -151,10 +171,46 @@ class ObsBase():
 	def setupCB(self, a):
 		#generic callback
 		print a
-		print "Setup finished"
-		self.initialized = True
-		self.setupInProgress = False
+		antenna = a.split(' ')[1].upper()
+		self.initialized[antenna] = True
+		initnodes = 0
+		for node in nodes:
+		    if (self.initialilized[node]):
+		        initnodes += 1
+		if initnodes == len(nodes):
+    		self.setupInProgress = False
 		return	
+
+    def Stow(self):
+		statusIC = 0
+		ic = None
+		if self.stowInProgress:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Stow in progress, wait"
+			return
+		else:
+			self.stowInProgress = True
+		try:
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_SRTStow(self.stowCB, self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" initializing antenna " + node
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+    
+    def stowCB(self, a):
+        print a
+		antenna = a.split(' ')[1].upper()
+		self.atStow[antenna] = True
+		stownodes = 0
+		for node in nodes:
+		    if (self.atStow[node]):
+		        stownodes += 1
+		if stownodes == len(nodes):
+    		self.stowInProgress = False
+		return	
+
+		
 		
 class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
@@ -193,3 +249,17 @@ class SRTSingleDish(ObsBase):
 	def status(self):
 		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode, self.tracking,self.OnSource]
 		return statusList
+		
+    def states(self):
+        self.observingMode
+        self.nodes
+        self.ARI_controllers
+        #serverstate??
+        self.setupInProgress
+        self.initialized
+        self.atStow
+        self.stowInProgress
+        self.mode
+        self.Rxmode
+        
+
