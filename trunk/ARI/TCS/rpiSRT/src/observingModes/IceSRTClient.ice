@@ -70,7 +70,7 @@ module SRTClient{
 	    {
 	    delta azeloff;
 	    specs maspecs;
-	    }
+	    };
 
     sequence<mapel> map;
 
