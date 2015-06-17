@@ -143,8 +143,8 @@ class ObsBase():
 			
 	def modeCB(self, a):
 		print a
-		antenna = a.split(' ')[1].upper()
-		mode = a.split(' ')[3]
+		antenna = a.split(' ')[2].upper()
+		mode = a.split(' ')[-1]
 		self.Rxmode[antenna] = mode
 
 
@@ -171,7 +171,7 @@ class ObsBase():
 	def setupCB(self, a):
 		#generic callback
 		print a
-		antenna = a.split(' ')[1].upper()
+		antenna = a.split(' ')[2].upper()
 		self.initialized[antenna] = True
 		initnodes = 0
 		for node in nodes:
@@ -201,7 +201,7 @@ class ObsBase():
     
 	def stowCB(self, a):
 		print a
-		antenna = a.split(' ')[1].upper()
+		antenna = a.split(' ')[2].upper()
 		self.atStow[antenna] = True
 		stownodes = 0
 		for node in nodes:
