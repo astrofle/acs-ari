@@ -179,7 +179,7 @@ class ObsBase():
 		        initnodes += 1
 
 		if initnodes == len(nodes):
-    		self.setupInProgress = False
+			self.setupInProgress = False
 		return	
 
     def Stow(self):
