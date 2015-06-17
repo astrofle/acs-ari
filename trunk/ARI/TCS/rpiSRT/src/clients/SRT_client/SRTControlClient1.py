@@ -771,7 +771,7 @@ class SRT():
 					while(self.spectra):
 						time.sleep(0.5)
 					self.spectrum.sampleStamp.timdate
-					azeloff = SRTClient.delta(k*delta, l*delta)
+					azeloff = [k*delta, l*delta]
 					mel = SRTClient.mapel(azeloff, self.spectrum)
 					self.map.append(mel)
 				time.sleep(3)
