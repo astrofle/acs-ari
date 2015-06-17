@@ -87,13 +87,13 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print self.SRTinitialized
 		if (not self.SRTinitialized):
 			self.SetSerialPort(self.Defaultserialport)
-			print self.name + " sending antenna to Stow"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+ self.name + " sending antenna to Stow"
 			self.Init(self.parameters)
 		else:
 			self.initialized = True
 		while(not self.initialized):
 			sleep(1)
-		return self.name + " Antenna initialized"
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " Antenna initialized"
 	
 	def obsSRT(self, mode, target, current = None):
 		if mode == 'GoTo':
@@ -153,7 +153,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	    print "setting " + self.name + "to " + mode + "mode"
 	    self.mode = mode
 	    self.SetRxMode(mode)
-	    return self.name + "set for " + self.mode
+	    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + "set for " + self.mode
 	    
 	def SRTstate(self, current = None):
 		_st = SRTClient.state(str(self.name),time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),str(self.SRTState),str(self.SRTonTarget), str(self.SRTMode),\
@@ -178,8 +178,14 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		return self.map
 	
 	def SRTStow(self, current = None):
-		print "Stowing antenna"
-		self.Stow
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + self.name + " sending antenna to Stow"
+		self.Stow()
+		while(self.portInUse[0] and self.portInUse[1] == 'stow'):
+			sleep(1)
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " Antenna Stowed"
+
+
+		
 #try:
 #	if len(sys.argv)<2:
 #		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
