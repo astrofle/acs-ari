@@ -147,6 +147,15 @@ class ObsBase():
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
+			
+	def setupCB(self, a):
+		#generic callback
+		print a
+		print "Setup finished"
+		self.initialized = True
+		self.setupInProgress = False
+		return	
+		
 class SRTSingleDish(ObsBase):
 	def __init__(self, antenna):
 		ObsBase.__init__(self)
