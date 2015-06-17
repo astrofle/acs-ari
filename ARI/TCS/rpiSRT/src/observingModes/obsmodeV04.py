@@ -65,7 +65,7 @@ class ObsBase():
 		'SRT1':[],
 		'SRT2':[]
 		}
-		self.ArrayOnSource = {
+		self.ArrayOnTarget = {
 		'SRT1':False,
 		'SRT2':False
 		}
@@ -246,6 +246,8 @@ class ObsBase():
 	def getClientStatusCB(self, a):
 		node = a.name.upper()
 		self.Clientstatus[node] = a
+		if self.Clientstatus[node].az - self.Clientstatus[node].aznow >= 3.5
+			self.ArrayOnTarget[node] = False
 #####Antenna Operation##################################################
 	def obswArray(self, mode, target):
 		statusIC = 0
@@ -259,6 +261,7 @@ class ObsBase():
 			
 			for node in self.nodes:
 				if node.startswith('SRT'):
+					self.ArrayOnTarget[node] = False
 					self.ARI_controllers[node].begin_obsSRT(mode, str(target), self.trackCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving antenna" + node + " to target"
 			OnTrg_Thread = threading.Thread(target = self.onTarget_Thread, name='onTarget')
@@ -276,15 +279,15 @@ class ObsBase():
 		onTargetnodes = 0
 		while(self.ArrayMovingToTarget):
 			for node in self.nodes:
-				self.ArrayOnSource[node] = self.Clientstatus[node].SRTonTarget
-				if self.ArrayOnSource[node]:
+				self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
+				if self.ArrayOnTarget[node]:
 					onTargetnodes += 1
 				if onTargetnodes == len(self.nodes):
 					self.ArrayMovingToTarget = False
 			time.sleep(1)
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array on Target"
 	
-	def stopSRT(self):
+	def stopArray(self):
 		statusIC = 0
 		ic = None
 		try:
