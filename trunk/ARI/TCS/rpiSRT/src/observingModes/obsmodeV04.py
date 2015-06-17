@@ -73,6 +73,8 @@ class ObsBase():
 		self.ArrayStopCmd = False
 		self.Clientstatus ={}
 		self.getClStatus = True
+		self.offsets = [0,0]
+		self.map =None
 		####
 		
 		
@@ -341,6 +343,7 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
+				self.offsets = [azoff, eloff]
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"setting pointing offset"
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_offsetPointing(azoff, eloff, self.offsetCB, self.failureCB);
@@ -350,6 +353,21 @@ class ObsBase():
 	
 	def offsetCB(self,a):
 		print a
+		
+	def npointScanMap(self, points, delta, spec):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"setting pointing offset"
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_NpointScan(points, delta, spec, self.nscanCB, self.failureCB);
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+			
+	def nscanCB(self,a):
+		self.map = a
 
 
 
@@ -428,5 +446,6 @@ class SRTSingleDish(ObsBase):
 		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
 		print "Array on Target:"+ str(self.ArrayOnTarget)
 		print "Array Stop Command:"+ str(self.ArrayStopCmd)
+		print "Array offsets:" + str(self.offsets)
 
 
