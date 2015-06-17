@@ -208,7 +208,7 @@ class ObsBase():
 		    if (self.atStow[node]):
 		        stownodes += 1
 		if stownodes == len(nodes):
-    		self.stowInProgress = False
+			self.stowInProgress = False
 		return	
 
 		
