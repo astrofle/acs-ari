@@ -53,7 +53,7 @@ module SRTClient{
 		string aznow;
 		string elnow;
 		string axis;
-		string tostow;
+		string tostowS;
 		string elatstow;
 		string azatstow;
 		string slew;
@@ -76,7 +76,7 @@ module SRTClient{
 		void setRxMode(string mode, out string r);
 		void SRTstate(out state st);
 		void offsetPointing(float azoff, float eloff, out string r);
-		void NpointScan(int points, float delta, bool sp, out sequence l);
+		void NpointScan(int points, float delta, boolean sp, out sequence l);
 		void SRTStow(out string r);
 	};
 };
