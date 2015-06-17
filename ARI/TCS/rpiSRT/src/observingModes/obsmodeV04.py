@@ -286,10 +286,10 @@ class ObsBase():
 			self.OnSource = True
 		#call by getSpectrum
 
-	def onTarget_Thread(self):
-		onTargetnodes = 0
-		for node in self.nodes:
-			if self.Client
+#	def onTarget_Thread(self):
+#		onTargetnodes = 0
+#		for node in self.nodes:
+#			if self.Client
 
 	
 	def stopSRT(self):
