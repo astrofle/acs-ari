@@ -153,6 +153,9 @@ class ObsBase():
 			ClientStatus_Thread = threading.Thread(target = self.getClientStatusThread, name='Clientstatus')
 			ClientStatus_Thread.start()
 			print "starting status thread"
+			time.sleep(1)
+			if self.ClientStatus[node].SRTinitialized = 'True':
+				print node + " is initialized - setup not needed - see self.Clientstatus for node status"
 
 	def modeCB(self, a):
 		print a
