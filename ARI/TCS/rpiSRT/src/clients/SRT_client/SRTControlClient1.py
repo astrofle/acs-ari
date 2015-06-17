@@ -765,12 +765,13 @@ class SRT():
 				print str(k)+","+str(l)
 				if sp:
 					print "getting spectrum"
+					time.sleep(1)
 					self.enableSpectrum()
 					time.sleep(0.5)
 					self.disableSpectrum()
 					while(self.spectra):
 						time.sleep(0.5)
-					print self.spectrum.sampleStamp.timdate
+					#print self.spectrum.sampleStamp.timdate
 					azeloff = [k*delta, l*delta]
 					sp = SRTClient.specs(self.spectrum.sampleStamp, self.spectrum.spec,\
 					self.spectrum.avspec, self.spectrum.avspecc, self.spectrum.specd)
