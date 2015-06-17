@@ -79,7 +79,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.elcmd = None
 		self.Target = ''
 		self.STOP = False
-		self.map = []
+		self.map = SRTClient.map()
 		self.mapStarted = False
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 	
