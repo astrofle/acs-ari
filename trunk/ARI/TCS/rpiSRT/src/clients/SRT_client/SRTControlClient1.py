@@ -767,7 +767,7 @@ class SRT():
 					print "getting spectrum"
 					time.sleep(1)
 					self.enableSpectrum()
-					time.sleep(2)
+					time.sleep(3)
 					self.disableSpectrum()
 					while(self.spectra):
 						print self.spectra
