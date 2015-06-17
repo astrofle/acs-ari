@@ -236,7 +236,7 @@ class ObsBase():
 			traceback.print_exc()
 			self.statusIC = 1
 	
-	def getClientStatusCB(self, a)
+	def getClientStatusCB(self, a):
 		self.Clientstatus[node] = a
 
 		
