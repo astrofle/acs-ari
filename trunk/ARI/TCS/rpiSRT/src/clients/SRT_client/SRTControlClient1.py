@@ -85,7 +85,7 @@ class SRT():
 		self.azcmd = None
 		self.elcmd = None
 		self.Target = ''
-		self.map = SRTClient.map()
+		self.map = []
 		self.mapStarted = False
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 
@@ -745,7 +745,7 @@ class SRT():
 		self.mapStarted = True
 		if points%2 == 0:
 			point =points+1
-		self.map = SRTClient.map()
+		self.map = []
 		j = 0
 		x = range(points)
 		X = len(x)*[0]
