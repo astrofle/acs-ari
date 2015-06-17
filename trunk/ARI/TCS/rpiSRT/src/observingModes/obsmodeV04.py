@@ -406,6 +406,6 @@ class SRTSingleDish(ObsBase):
 		print "get Client status:"+ str(self.getClStatus)
 		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
 		print "Array on Target:"+ str(self.ArrayOnTarget)
-		print "Array Stop Command:"+ str(self.ArrayStopCmd = True)
+		print "Array Stop Command:"+ str(self.ArrayStopCmd)
 
 
