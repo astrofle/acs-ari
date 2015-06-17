@@ -182,7 +182,7 @@ class ObsBase():
 			self.setupInProgress = False
 		return	
 
-    def Stow(self):
+	def Stow(self):
 		statusIC = 0
 		ic = None
 		if self.stowInProgress:
@@ -199,8 +199,8 @@ class ObsBase():
 			traceback.print_exc()
 			self.statusIC = 1
     
-    def stowCB(self, a):
-        print a
+	def stowCB(self, a):
+		print a
 		antenna = a.split(' ')[1].upper()
 		self.atStow[antenna] = True
 		stownodes = 0
