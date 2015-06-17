@@ -75,6 +75,7 @@ class ObsBase():
 		self.getClStatus = True
 		self.offsets = [0,0]
 		self.map =None
+		self.scanMapInProgress = False
 		####
 		
 		
@@ -158,6 +159,8 @@ class ObsBase():
 			time.sleep(1)
 			if (self.Clientstatus[node].SRTinitialized == 'True'):
 				print node + " is initialized - setup not needed - see self.Clientstatus for node status"
+			else:
+				print node + " requires initialization - do self.setup() "
 
 	def modeCB(self, a):
 		print a
@@ -357,6 +360,11 @@ class ObsBase():
 	def npointScanMap(self, points, delta, spec):
 		statusIC = 0
 		ic = None
+		if self.scanMapInProgress:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Scan map is in progress, wait"
+			return
+		else:
+			self.scanMapInProgress = True
 		try:
 			for node in self.nodes:
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"setting pointing offset"
@@ -367,6 +375,8 @@ class ObsBase():
 			self.statusIC = 1
 			
 	def nscanCB(self,a):
+		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan completed"
+		self.scanMapInProgress = False
 		self.map = a
 
 
@@ -442,10 +452,13 @@ class SRTSingleDish(ObsBase):
 		print "mode:"+ str(self.mode)
 		print "Rx Switch mode:"+ str(self.RxSwmode)
 		print "SRT Rx setup:" + str(self.RxSetup)
+		print "Array frequency:" + str(self.new_freq)
+		print "Array Rx Mode:" + str(self.new_rec_mode)
 		print "get Client status:"+ str(self.getClStatus)
 		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
 		print "Array on Target:"+ str(self.ArrayOnTarget)
 		print "Array Stop Command:"+ str(self.ArrayStopCmd)
 		print "Array offsets:" + str(self.offsets)
+		print "Scan map in progress: "+ str(self.scanMapInProgress)
 
 
