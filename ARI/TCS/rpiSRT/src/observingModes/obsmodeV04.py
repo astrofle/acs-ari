@@ -264,14 +264,14 @@ class SRTSingleDish(ObsBase):
 		print self.stowInProgress
 		print self.mode
 		print self.Rxmode
-	
+	    
 	def getClientStatus(self):
 		statusIC = 0
 		ic = None
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.Clientstatus[node] = self.ARI_controllers[node].SRTstate(self.stowCB, self.failureCB);
+					self.Clientstatus[node] = self.ARI_controllers[node].SRTstate();
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
 		except:
 			traceback.print_exc()
