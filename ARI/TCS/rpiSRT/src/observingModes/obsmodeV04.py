@@ -279,7 +279,7 @@ class ObsBase():
 				self.ArrayOnSource[node] = self.Clientstatus[node].SRTonTarget
 				if self.ArrayOnSource[node]:
 					onTargetnodes += 1
-				if onTargetnodes == len(nodes)
+				if onTargetnodes == len(nodes):
 					self.ArrayMovingToTarget = False
 			time.sleep(1)
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array on Target"
