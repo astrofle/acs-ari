@@ -414,7 +414,7 @@ class ObsBase():
 		self.spectrum[name] = self.spec
 		self.NewSpectrum[name] = True
 		spNodes = 0
-		for node is self.nodes:
+		for node in self.nodes:
 			if self.NewSpectrum[node]:
 				spNodes += 1
 		if (spNodes == len(self.nodes)):
