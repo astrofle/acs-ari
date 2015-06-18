@@ -482,6 +482,8 @@ class ObsBase():
 		#spectrum Thread
 		self.readSpectrum = False
 		self.waitSpectrum = False
+		#disconnect
+		self.disconnect()
 	
 	def ClientThreads(self):
 		statusIC = 0
