@@ -407,7 +407,7 @@ class ObsBase():
 	def spectrumCB(self, sp):
 		self.spec = sp
 		#self.spectrum[sp.sampleStamp.name] = self.spec
-		name = sp.sampleStamp.name
+		name = sp.sampleStamp.name.upper()
 		tim = sp.sampleStamp.timdate
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
 		print name+" "+tim
