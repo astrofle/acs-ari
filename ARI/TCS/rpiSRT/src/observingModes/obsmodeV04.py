@@ -69,6 +69,10 @@ class ObsBase():
 		'SRT1':False,
 		'SRT2':False
 		}
+		self.NewSpectrum ={
+		'SRT1':False,
+		'SRT2':False
+		}
 		self.ArrayMovingToTarget = False
 		self.ArrayStopCmd = False
 		self.Clientstatus ={}
@@ -76,6 +80,7 @@ class ObsBase():
 		self.offsets = [0,0]
 		self.map =None
 		self.scanMapInProgress = False
+		self.readSpectrum
 		####
 		
 		
@@ -378,6 +383,72 @@ class ObsBase():
 		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan completed"
 		self.scanMapInProgress = False
 		self.map = a
+		
+		
+
+######################### Receiver spectrum
+	def getSpectrum(self):
+		while(self.readSpectrum):
+			statusIC = 0
+			ic = None
+			try:
+				for node in self.nodes:
+					self.NewSpectrum[name] = False
+					self.waitSpectrum = True
+					if node.startswith('SRT'):
+						self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
+						print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ node + " Getting spectrum"
+				while(self.waitSpectrum):
+					time.sleep(1)
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		
+	def spectrumCB(self, sp):
+		self.spec = sp
+		#self.spectrum[sp.sampleStamp.name] = self.spec
+		name = sp.sampleStamp.name
+		tim = sp.sampleStamp.timdate
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
+		print name+" "+tim
+		self.spectrum[name] = self.spec
+		self.NewSpectrum[name] = True
+		spNodes = 0
+		for node is self.nodes:
+			if self.NewSpectrum[node]:
+				spNodes += 1
+		if (spNodes == len(self.nodes)):
+			self.waitSpectrum = False
+		return
+		
+	def enableSpectrum(self):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				self.readSpectrum = True
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ node + " starting spectrum reading"
+				self.ARI_controllers[node].begin_startSpectrum(self.stopspCB, self.failureCB)
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+node+" starting spectrum reading thread"
+			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
+			getSpec_thread.start()
+
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def disableSpectrum(self):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" stopping spectrum reading"
+				self.ARI_controllers[node].begin_stopSpectrum(self.stopspCB, self.failureCB)
+				self.readSpectrum = False
+				self.waitSpectrum = False
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
 
 
 
@@ -460,5 +531,8 @@ class SRTSingleDish(ObsBase):
 		print "Array Stop Command:"+ str(self.ArrayStopCmd)
 		print "Array offsets:" + str(self.offsets)
 		print "Scan map in progress: "+ str(self.scanMapInProgress)
+		print "Read spectrum: " + str(self.readSpectrum)
+		print "new spectrum to read: " + str(self.NewSpectrum)
+		print "Waiting spectrum: " + str(self.waitSpectrum)
 
 
