@@ -179,7 +179,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 			sp = True
 		print sp
 		self.npointScan(points, delta, sp)
-		return self.map
+		return []
 	
 	def SRTStow(self, current = None):
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + self.name + " sending antenna to Stow"
