@@ -18,6 +18,7 @@ class ObsBase():
 		'SH':"SHController:default -h localhost -p 10013",
 		'ROACH':"SRTClient:default -h localhost -p 10014"
 		}
+		self.ARI_ics = {}
 		self.observingMode = ""
 		self.antenna = ''
 		self.site = sites.site
@@ -102,7 +103,7 @@ class ObsBase():
 		except:
 			pass
 
-	def connect(self, IP):
+	def connect(self, IP, node):
 		#client connection routine to server
 		#global statusIC
 		#global ic
@@ -116,6 +117,7 @@ class ObsBase():
 			initData.properties = Ice.createProperties()
 			#initData.properties.load('IceConfig')
 			ic = Ice.initialize(sys.argv, initData)
+			self.ics[node] = ic
 			# Create proxy
 			#base = ic.stringToProxy("SRTController:default -h 192.168.0.6 -p 10000")
 			IP_string = IP
@@ -140,14 +142,15 @@ class ObsBase():
 		
 	def disconnect(self):
 		#disconnection routine
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" Disconnecting.."
-		if self.ic:
-			try:
-				self.ic.destroy()
-			except:
-				traceback.print_exc()
-				self.statusIC = 1
-				sys.exit(status)
+		for node in self.nodes:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +node+" Disconnecting.."
+			if self.ics[node]:
+				try:
+					self.ics[node].destroy()
+				except:
+					traceback.print_exc()
+					self.statusIC = 1
+					sys.exit(statuqs)
 		return
 	
 	def failureCB(self, ex):
@@ -165,7 +168,7 @@ class ObsBase():
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" creating "+ self.observingMode
 		for node in self.nodes:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Connecting to "+ node
-			controller = self.connect(self.ARI_nodes[node])
+			controller = self.connect(self.ARI_nodes[node], node)
 			self.ARI_controllers[node] = controller
 			if node.startswith('SRT'):
 			#Set SRT receiver switch mode
