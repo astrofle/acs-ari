@@ -198,6 +198,10 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		th = threading.enumerate()
 		print th
 		return self.name + " client threads"
+		
+	def ClientShutdown(self, current = None):
+		self.shutdown()
+		return self.name + " shutdown"
 
 
 		

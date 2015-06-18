@@ -92,5 +92,6 @@ module SRTClient{
 		void SRTStow(out string r);
 		void ClientThreads(out string r);
 		void SRTStopGoingToTarget(out string r);
+		void ClientShutdown(out string r);
 	};
 };
