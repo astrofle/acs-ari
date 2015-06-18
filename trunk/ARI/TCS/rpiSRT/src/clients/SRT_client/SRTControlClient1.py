@@ -776,7 +776,10 @@ class SRT():
 					#print self.spectrum.sampleStamp.timdate
 					azeloff = [k*delta, l*delta]
 					SP = self.spectrum
-					sp = SRTClient.specs(SP.sampleStamp, SP.spec,SP.avspec, SP.avspecc, SP.specd)
+					SS = SP.sampleStamp
+					ss = SRTClient.stamp(SS.name,SS.timdate, SS.aznow, SS.elnow,\
+					SS.temperature, SS.freq0, SS.av, SS.avc, SS.nfreq, SS.freqsep)
+					sp = SRTClient.specs(ss, SP.spec,SP.avspec, SP.avspecc, SP.specd)
 					mel = SRTClient.mapel(azeloff, sp)
 					self.map.append(mel)
 				time.sleep(6)
