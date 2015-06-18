@@ -393,7 +393,7 @@ class ObsBase():
 			ic = None
 			try:
 				for node in self.nodes:
-					self.NewSpectrum[name] = False
+					self.NewSpectrum[node] = False
 					self.waitSpectrum = True
 					if node.startswith('SRT'):
 						self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
