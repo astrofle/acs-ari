@@ -79,17 +79,21 @@ class ARIAPII(ARIAPI.API):
 		print msg
 		return msg
 		
-	def Connect(self, current = None):
+	def createObservingMode(self, current = None):
 		self.obsMode.createObsMode()
 		msg = "Observing Mode Created"
 		print msg
 		return msg
 	
-	def Initialize(self, current = None):
+	def setup(self, current = None):
 		self.obsMode.setup()
 		msg = "Telescope Initialized"
 		print msg
 		return msg
+	
+	def ObserveWithArray(self, mode, target, current = None)
+	    self.obsMode.obswArray(mode, target)
+	    msg = "Commanding array"
 	
 	def SetTarget(self, s1, s2, s3, current = None):
 		self.obsMode.radioSetup(s2, s3)
@@ -103,7 +107,7 @@ class ARIAPII(ARIAPI.API):
 		msg = "Tracking Source"
 		print msg
 		return msg
-	
+w	
 	def StopTracking(self, current = None):
 		self.obsMode.stopTrack()
 		msg = "Track source stopped"
@@ -111,7 +115,7 @@ class ARIAPII(ARIAPI.API):
 		return msg
 	
 	def FindSources(self, current = None):
-		sources = sites.find_SRTSources(sites.SRTSources_list, sites.site)
+		sources = sites.find_radec(self, current = None)
 		return sources
 
 
