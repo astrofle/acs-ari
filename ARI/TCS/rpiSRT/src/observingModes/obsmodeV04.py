@@ -18,7 +18,7 @@ class ObsBase():
 		'SH':"SHController:default -h localhost -p 10013",
 		'ROACH':"SRTClient:default -h localhost -p 10014"
 		}
-		self.ARI_ics = {}
+		self.ics = {}
 		self.observingMode = ""
 		self.antenna = ''
 		self.site = sites.site
@@ -150,7 +150,7 @@ class ObsBase():
 				except:
 					traceback.print_exc()
 					self.statusIC = 1
-					sys.exit(statuqs)
+					sys.exit(status)
 		return
 	
 	def failureCB(self, ex):
