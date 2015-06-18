@@ -170,10 +170,12 @@ class ObsBase():
 			if node.startswith('SRT'):
 			#Set SRT receiver switch mode
 				self.ARI_controllers[node].begin_setRxMode(self.mode, self.modeCB, self.failureCB);
-			ClientStatus_Thread = threading.Thread(target = self.getClientStatusThread, name='Clientstatus')
-			ClientStatus_Thread.start()
-			print "starting status thread"
-			time.sleep(1)
+		
+		ClientStatus_Thread = threading.Thread(target = self.getClientStatusThread, name='Clientstatus')
+		ClientStatus_Thread.start()
+		print "starting status thread"
+		time.sleep(1)
+		for node in self.nodes:
 			if (self.Clientstatus[node].SRTinitialized == 'True'):
 				print node + " is initialized - setup not needed - see self.Clientstatus for node status"
 			else:
