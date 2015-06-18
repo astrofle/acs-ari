@@ -138,6 +138,18 @@ class ObsBase():
 			sys.exit(statusIC)
 		return controller
 		
+	def disconnect(self):
+		#disconnection routine
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" Disconnecting.."
+		if self.ic:
+			try:
+				self.ic.destroy()
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+				sys.exit(status)
+		return
+	
 	def failureCB(self, ex):
 		#failure Callback
 		print "Exception is: " + str(ex)
@@ -445,7 +457,7 @@ class ObsBase():
 		ic = None
 		try:
 			for node in self.nodes:
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" stopping spectrum reading"
+				print time.strftime('%Y-%m# -%d %H:%M:%S', time.localtime())+" stopping spectrum reading"
 				self.ARI_controllers[node].begin_stopSpectrum(self.stopspCB, self.failureCB)
 				self.readSpectrum = False
 				self.waitSpectrum = False
@@ -462,6 +474,9 @@ class ObsBase():
 		self.getClStatus = False
 		#OnTarget Thread
 		self.ArrayMovingToTarget = False
+		#spectrum Thread
+		self.readSpectrum = False
+		self.waitSpectrum = False
 	
 	def ClientThreads(self):
 		statusIC = 0
@@ -474,6 +489,29 @@ class ObsBase():
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
+	
+	def states(self):
+		print "observing mode:"+ str(self.observingMode)
+		print "nodes:"+ str(self.nodes)
+		print "ARI_controllers:"+ str(self.ARI_controllers)
+		print "setup in progress:"+ str(self.setupInProgress)
+		print "initialized:"+ str(self.initialized)
+		print "atStow:"+ str(self.atStow)
+		print "stow in progress:"+ str(self.stowInProgress)
+		print "mode:"+ str(self.mode)
+		print "Rx Switch mode:"+ str(self.RxSwmode)
+		print "SRT Rx setup:" + str(self.RxSetup)
+		print "Array frequency:" + str(self.new_freq)
+		print "Array Rx Mode:" + str(self.new_rec_mode)
+		print "get Client status:"+ str(self.getClStatus)
+		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
+		print "Array on Target:"+ str(self.ArrayOnTarget)
+		print "Array Stop Command:"+ str(self.ArrayStopCmd)
+		print "Array offsets:" + str(self.offsets)
+		print "Scan map in progress: "+ str(self.scanMapInProgress)
+		print "Read spectrum: " + str(self.readSpectrum)
+		print "new spectrum to read: " + str(self.NewSpectrum)
+		print "Waiting spectrum: " + str(self.waitSpectrum)
 
 	
 class SRTSingleDish(ObsBase):
@@ -511,31 +549,40 @@ class SRTSingleDish(ObsBase):
 		self.RxSetup[self.nodes[0]] = [self.freq, self.rec_mode]
 		return
 		
-	def status(self):
-		statusList = [self.initialized, self.radio_config, self.freq, self.rec_mode, self.new_freq, self.new_rec_mode]
-		return statusList
+class SRTDoubleSingleDish(ObsBase):
+	def __init__(self):
+		ObsBase.__init__(self)
+		self.nodes = ['SRT1', 'SRT2']
+		self.observingMode = 'SRT-DSD'
+		self.mode = 'SD'
+	
+	def radioSetup(self, freq, rec_mode):
+		statusIC = 0
+		ic = None
+		try:
+			self.new_freq = freq
+			self.new_rec_mode = str(rec_mode)
+			for node in self.nodes:
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " "+node+" "+"setting receiver "
+				self.ARI_controllers[node].begin_setFreq(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+			
+	def set_freq(self, freq):
+		self.radioSetup(freq, self.rec_mode)
+		
+	def set_mode(self, rec_mode):
+		self.radioSetup(self.freq, rec_mode)
+			
+	def rsetupCB(self,a):
+		#generic callback
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " "+a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Radio Setup finished"
+		self.radio_config= True
+		self.freq = self.new_freq
+		self.rec_mode = self.new_rec_mode
+		return
 
-	def states(self):
-		print "observing mode:"+ str(self.observingMode)
-		print "nodes:"+ str(self.nodes)
-		print "ARI_controllers:"+ str(self.ARI_controllers)
-		print "setup in progress:"+ str(self.setupInProgress)
-		print "initialized:"+ str(self.initialized)
-		print "atStow:"+ str(self.atStow)
-		print "stow in progress:"+ str(self.stowInProgress)
-		print "mode:"+ str(self.mode)
-		print "Rx Switch mode:"+ str(self.RxSwmode)
-		print "SRT Rx setup:" + str(self.RxSetup)
-		print "Array frequency:" + str(self.new_freq)
-		print "Array Rx Mode:" + str(self.new_rec_mode)
-		print "get Client status:"+ str(self.getClStatus)
-		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
-		print "Array on Target:"+ str(self.ArrayOnTarget)
-		print "Array Stop Command:"+ str(self.ArrayStopCmd)
-		print "Array offsets:" + str(self.offsets)
-		print "Scan map in progress: "+ str(self.scanMapInProgress)
-		print "Read spectrum: " + str(self.readSpectrum)
-		print "new spectrum to read: " + str(self.NewSpectrum)
-		print "Waiting spectrum: " + str(self.waitSpectrum)
 
 
