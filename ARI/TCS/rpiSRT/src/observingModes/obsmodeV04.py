@@ -432,10 +432,13 @@ class ObsBase():
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+node+" starting spectrum reading thread"
 			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
 			getSpec_thread.start()
-
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
+
+	def stopspCB(self, a):
+		print a
+		return
 
 	def disableSpectrum(self):
 		statusIC = 0
