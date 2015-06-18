@@ -153,6 +153,19 @@ class ObsBase():
 					sys.exit(status)
 		return
 	
+	def ClientShutdown(self):
+		statusIC = 0
+		ic = None
+		try:
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.ARI_controllers[node].begin_ClientShutdown(self.genericCB, self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+					" initializing antenna " + node
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+	
 	def failureCB(self, ex):
 		#failure Callback
 		print "Exception is: " + str(ex)
