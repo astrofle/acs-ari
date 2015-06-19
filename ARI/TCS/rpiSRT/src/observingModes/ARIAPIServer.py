@@ -170,16 +170,18 @@ class ARIAPII(ARIAPI.API):
 		return sources
 
 	def findPlanets(self, current = None):
+		sources = []
 		self.obsMode.find_planets(True)
-		for i in self.planets:
+		for i in self.obsMode.planets:
 			azel = self.planets[i]['azel']
 			azels = ARIAPI.astro(i, azel[0], azel[1])
 			sources.append(azels)
 		return sources
 
 	def findStars(self, current = None):
+		sources = []
 		self.obsMode.find_stars(True)
-		for i in self.stars:
+		for i in self.obsMode.stars:
 			azel = self.stars[i]['azel']
 			azels = ARIAPI.astro(i, azel[0], azel[1])
 			sources.append(azels)
