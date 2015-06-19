@@ -97,7 +97,8 @@ class ObsBase():
 	
 	def find_radec(self, disp):
 		self.radecSources = sites.find_SRTsources(sites.SRTsources, sites.site, disp)
-		print str(len(self.radecSources)) + " observabable stars: " + str(self.radecSources)
+		if disp:
+			print str(len(self.radecSources)) + " observabable stars: " + str(self.radecSources)
 		return
 
 	def clean(self):
