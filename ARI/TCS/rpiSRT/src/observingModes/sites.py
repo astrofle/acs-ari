@@ -58,7 +58,7 @@ def find_planets(planets, site, disp):
 			print planet, az, el
 		if el > 15.0:
 			_planets = {}
-			_planets = planets[planet]
+			_planets[planet] = planets[planet]
 			_planets['azel'] = [az, el]
 			planets[planets] = _planets
 			_planets = {}
