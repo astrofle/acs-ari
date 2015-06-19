@@ -83,6 +83,7 @@ class ObsBase():
 		self.map =None
 		self.scanMapInProgress = False
 		self.readSpectrum
+		self.radecSources =[]
 		####
 		
 		
