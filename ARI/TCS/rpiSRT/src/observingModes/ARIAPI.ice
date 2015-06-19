@@ -21,8 +21,8 @@ module ARIAPI{
         void disableSpectrumArray(out string r);
         void npointScanMap(int i1, float f1, string s1, out string r);
         void findRaDecSources(out sources r);
-        void findPlanets(out string r);
-        void findStars(out string r);
+        void findPlanets(out sources r);
+        void findStars(out sources r);
         void clientShutdown(out string r);
         void obsModeShutdown(out string r);
         void stowArray(out string r);
