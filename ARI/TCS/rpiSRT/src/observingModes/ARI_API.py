@@ -1,3 +1,4 @@
+# coding: utf-8
 import sys, traceback, Ice
 import time
 import ARIAPI
