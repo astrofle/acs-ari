@@ -1,15 +1,10 @@
 module ARIAPI{
 
-	struct AzElcoord
-	    {
-	    float az;
-	    float el;
-	    };
-
 	struct astro
 	    {
 	    string source;
-	    AzElcoord azel;
+	    float az;
+	    float el;
 	    };
 	
 	sequence<astro> sources;
