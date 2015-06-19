@@ -125,7 +125,9 @@ class ARIAPII(ARIAPI.API):
 	
 	def observeWithArray(self, mode, target, current = None):
 		if mode == 'GoTo':
-			target = list(target)
+			target = target.strip('[').strip(']').split(',')
+			target[0] = float(target[0])
+			target[1] = float(target[1])
 		self.obsMode.obswArray(mode, target)
 		msg = "Commanding array"
 	
@@ -171,7 +173,7 @@ class ARIAPII(ARIAPI.API):
 
 	def findPlanets(self, current = None):
 		sources = []
-		self.obsMode.find_planets(True)
+		self.obsMode.find_planets(False)
 		for i in self.obsMode.planets:
 			azel = self.obsMode.planets[i]['azel']
 			azels = ARIAPI.astro(i, azel[0], azel[1])
@@ -180,7 +182,7 @@ class ARIAPII(ARIAPI.API):
 
 	def findStars(self, current = None):
 		sources = []
-		self.obsMode.find_stars(True)
+		self.obsMode.find_stars(False)
 		for i in self.obsMode.stars:
 			azel = self.obsMode.stars[i]['azel']
 			azels = ARIAPI.astro(i, azel[0], azel[1])

@@ -62,6 +62,7 @@ def find_planets(planets, site, disp):
 			_planets['azel'] = [az, el]
 			sources[planet] = _planets
 			_planets = {}
+		if disp:
 			print planet, az, el
 	return sources
 
@@ -77,6 +78,7 @@ def find_stars(stars, site, disp):
 			_sources['azel'] = [az,el]
 			sources[star] = _sources
 			_sources = {}
+		if disp:
 			print star, az, el
 	return sources
 	
