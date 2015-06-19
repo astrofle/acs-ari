@@ -156,7 +156,11 @@ class ARIAPII(ARIAPI.API):
 		return msg
 		
 	def npointScanMap(self, points, delta, spec, current = None):
-		self.obsMode.npointScanMap(self, points, delta, spec)
+		if spec == 'True':
+			specB = True
+		else:
+			specB = False
+		self.obsMode.npointScanMap(self, points, delta, specB)
 		msg = "Executing n-points Scan Map"
 		print msg
 		return msg
