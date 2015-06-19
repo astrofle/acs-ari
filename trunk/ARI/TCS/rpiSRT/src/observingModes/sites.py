@@ -92,7 +92,8 @@ def find_SRTsources(SRTsources, site, disp):
 			_SRTsources['azel'] = [az, el]
 			sources[source] = _SRTsources
 			_SRTsources = {}
-			print source, az, el
+			if disp:
+				print source, az, el
 	return sources
 	
 
