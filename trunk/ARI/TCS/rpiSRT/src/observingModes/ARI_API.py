@@ -213,7 +213,7 @@ class API():
 		statusIC = 0
 		ic = None
 		if self.observing:
-			"Observation already started, stop observation before"
+			print "Observation already started, stop observation before"
 			return
 		else:
 			self.observing = True
@@ -319,7 +319,7 @@ class API():
 		else:
 			self.scanMapinProgress = True
 		try:
-			self.controller.begin_npointScanMap(points, delta, spectrum, self.scanMapCB, self.scanMapCB)
+			self.controller.begin_npointScanMap(points, delta, str(spectrum), self.scanMapCB, self.scanMapCB)
 			print "Performing Scan Map"
 		except:
 			traceback.print_exc()

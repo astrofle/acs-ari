@@ -177,6 +177,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print "starting n-point map"
 		if sp == 'True':
 			sp = True
+		else:
+			sp = False
 		print sp
 		self.npointScan(points, delta, sp)
 		return self.map
