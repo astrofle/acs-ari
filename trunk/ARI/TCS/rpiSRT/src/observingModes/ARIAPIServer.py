@@ -170,6 +170,7 @@ class ARIAPII(ARIAPI.API):
 			azel = self.radecSources[i]['azel']
 			azels = ARIAPI.astro(i, azel[0], azel[1])
 			sources.append(azels)
+		print sources
 		return sources
 
 	def findPlanets(self, current = None):
