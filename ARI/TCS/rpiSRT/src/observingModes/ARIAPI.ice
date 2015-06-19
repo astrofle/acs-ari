@@ -2,13 +2,13 @@ module ARIAPI{
 
 	sequence<float> AzElcoord;
 
-	struct object
+	struct astro
 	    {
 	    string source;
 	    AzElcoord azel;
 	    };
 	
-	sequence<object> sources
+	sequence<astro> sources;
 
 	interface API{
 		void testConn(string s, out string r);
