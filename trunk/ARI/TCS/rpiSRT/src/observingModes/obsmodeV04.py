@@ -4,6 +4,7 @@ import time
 
 sys.path.append('../IceClients/')
 import SRTClient
+import ARIAPI
 import sites
 
 import SHControl
