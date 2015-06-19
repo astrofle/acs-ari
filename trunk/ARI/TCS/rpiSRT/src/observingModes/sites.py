@@ -60,7 +60,7 @@ def find_planets(planets, site, disp):
 			_planets = {}
 			_planets[planet] = planets[planet]
 			_planets['azel'] = [az, el]
-			planets[planets] = _planets
+			planets[planet] = _planets
 			_planets = {}
 			print planet, az, el
 	return sources
