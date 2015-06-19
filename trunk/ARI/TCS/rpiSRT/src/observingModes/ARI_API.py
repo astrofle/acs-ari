@@ -371,7 +371,7 @@ class API():
 		"""
 		for obj in a:
 			print str(obj.source)+" az:"+ str(obj.az) + " el:" + str(obj.el)
-		self.radecSources = a
+		self.planets = a
 		return a
 	
 	def findStars(self):
@@ -393,7 +393,7 @@ class API():
 		"""
 		for obj in a:
 			print str(obj.source)+" az:"+ str(obj.az) + " el:" + str(obj.el)
-		self.radecSources = a
+		self.stars = a
 		return a
 	
 	def stowArray(self):
