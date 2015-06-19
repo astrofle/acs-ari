@@ -273,6 +273,7 @@ class ObsBase():
 		        stownodes += 1
 		if stownodes == len(self.nodes):
 			self.stowInProgress = False
+			print "Array at stow"
 		return
 		
 	def getClientStatusThread(self):
