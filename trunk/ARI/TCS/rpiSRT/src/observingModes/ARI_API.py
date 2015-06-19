@@ -347,7 +347,7 @@ class API():
 		""" findRadecSources Ice callback - 
 		"""
 		print a
-		return
+		return a
 	
 	def findPlanets(self):
 		""" Return a list of observable planets as defined by pyEphem library - 
