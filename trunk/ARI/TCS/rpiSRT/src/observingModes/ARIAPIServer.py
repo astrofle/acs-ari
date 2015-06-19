@@ -163,6 +163,8 @@ class ARIAPII(ARIAPI.API):
 		sources = []
 		self.obsMode.find_radec(False)
 		sleep(1)
+		print len(self.obsMode.radecSources)
+		print str(self.obsMode.radecSources)
 		for i in self.radecSources:
 			print i
 			azel = self.radecSources[i]['azel']
