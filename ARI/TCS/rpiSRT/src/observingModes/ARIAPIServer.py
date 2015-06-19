@@ -2,6 +2,7 @@ import sys, traceback, Ice
 
 sys.path.append('../IceClients/')
 import SRTClient
+import SHControl
 from time import sleep
 import ARIAPI
 import obsmodeV04 as ARIobsMode
