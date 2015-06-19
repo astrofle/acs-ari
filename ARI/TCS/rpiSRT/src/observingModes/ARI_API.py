@@ -19,6 +19,8 @@ class API():
 		self.offsets = [0.0, 0.0]
 		###############
 		self.radecSources = []
+		self.planets = []
+		self.stars = []
 	
 	def connect(self, IP):
 		""" Connects to Observing Mode server
@@ -217,7 +219,7 @@ class API():
 			self.observing = True
 			self.observation = [None,None]
 		try:
-			self.controller.begin_observeWithArray(mode, target, self.obswArrayCB, self.failureCB);
+			self.controller.begin_observeWithArray(mode, str(target), self.obswArrayCB, self.failureCB);
 			print "Commanding array"
 			self.observation = [mode, target]
 		except:
@@ -372,7 +374,7 @@ class API():
 		for obj in a:
 			print str(obj.source)+" az:"+ str(obj.az) + " el:" + str(obj.el)
 		self.planets = a
-		return a
+
 	
 	def findStars(self):
 		"""
@@ -394,7 +396,7 @@ class API():
 		for obj in a:
 			print str(obj.source)+" az:"+ str(obj.az) + " el:" + str(obj.el)
 		self.stars = a
-		return a
+
 	
 	def stowArray(self):
 		""" Send array antennae to Stow position
