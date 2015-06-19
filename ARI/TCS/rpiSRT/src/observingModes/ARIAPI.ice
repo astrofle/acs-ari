@@ -1,4 +1,15 @@
 module ARIAPI{
+
+	sequence<float> AzElcoord;
+
+	struct object
+	    {
+	    string source;
+	    AzElcoord azel;
+	    };
+	
+	sequence<object> sources
+
 	interface API{
 		void testConn(string s, out string r);
 		void setObservingMode(string s1, string s2, out string r);
@@ -10,7 +21,7 @@ module ARIAPI{
         void enableSpectrumArray(out string r);
         void disableSpectrumArray(out string r);
         void npointScanMap(int i1, float f1, string s1, out string r);
-        void findRaDecSources(out string r);
+        void findRaDecSources(out sources r);
         void findPlanets(out string r);
         void findStars(out string r);
         void clientShutdown(out string r);
