@@ -196,7 +196,7 @@ class ObsBase():
 		print "starting status thread"
 		time.sleep(1)
 		for node in self.nodes:
-			if (self.Clientstatus[node].SRTinitialized == 'True'):
+			if (self.Clientstatus[node].initialized == 'True'):
 				print node + " is initialized - setup not needed - see self.Clientstatus for node status"
 			else:
 				print node + " requires initialization - do self.setup() "
