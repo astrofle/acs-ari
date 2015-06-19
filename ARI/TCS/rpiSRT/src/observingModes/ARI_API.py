@@ -348,7 +348,8 @@ class API():
 	def fradecCB(self, a):
 		""" findRadecSources Ice callback - 
 		"""
-		print a
+		for obj in a:
+			print str(obj.source)+" az:"+ str(obj.az) + " el:" + str(obj.el)
 		self.radecSources = a
 		return a
 	
