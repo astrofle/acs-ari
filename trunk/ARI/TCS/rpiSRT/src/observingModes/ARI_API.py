@@ -369,8 +369,10 @@ class API():
 	def fPlanetsCB(self, a):
 		""" findPlanets Ice callback - 
 		"""
-		print a
-		return
+		for obj in a:
+			print str(obj.source)+" az:"+ str(obj.az) + " el:" + str(obj.el)
+		self.radecSources = a
+		return a
 	
 	def findStars(self):
 		"""
@@ -389,8 +391,10 @@ class API():
 	def fStarsCB(self, a):
 		""" findStars Ice callback - 
 		"""
-		print a
-		return
+		for obj in a:
+			print str(obj.source)+" az:"+ str(obj.az) + " el:" + str(obj.el)
+		self.radecSources = a
+		return a
 	
 	def stowArray(self):
 		""" Send array antennae to Stow position
