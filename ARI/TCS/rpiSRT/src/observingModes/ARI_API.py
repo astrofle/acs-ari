@@ -17,6 +17,8 @@ class API():
 		self.scanMapinProgress = False
 		self.stowinProgress = False
 		self.offsets = [0.0, 0.0]
+		###############
+		self.radecSources = []
 	
 	def connect(self, IP):
 		""" Connects to Observing Mode server
@@ -347,6 +349,7 @@ class API():
 		""" findRadecSources Ice callback - 
 		"""
 		print a
+		self.radecSources = a
 		return a
 	
 	def findPlanets(self):
