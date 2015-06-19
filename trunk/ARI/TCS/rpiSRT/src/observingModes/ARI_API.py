@@ -21,7 +21,7 @@ class API():
 		IP: is the Observing Mode server IP and port
 		example: connect(‘192.168.3.100 -p 10015’)
 		"""
-		#client connection routine to server
+		#clcdient connection routine to server
 		#global statusIC
 		#global ic
 		#global controller
