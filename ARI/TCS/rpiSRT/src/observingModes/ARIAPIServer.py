@@ -26,6 +26,7 @@ class ARIAPII(ARIAPI.API):
 		self.planets = sites.planets
 		self.stars = sites.stars
 		self.SRTsources = sites.SRTsources
+		self.radecSources = []
 		#print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		#print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		#print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())	
