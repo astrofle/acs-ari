@@ -161,7 +161,7 @@ class ARIAPII(ARIAPI.API):
 		else:
 			specB = False
 		print spec
-		self.obsMode.npointScanMap(self, points, delta, specB)
+		self.obsMode.npointScanMap(points, delta, specB)
 		msg = "Executing n-points Scan Map"
 		print msg
 		return msg
