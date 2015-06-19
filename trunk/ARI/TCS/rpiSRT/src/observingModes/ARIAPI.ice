@@ -8,6 +8,16 @@ module ARIAPI{
 	    };
 	
 	sequence<astro> sources;
+	
+		sequence<float> delta;
+	
+	struct mapel
+	    {
+	    delta azeloff;
+	    specs maspecs;
+	    };
+
+    sequence<mapel> map;
 
 	interface API{
 		void testConn(string s, out string r);
@@ -19,7 +29,7 @@ module ARIAPI{
         void setRxSwMode(string s1, string s2, out string r);
         void enableSpectrumArray(out string r);
         void disableSpectrumArray(out string r);
-        void npointScanMap(int points, float delta, bool spec, out string r);
+        void npointScanMap(int points, float delta, bool spec, out map sm);
         void findRaDecSources(out sources r);
         void findPlanets(out sources r);
         void findStars(out sources r);
