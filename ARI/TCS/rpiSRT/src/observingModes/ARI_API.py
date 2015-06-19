@@ -80,6 +80,10 @@ class API():
 		return
 		
 	def genericCB(self, a):
+		""" generic functionIce callback - 
+		"""
+		print a
+		return
 		
 	def setObservingMode(self, mode, instrument):
 		""" defines observing mode for observation

@@ -1,6 +1,7 @@
 import sys, traceback, Ice
-sys.path.insert(0,'../clients/SRT_client/')
 
+sys.path.append('../IceClients/')
+import SRTClient
 from time import sleep
 import ARIAPI
 import obsmodeV04 as ARIobsMode
