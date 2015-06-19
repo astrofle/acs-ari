@@ -73,7 +73,7 @@ def find_stars(stars, site, disp):
 			print star, az, el
 		if el > 15.0:
 			_sources = {}
-			_sources = ephem.star(star)
+			_sources[star] = ephem.star(star)
 			_sources['azel'] = [az,el]
 			sources[star] = _sources
 			_sources = {}
