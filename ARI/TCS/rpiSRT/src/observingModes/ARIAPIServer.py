@@ -159,15 +159,28 @@ class ARIAPII(ARIAPI.API):
 		return msg
 	
 	def findRaDecSources(self, current = None):
-		sources = self.obsMode.find_radec(True)
+		sources = []
+		self.obsMode.find_radec(True)
+		for i in self.radecSources:
+			azel = self.radecSources[i]['azel']
+			azels = ARIAPI.astro(i, azel[0], azel[1])
+			sources.append(azels)
 		return sources
 
 	def findPlanets(self, current = None):
-		sources = sites.find_planets(True)
+		self.obsMode.find_planets(True)
+		for i in self.planets:
+			azel = self.planets[i]['azel']
+			azels = ARIAPI.astro(i, azel[0], azel[1])
+			sources.append(azels)
 		return sources
 
 	def findStars(self, current = None):
-		sources = sites.find_stars(True)
+		self.obsMode.find_stars(True)
+		for i in self.stars:
+			azel = self.stars[i]['azel']
+			azels = ARIAPI.astro(i, azel[0], azel[1])
+			sources.append(azels)
 		return sources
 
 	def clientShutdown(self, current = None):
