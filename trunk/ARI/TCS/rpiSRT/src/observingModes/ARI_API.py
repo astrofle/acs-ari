@@ -2,6 +2,7 @@
 import sys, traceback, Ice
 import time
 import ARIAPI
+import SRTClient
 
 class API():
 	def __init__(self):
