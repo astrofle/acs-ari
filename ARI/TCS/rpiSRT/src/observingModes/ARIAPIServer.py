@@ -161,8 +161,9 @@ class ARIAPII(ARIAPI.API):
 	
 	def findRaDecSources(self, current = None):
 		sources = []
-		self.obsMode.find_radec(True)
+		self.obsMode.find_radec(False)
 		for i in self.radecSources:
+			print i
 			azel = self.radecSources[i]['azel']
 			azels = ARIAPI.astro(i, azel[0], azel[1])
 			sources.append(azels)
