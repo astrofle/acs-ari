@@ -162,7 +162,7 @@ class ARIAPII(ARIAPI.API):
 	def findRaDecSources(self, current = None):
 		sources = []
 		self.obsMode.find_radec(False)
-		time.sleep(1)
+		sleep(1)
 		for i in self.radecSources:
 			print i
 			azel = self.radecSources[i]['azel']
