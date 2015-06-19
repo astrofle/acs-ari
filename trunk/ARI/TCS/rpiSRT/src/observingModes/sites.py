@@ -76,7 +76,7 @@ def find_stars(stars, site, disp):
 			_sources = ephem.star(star)
 			_sources['azel'] = [az,el]
 			sources[star] = _sources
-			_  sources = {}
+			_sources = {}
 			print star, az, el
 	return sources
 	
