@@ -163,7 +163,7 @@ class API():
 		self.arraySetup = True
 		return
 		
-	def setRxArray(freq, rxmode):
+	def setRxArray(self,freq, rxmode):
 		""" Sets array SRT receiver (does not includes Signal hound yet) - 
 		freq: type: (float), the SRT receiver frequency in MHz
 		      values: Range to be determined but typical use around 1420.4 MHz

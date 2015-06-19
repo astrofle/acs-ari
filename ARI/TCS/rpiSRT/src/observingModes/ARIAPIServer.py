@@ -118,7 +118,7 @@ class ARIAPII(ARIAPI.API):
 	
 	def setupArray(self, current = None):
 		self.obsMode.setup()
-		msg = "Array Initialized"
+		msg = "Initializing array"
 		print msg
 		return msg
 	
