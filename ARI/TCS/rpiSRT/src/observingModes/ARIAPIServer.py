@@ -165,7 +165,7 @@ class ARIAPII(ARIAPI.API):
 		sleep(1)
 		print len(self.obsMode.radecSources)
 		print str(self.obsMode.radecSources)
-		for i in self.radecSources:
+		for i in self.obsMode.radecSources:
 			print i
 			azel = self.radecSources[i]['azel']
 			azels = ARIAPI.astro(i, azel[0], azel[1])
