@@ -164,7 +164,7 @@ class ARIAPII(ARIAPI.API):
 		self.obsMode.npointScanMap(points, delta, specB)
 		msg = "Executing n-points Scan Map"
 		print msg
-		return msg
+		return self.map
 	
 	def findRaDecSources(self, current = None):
 		sources = []
