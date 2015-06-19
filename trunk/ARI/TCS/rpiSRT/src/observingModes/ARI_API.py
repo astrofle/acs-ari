@@ -319,7 +319,7 @@ class API():
 		else:
 			self.scanMapinProgress = True
 		try:
-			self.controller.begin_npointScanMap(points, delta, str(spectrum), self.scanMapCB, self.scanMapCB)
+			self.controller.begin_npointScanMap(points, delta, spectrum, self.scanMapCB, self.scanMapCB)
 			print "Performing Scan Map"
 		except:
 			traceback.print_exc()
