@@ -159,7 +159,7 @@ class ARIAPII(ARIAPI.API):
 		return msg
 	
 	def findRaDecSources(self, current = None):
-		sources = sites.find_radec(True)
+		sources = self.obsMode.find_radec(True)
 		return sources
 
 	def findPlanets(self, current = None):
