@@ -225,7 +225,7 @@ class ARIAPII(ARIAPI.API):
 		return msg
 
 	def getObsModeState(self, current = None):
-		self.states()
+		self.obsMode.states()
 		msg = "Getting observing mode state"
 		return msg
 
