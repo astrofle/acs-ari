@@ -50,32 +50,54 @@ for star in ephem.stars.db.split("\n"):
 	star_list.append(star.split(",")[0])	
 star_list.remove('')
 
-def find_planets(planets, site):
+def find_planets(planets, site, disp):
 	sources = {}
 	for planet in planets:
 		[az, el] = source_azel(planets[planet], site)
-		print planet, az, el
+		if disp:
+			print planet, az, el
 		if el > 15.0:
-			sources[planet] = planets[planet]
+			_planets = {}
+			_planets[planet] = planets[planet]
+			_planets['azel'] = [az, el]
+			sources[planet] = _planets
+			_planets = {}
+		if disp:
+			print planet, az, el
 	return sources
 
-def find_stars(stars, site):
+def find_stars(stars, site, disp):
 	sources = {}
 	for star in stars:
 		[az, el] = source_azel(ephem.star(star), site)
-		print star, az, el
+		if disp:
+			print star, az, el
 		if el > 15.0:
-			sources[star] = ephem.star(star)
+			_sources = {}
+			_sources[star] = ephem.star(star)
+			_sources['azel'] = [az,el]
+			sources[star] = _sources
+			_sources = {}
+		if disp:
+			print star, az, el
 	return sources
 	
-def find_SRTsources(SRTsources, site):
+def find_SRTsources(SRTsources, site, disp):
 	sources = {}
 	for source in SRTsources:
 		[az, el] = radec2azel(SRTsources[source]['ra'], SRTsources[source]['dec'], site)
-		print source, az, el
+		if disp:
+			print source, az, el
 		if el> 15.0:
-			sources[source] = SRTsources[source]
+			_SRTsources = {}
+			_SRTsources = SRTsources[source]
+			_SRTsources['azel'] = [az, el]
+			sources[source] = _SRTsources
+			_SRTsources = {}
+			if disp:
+				print source, az, el
 	return sources
+	
 
 def source_azel(object, site):
 	site.date = ephem.now()
@@ -111,8 +133,8 @@ site.elevation = elevation
 
 
 # Find observable planets
-planets = find_planets(planet_list, site)
+planets = find_planets(planet_list, site, False)
 # Find observable stars
-stars = find_stars(star_list, site)
+stars = find_stars(star_list, site, False)
 # Find observable SRT sources
-SRTsources = find_SRTsources(SRT_sources_list, site)
+SRTsources = find_SRTsources(SRT_sources_list, site, False)
