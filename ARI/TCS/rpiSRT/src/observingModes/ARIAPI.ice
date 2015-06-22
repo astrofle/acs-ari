@@ -43,7 +43,7 @@ module ARIAPI{
 
     sequence<mapel> map;
 
-	interface APIObsMode{
+	interface API{
 		void testConn(string s, out string r);
 		void setObservingMode(string s1, string s2, out string r);
 		void createObservingMode(out string r);
