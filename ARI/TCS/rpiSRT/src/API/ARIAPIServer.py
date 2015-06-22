@@ -1,9 +1,11 @@
 import sys, traceback, Ice
-#sys.path.insert(0,'../clients/SRT_client/')
 
+sys.path.append('../IceClients/')
+import SRTClient
+import SHControl
 from time import sleep
 import ARIAPI
-import obsmodeV03_APItest as ARIobsMode
+import obsmodeV04 as ARIobsMode
 import threading
 import os
 import socket
@@ -11,63 +13,91 @@ import sites
 
 class ARIAPII(ARIAPI.API):
 	def __init__(self):
-		self.ARI_nodes = {'SRT1':'localhost -p 10011',
-			'SRT2':'localhost -p 10012',
-			'SH':'localhost -p 10013',
-			'ROACH':'localhost -p 10014'
-			}
+		self.ARI_nodes = {
+		'SRT1':"SRTClient:default -h localhost -p 10011",
+		'SRT2':"SRTClient:default -h localhost -p 10012",
+		'SH':"SHController:default -h localhost -p 10013",
+		'ROACH':"SRTClient:default -h localhost -p 10014"
+		}
+		self.ics = {}
+		self.observingMode = ""
 		self.antenna = ''
 		self.site = sites.site
 		self.planets = sites.planets
 		self.stars = sites.stars
 		self.SRTsources = sites.SRTsources
+		self.radecSources = []
 		#print str(len(self.planets))+ " observable planets: " + str(self.planets.keys())
 		#print str(len(self.stars))+ " observable stars: " + str(self.stars.keys())
 		#print str(len(self.SRTsources))+ " observable SRT sources: " + str(self.SRTsources.keys())	
-		self.initialized = False
+
 		self.radio_config = False
 		self.freq = 1420.4
-		self.rec_mode = 1
+		self.rec_mode = '1'
 		self.new_freq = 1420.4
-		self.new_rec_mode = 1
-		self.tracking = False
-		self.OnSource = False
+		self.new_rec_mode = '1'
 		self.Target = ""
-        def sayHello(self, current=None):
-                print ">>>>>>>>>>>>>>>>>>>>>>>.. say Hello"
+		self.spec = SRTClient.specs()
+		self.spectrum ={}
+		self.SHspectrum = SHControl.SHspectrum()
+		self.observe = False
+		self.getSHsp = False
+		#######
+		self.readSpectrum = False
+		self.rcvSpec = [0,0]
 		
-	def setup(self, current = None):
-		self.setIP(self.antennaIP)
-		self.connect()
-		self.SetSerialPort(self.serialport)
-		print "sending antenna to Stow"
-		self.Init(self.parameters)
-		while(not self.initialized):
-			sleep(1)
-		return "Antenna initialized and in stow position"
-	
-	def trackSource(self, s, current = None):
-		self.tracking(s)
-		while(not self.OnSource):
-			sleep(1)
-		return "Tracking source"
-	
-	def stopTrack(self, current = None):
-		self.Stop()
-		return "Track Stopped"
+		self.OnSrc =[0,0]
+		self.lastSpd =[0,0]
+		self.status =[]
+		self.waitSpectrum = False
+		self.stowInProgress = False
+		#######
+		self.setupInProgress = False
+		self.initialized = {
+		'SRT1':False,
+		'SRT2':False,
+		'SH':False,
+		'ROACH':False}
+		self.atStow = {
+		'SRT1':False,
+		'SRT2':False}
+		self.RxSwmode = {
+		'SRT1':'',
+		'SRT2':''}
+		self.RxSetup = {
+		'SRT1':[],
+		'SRT2':[]
+		}
+		self.ArrayOnTarget = {
+		'SRT1':False,
+		'SRT2':False
+		}
+		self.NewSpectrum ={
+		'SRT1':False,
+		'SRT2':False
+		}
+		self.ArrayMovingToTarget = False
+		self.ArrayStopCmd = False
+		self.Clientstatus ={}
+		self.getClStatus = True
+		self.offsets = [0,0]
+		self.map =None
+		self.scanMapInProgress = False
+		self.readSpectrum
+		####
 
 	def testConn(self, s, current = None):
 		print s
 		return s
 
 
-	def ChooseObservingMode(self, s1, s2, current = None):
+	def setObservingMode(self, s1, s2, current = None):
 		if (s1 == "SD"):
 			if (s2 == "Double"):
 				self.obsMode = ARIobsMode.SRTDoubleSingleDish()
 				msg = "Double Single Dish Mode chosen"
 			else:
-				self.obsMode = ARIobsMode.SRTSingleDish(s2)
+				self.obsMode = ARIobsModee.SRTSingleDish(s2)
 				msg = "Single Dish Mode chosen with " + s2
 		elif (s1 == "ARI"):
 			if (s2 == "SH"):
@@ -81,40 +111,127 @@ class ARIAPII(ARIAPI.API):
 		print msg
 		return msg
 		
-	def Connect(self, current = None):
+	def createObservingMode(self, current = None):
 		self.obsMode.createObsMode()
 		msg = "Observing Mode Created"
 		print msg
 		return msg
 	
-	def Initialize(self, current = None):
+	def setupArray(self, current = None):
 		self.obsMode.setup()
-		msg = "Telescope Initialized"
+		msg = "Initializing array"
 		print msg
 		return msg
 	
-	def SetTarget(self, s1, s2, s3, current = None):
-		self.obsMode.radioSetup(s2, s3)
-		self.Target = s1
+	def observeWithArray(self, mode, target, current = None):
+		if mode == 'GoTo':
+			target = target.strip('[').strip(']').split(',')
+			target[0] = float(target[0])
+			target[1] = float(target[1])
+		self.obsMode.obswArray(mode, target)
+		msg = "Commanding array"
+	
+	def setRxArray(self, freq, RxMode, current = None):
+		self.obsMode.radioSetup(freq, RxMode)
 		msg = "Receiver and Target Set"
 		print msg
 		return msg
-	
-	def StartTracking(self, current = None):
-		self.obsMode.trackSource(self.Target)
-		msg = "Tracking Source"
+		
+	def setRxSwMode(self, node, RxSwMode, current = None):
+		self.obsmode.SwRxMode(self, node, mode)
+		msg = "Receiver Switch Mode Set"
 		print msg
 		return msg
 	
-	def StopTracking(self, current = None):
-		self.obsMode.stopTrack()
-		msg = "Track source stopped"
+	def enableSpectrumArray(self, current = None):
+		self.obsMode.enableSpectrum()
+		msg = "Getting Spectrum from SRT Rx"
 		print msg
 		return msg
+
+	def disableSpectrumArray(self, current = None):
+		self.obsMode.disableSpectrum()
+		msg = "Stopping spectrum from SRT Rx"
+		print msg
+		return msg
+		
+	def npointScanMap(self, points, delta, spec, current = None):
+		if spec == 'True':
+			specB = True
+		else:
+			specB = False
+		print spec
+		self.obsMode.npointScanMap(points, delta, specB)
+		msg = "Executing n-points Scan Map"
+		print msg
+		return self.map
 	
-	def FindSources(self, current = None):
-		sources = sites.find_SRTSources(sites.SRTSources_list, sites.site)
+	def findRaDecSources(self, current = None):
+		sources = []
+		self.obsMode.find_radec(False)
+		for i in self.obsMode.radecSources:
+			azel = self.obsMode.radecSources[i]['azel']
+			azels = ARIAPI.astro(i, azel[0], azel[1])
+			sources.append(azels)
+		print sources
 		return sources
+
+	def findPlanets(self, current = None):
+		sources = []
+		self.obsMode.find_planets(False)
+		for i in self.obsMode.planets:
+			azel = self.obsMode.planets[i]['azel']
+			azels = ARIAPI.astro(i, azel[0], azel[1])
+			sources.append(azels)
+		return sources
+
+	def findStars(self, current = None):
+		sources = []
+		self.obsMode.find_stars(False)
+		for i in self.obsMode.stars:
+			azel = self.obsMode.stars[i]['azel']
+			azels = ARIAPI.astro(i, azel[0], azel[1])
+			sources.append(azels)
+		return sources
+
+	def clientShutdown(self, current = None):
+		self.obsMode.ClientShutdown()
+		msg = "Shutdown Client"
+		return msg
+
+	def obsModeShutdown(self, current = None):
+		self.obsMode.shutdown()
+		msg = "Shutdown Observing Mode Server"
+		return msg
+
+	def stowArray(self, current = None):
+		self.obsMode.Stow()
+		msg = "Stow Array"
+		return msg
+
+	def stopArray(self, current = None):
+		self.obsMode.stopArray()
+		msg = "Stopping Array"
+		return msg
+
+	def stopGoingToTarget(self, current = None):
+		self.obsMode.stopGoingtoTarget()
+		msg = "Stopping Array to Target"
+		return msg
+
+	def setOffsetPointing(self, azoff, eloff, current = None):
+		self.obsMode.SetOffsetPointing(azoff, eloff)
+		msg = "Setting offset"
+		return msg
+
+	def getObsModeState(self, current = None):
+		self.obsMode.states()
+		msg = "Getting observing mode state"
+		return msg
+
+	def getArrayState(self, current = None):
+		msg = "Getting array state"
+		return msg
 
 
 try:
@@ -128,19 +245,14 @@ except:
 
 status = 0
 ic = None
-#IP = 'default -h 192.168.3.100 -p 10015'
+#IP = 'default -h 192.168.0.6 -p 10015'
 IP = 'default -h '+ IP
-print IP
 
 try:
 	#ic = Ice.initialize(sys.argv)
 	ic = Ice.initialize([''])
 	#adapter = ic.createObjectAdapterWithEndpoints("SRTController", "default -h 192.168.0.6 -p 10000")
 	adapter = ic.createObjectAdapterWithEndpoints("ARIAPI", IP)
-
-    #hostname = "192.168.1.111"
-    #endpoint = "tcp -h %s -p 10000:udp -h %s -p 10000:ws -h %s -p 10002" % (hostname, hostname, hostname)
-	#adapter = ic.createObjectAdapterWithEndpoints("API", endpoint)
 	object = ARIAPII()
 	adapter.add(object, ic.stringToIdentity("ARIAPI"))
 	adapter.activate()
