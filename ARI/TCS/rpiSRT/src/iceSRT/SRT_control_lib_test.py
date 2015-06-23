@@ -456,7 +456,7 @@ class Antenna:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" azcount: "+str(self.azcount)+ " elcount: " + str(self.elcount)
 			self.portInUse[0] = False
 		if self.aznow < p.azlim1:
-			self.aznow = p.azelim1
+			self.aznow = p.azlim1
 			self.azcount = 0.0
 		if self.elnow < p.ellim1:
 			self.elnow = p.ellim1
