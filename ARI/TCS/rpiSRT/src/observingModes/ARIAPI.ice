@@ -1,3 +1,5 @@
+#include <IceSRTClient.ice>
+
 module ARIAPI{
 
 	sequence<float> spectrum;
