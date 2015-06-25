@@ -4,24 +4,6 @@ module ARIAPI{
 
 	sequence<float> spectrum;
 
-	struct astro
-	    {
-	    string source;
-	    float az;
-	    float el;
-	    };
-	
-	sequence<astro> sources;
-	
-		sequence<float> delta;
-	
-	struct mapel
-	    {
-	    delta azeloff;
-	    specs maspecs;
-	    };
-
-    sequence<mapel> map;
 
 	interface API{
 		void testConn(string s, out string r);
