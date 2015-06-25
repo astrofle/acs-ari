@@ -1,9 +1,49 @@
-#include <IceSRTClient.ice>
-
 module ARIAPI{
 
 	sequence<float> spectrum;
+	
+	struct stamp
+	    {
+		string name;
+		string timdate;
+		float aznow;
+		float elnow;
+		float temperature;
+		float freq0;
+		int av;
+		int avc;
+		int nfreq;
+		float freqsep;
+		};
+		
+	struct specs{
+		stamp sampleStamp;
+		spectrum spec;
+		spectrum avspec;
+		spectrum avspecc;
+		spectrum specd;
+		};
 
+	struct astro
+	    {
+	    string source;
+	    float az;
+	    float el;
+	    };
+	
+	sequence<astro> sources;
+	
+		sequence<float> delta;
+	
+	struct mapel
+	    {
+	    delta azeloff;
+	    specs maspecs;
+	    };
+
+    sequence<mapel> map;
+    
+    sequence<specs> lsp;
 
 	interface API{
 		void testConn(string s, out string r);
@@ -27,6 +67,7 @@ module ARIAPI{
         void setOffsetPointing(float f1, float f2, out string r);
         void getObsModeState(out string r);
         void getArrayState(out string r);
+        void getLastSpectrum(out lsp sp);
 	};
 };	
 
