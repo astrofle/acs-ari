@@ -232,8 +232,18 @@ class ARIAPII(ARIAPI.API):
 	def getArrayState(self, current = None):
 		msg = "Getting array state"
 		return msg
-
-
+		
+	def getLastSpectrum(self, current = None):
+		lastSpectrum = []
+		for node in self.obsMode.nodes:
+			_sp = self.obsMode.spectrum[node]
+			_stamp =ARIAPI.stamp(_sp.sampleStamp.name,_sp.sampleStamp.timdate,\
+			_sp.sampleStamp.aznow,_sp.sampleStamp.elnow,_sp.sampleStamp.temperature,\
+			_sp.sampleStamp.freq0,_sp.sampleStamp.av,_sp.sampleStamp.avc,\
+			_sp.sampleStamp.nfreq,_sp.sampleStamp.freqsep)
+			_specs = ARIAPI.specs(_specs, _sp.spec,_sp.avspec,_sp.avspecc,_sp.specd)
+			lastSpectrum.append(_specs)
+		return lastSpectrum
 try:
 	if len(sys.argv)<2:
 		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"

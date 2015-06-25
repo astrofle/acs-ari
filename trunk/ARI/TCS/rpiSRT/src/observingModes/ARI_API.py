@@ -21,6 +21,7 @@ class API():
 		self.radecSources = []
 		self.planets = []
 		self.stars = []
+		self.spectrum = []
 	
 	def connect(self, IP):
 		""" Connects to Observing Mode server
@@ -297,6 +298,27 @@ class API():
 		self.spectrumEnabled = False
 		return
 	
+	
+	def getLastSpectrumArray(self):
+		""" get last spectrum reading from array receivers
+		"""
+		statusIC = 0
+		ic = None
+		try:
+			self.controller.begin_getLastSpectrum(self.lastSpecCB, self.failureCB);
+			print "disabling spectrum reading for array"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def lastSpecCB(self, a):
+		""" getLastSpectrumArray Ice callback - 
+		obtains the spectrum data
+		"""
+		print "last spectrum obtained"
+		self.spectrum = a
+		return
+		
 	def npointScanMap(self, points, delta, spectrum):
 		""" Stars n-point scan map around a target
 		points: type (int): the number of points to scan in a single dimension, 
