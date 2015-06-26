@@ -24,6 +24,646 @@ import Ice, IcePy
 _M_ARIAPI = Ice.openModule('ARIAPI')
 __name__ = 'ARIAPI'
 
+if '_t_spectrum' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_spectrum = IcePy.defineSequence('::ARIAPI::spectrum', (), IcePy._t_float)
+
+if 'stamp' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI.stamp = Ice.createTempClass()
+    class stamp(object):
+        def __init__(self, name='', timdate='', aznow=0.0, elnow=0.0, temperature=0.0, freq0=0.0, av=0, avc=0, nfreq=0, freqsep=0.0):
+            self.name = name
+            self.timdate = timdate
+            self.aznow = aznow
+            self.elnow = elnow
+            self.temperature = temperature
+            self.freq0 = freq0
+            self.av = av
+            self.avc = avc
+            self.nfreq = nfreq
+            self.freqsep = freqsep
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_ARIAPI.stamp):
+                return NotImplemented
+            else:
+                if self.name != other.name:
+                    return False
+                if self.timdate != other.timdate:
+                    return False
+                if self.aznow != other.aznow:
+                    return False
+                if self.elnow != other.elnow:
+                    return False
+                if self.temperature != other.temperature:
+                    return False
+                if self.freq0 != other.freq0:
+                    return False
+                if self.av != other.av:
+                    return False
+                if self.avc != other.avc:
+                    return False
+                if self.nfreq != other.nfreq:
+                    return False
+                if self.freqsep != other.freqsep:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_ARIAPI._t_stamp)
+
+        __repr__ = __str__
+
+    _M_ARIAPI._t_stamp = IcePy.defineStruct('::ARIAPI::stamp', stamp, (), (
+        ('name', (), IcePy._t_string),
+        ('timdate', (), IcePy._t_string),
+        ('aznow', (), IcePy._t_float),
+        ('elnow', (), IcePy._t_float),
+        ('temperature', (), IcePy._t_float),
+        ('freq0', (), IcePy._t_float),
+        ('av', (), IcePy._t_int),
+        ('avc', (), IcePy._t_int),
+        ('nfreq', (), IcePy._t_int),
+        ('freqsep', (), IcePy._t_float)
+    ))
+
+    _M_ARIAPI.stamp = stamp
+    del stamp
+
+if 'specs' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI.specs = Ice.createTempClass()
+    class specs(object):
+        def __init__(self, sampleStamp=Ice._struct_marker, spec=None, avspec=None, avspecc=None, specd=None):
+            if sampleStamp is Ice._struct_marker:
+                self.sampleStamp = _M_ARIAPI.stamp()
+            else:
+                self.sampleStamp = sampleStamp
+            self.spec = spec
+            self.avspec = avspec
+            self.avspecc = avspecc
+            self.specd = specd
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_ARIAPI.specs):
+                return NotImplemented
+            else:
+                if self.sampleStamp != other.sampleStamp:
+                    return False
+                if self.spec != other.spec:
+                    return False
+                if self.avspec != other.avspec:
+                    return False
+                if self.avspecc != other.avspecc:
+                    return False
+                if self.specd != other.specd:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_ARIAPI._t_specs)
+
+        __repr__ = __str__
+
+    _M_ARIAPI._t_specs = IcePy.defineStruct('::ARIAPI::specs', specs, (), (
+        ('sampleStamp', (), _M_ARIAPI._t_stamp),
+        ('spec', (), _M_ARIAPI._t_spectrum),
+        ('avspec', (), _M_ARIAPI._t_spectrum),
+        ('avspecc', (), _M_ARIAPI._t_spectrum),
+        ('specd', (), _M_ARIAPI._t_spectrum)
+    ))
+
+    _M_ARIAPI.specs = specs
+    del specs
+
+if 'astro' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI.astro = Ice.createTempClass()
+    class astro(object):
+        def __init__(self, source='', az=0.0, el=0.0):
+            self.source = source
+            self.az = az
+            self.el = el
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_ARIAPI.astro):
+                return NotImplemented
+            else:
+                if self.source != other.source:
+                    return False
+                if self.az != other.az:
+                    return False
+                if self.el != other.el:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_ARIAPI._t_astro)
+
+        __repr__ = __str__
+
+    _M_ARIAPI._t_astro = IcePy.defineStruct('::ARIAPI::astro', astro, (), (
+        ('source', (), IcePy._t_string),
+        ('az', (), IcePy._t_float),
+        ('el', (), IcePy._t_float)
+    ))
+
+    _M_ARIAPI.astro = astro
+    del astro
+
+if '_t_sources' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_sources = IcePy.defineSequence('::ARIAPI::sources', (), _M_ARIAPI._t_astro)
+
+if '_t_delta' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_delta = IcePy.defineSequence('::ARIAPI::delta', (), IcePy._t_float)
+
+if 'mapel' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI.mapel = Ice.createTempClass()
+    class mapel(object):
+        def __init__(self, azeloff=None, maspecs=Ice._struct_marker):
+            self.azeloff = azeloff
+            if maspecs is Ice._struct_marker:
+                self.maspecs = _M_ARIAPI.specs()
+            else:
+                self.maspecs = maspecs
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_ARIAPI.mapel):
+                return NotImplemented
+            else:
+                if self.azeloff != other.azeloff:
+                    return False
+                if self.maspecs != other.maspecs:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_ARIAPI._t_mapel)
+
+        __repr__ = __str__
+
+    _M_ARIAPI._t_mapel = IcePy.defineStruct('::ARIAPI::mapel', mapel, (), (
+        ('azeloff', (), _M_ARIAPI._t_delta),
+        ('maspecs', (), _M_ARIAPI._t_specs)
+    ))
+
+    _M_ARIAPI.mapel = mapel
+    del mapel
+
+if '_t_map' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_map = IcePy.defineSequence('::ARIAPI::map', (), _M_ARIAPI._t_mapel)
+
+if '_t_lsp' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_lsp = IcePy.defineDictionary('::ARIAPI::lsp', (), IcePy._t_string, _M_ARIAPI._t_specs)
+
+if '_t_txtList' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_txtList = IcePy.defineSequence('::ARIAPI::txtList', (), IcePy._t_string)
+
+if '_t_txtDict' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_txtDict = IcePy.defineDictionary('::ARIAPI::txtDict', (), IcePy._t_string, IcePy._t_string)
+
+if '_t_boolDict' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_boolDict = IcePy.defineDictionary('::ARIAPI::boolDict', (), IcePy._t_string, IcePy._t_bool)
+
+if 'RxSet' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI.RxSet = Ice.createTempClass()
+    class RxSet(object):
+        def __init__(self, freq=0.0, mode=''):
+            self.freq = freq
+            self.mode = mode
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_ARIAPI.RxSet):
+                return NotImplemented
+            else:
+                if self.freq != other.freq:
+                    return False
+                if self.mode != other.mode:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_ARIAPI._t_RxSet)
+
+        __repr__ = __str__
+
+    _M_ARIAPI._t_RxSet = IcePy.defineStruct('::ARIAPI::RxSet', RxSet, (), (
+        ('freq', (), IcePy._t_float),
+        ('mode', (), IcePy._t_string)
+    ))
+
+    _M_ARIAPI.RxSet = RxSet
+    del RxSet
+
+if '_t_RxSetList' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_RxSetList = IcePy.defineSequence('::ARIAPI::RxSetList', (), _M_ARIAPI._t_RxSet)
+
+if '_t_RXSetup' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI._t_RXSetup = IcePy.defineDictionary('::ARIAPI::RXSetup', (), IcePy._t_string, _M_ARIAPI._t_RxSetList)
+
+if 'OMstate' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI.OMstate = Ice.createTempClass()
+    class OMstate(object):
+        def __init__(self, observingMode='', nodes=None, ARIcontrollers=None, setupInProgress=False, initialized=None, atStow=None, stowInProgress=False, mode='', RxSwitchMode=None, SRTRxSetup=None, ArrayFrequency=0.0, ArrayRxMode='', getClientStatus=False, ArrayMovingToTarget=False, ArrayOnTarget=False, ArrayStopCommand=False, ArrayOffsets=None, ScanMapInProgress=False, ReadSpectrum=False, NewSpectrumToRead=None, WaitingSpectrum=False):
+            self.observingMode = observingMode
+            self.nodes = nodes
+            self.ARIcontrollers = ARIcontrollers
+            self.setupInProgress = setupInProgress
+            self.initialized = initialized
+            self.atStow = atStow
+            self.stowInProgress = stowInProgress
+            self.mode = mode
+            self.RxSwitchMode = RxSwitchMode
+            self.SRTRxSetup = SRTRxSetup
+            self.ArrayFrequency = ArrayFrequency
+            self.ArrayRxMode = ArrayRxMode
+            self.getClientStatus = getClientStatus
+            self.ArrayMovingToTarget = ArrayMovingToTarget
+            self.ArrayOnTarget = ArrayOnTarget
+            self.ArrayStopCommand = ArrayStopCommand
+            self.ArrayOffsets = ArrayOffsets
+            self.ScanMapInProgress = ScanMapInProgress
+            self.ReadSpectrum = ReadSpectrum
+            self.NewSpectrumToRead = NewSpectrumToRead
+            self.WaitingSpectrum = WaitingSpectrum
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_ARIAPI.OMstate):
+                return NotImplemented
+            else:
+                if self.observingMode != other.observingMode:
+                    return False
+                if self.nodes != other.nodes:
+                    return False
+                if self.ARIcontrollers != other.ARIcontrollers:
+                    return False
+                if self.setupInProgress != other.setupInProgress:
+                    return False
+                if self.initialized != other.initialized:
+                    return False
+                if self.atStow != other.atStow:
+                    return False
+                if self.stowInProgress != other.stowInProgress:
+                    return False
+                if self.mode != other.mode:
+                    return False
+                if self.RxSwitchMode != other.RxSwitchMode:
+                    return False
+                if self.SRTRxSetup != other.SRTRxSetup:
+                    return False
+                if self.ArrayFrequency != other.ArrayFrequency:
+                    return False
+                if self.ArrayRxMode != other.ArrayRxMode:
+                    return False
+                if self.getClientStatus != other.getClientStatus:
+                    return False
+                if self.ArrayMovingToTarget != other.ArrayMovingToTarget:
+                    return False
+                if self.ArrayOnTarget != other.ArrayOnTarget:
+                    return False
+                if self.ArrayStopCommand != other.ArrayStopCommand:
+                    return False
+                if self.ArrayOffsets != other.ArrayOffsets:
+                    return False
+                if self.ScanMapInProgress != other.ScanMapInProgress:
+                    return False
+                if self.ReadSpectrum != other.ReadSpectrum:
+                    return False
+                if self.NewSpectrumToRead != other.NewSpectrumToRead:
+                    return False
+                if self.WaitingSpectrum != other.WaitingSpectrum:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_ARIAPI._t_OMstate)
+
+        __repr__ = __str__
+
+    _M_ARIAPI._t_OMstate = IcePy.defineStruct('::ARIAPI::OMstate', OMstate, (), (
+        ('observingMode', (), IcePy._t_string),
+        ('nodes', (), _M_ARIAPI._t_txtList),
+        ('ARIcontrollers', (), _M_ARIAPI._t_txtDict),
+        ('setupInProgress', (), IcePy._t_bool),
+        ('initialized', (), _M_ARIAPI._t_boolDict),
+        ('atStow', (), _M_ARIAPI._t_boolDict),
+        ('stowInProgress', (), IcePy._t_bool),
+        ('mode', (), IcePy._t_string),
+        ('RxSwitchMode', (), _M_ARIAPI._t_txtDict),
+        ('SRTRxSetup', (), _M_ARIAPI._t_RXSetup),
+        ('ArrayFrequency', (), IcePy._t_float),
+        ('ArrayRxMode', (), IcePy._t_string),
+        ('getClientStatus', (), IcePy._t_bool),
+        ('ArrayMovingToTarget', (), IcePy._t_bool),
+        ('ArrayOnTarget', (), IcePy._t_bool),
+        ('ArrayStopCommand', (), IcePy._t_bool),
+        ('ArrayOffsets', (), _M_ARIAPI._t_delta),
+        ('ScanMapInProgress', (), IcePy._t_bool),
+        ('ReadSpectrum', (), IcePy._t_bool),
+        ('NewSpectrumToRead', (), _M_ARIAPI._t_boolDict),
+        ('WaitingSpectrum', (), IcePy._t_bool)
+    ))
+
+    _M_ARIAPI.OMstate = OMstate
+    del OMstate
+
+if 'piu' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI.piu = Ice.createTempClass()
+    class piu(object):
+        def __init__(self, InUse=False, Routine=''):
+            self.InUse = InUse
+            self.Routine = Routine
+
+        def __hash__(self):
+            _h = 0
+            _h = 5 * _h + Ice.getHash(self.InUse)
+            _h = 5 * _h + Ice.getHash(self.Routine)
+            return _h % 0x7fffffff
+
+        def __compare(self, other):
+            if other is None:
+                return 1
+            elif not isinstance(other, _M_ARIAPI.piu):
+                return NotImplemented
+            else:
+                if self.InUse is None or other.InUse is None:
+                    if self.InUse != other.InUse:
+                        return (-1 if self.InUse is None else 1)
+                else:
+                    if self.InUse < other.InUse:
+                        return -1
+                    elif self.InUse > other.InUse:
+                        return 1
+                if self.Routine is None or other.Routine is None:
+                    if self.Routine != other.Routine:
+                        return (-1 if self.Routine is None else 1)
+                else:
+                    if self.Routine < other.Routine:
+                        return -1
+                    elif self.Routine > other.Routine:
+                        return 1
+                return 0
+
+        def __lt__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r < 0
+
+        def __le__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r <= 0
+
+        def __gt__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r > 0
+
+        def __ge__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r >= 0
+
+        def __eq__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r == 0
+
+        def __ne__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r != 0
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_ARIAPI._t_piu)
+
+        __repr__ = __str__
+
+    _M_ARIAPI._t_piu = IcePy.defineStruct('::ARIAPI::piu', piu, (), (
+        ('InUse', (), IcePy._t_bool),
+        ('Routine', (), IcePy._t_string)
+    ))
+
+    _M_ARIAPI.piu = piu
+    del piu
+
+if 'ClState' not in _M_ARIAPI.__dict__:
+    _M_ARIAPI.ClState = Ice.createTempClass()
+    class ClState(object):
+        def __init__(self, name='', time='', SRTState='', SRTonTarget=False, SRTMode='', SRTTarget='', SRTTrack=False, enObs=False, newAzEl=False, enSRT=False, enSpec=False, slewing=False, cmdstop=False, IsMoving=False, getStatus=False, portInUse=Ice._struct_marker, spectra=False, RxSwitchMode='', toSource=0, SRTinitialized=False, initialized=False, Target='', obsTarget='', az=0.0, el=0.0, aznow=0.0, elnow=0.0, azoffset=0.0, eloffset=0.0, axis=0, tostow=False, elatstow=False, azatstow=False, slew=False, serialport='', lastSRTCom='', lastSerialMsg=''):
+            self.name = name
+            self.time = time
+            self.SRTState = SRTState
+            self.SRTonTarget = SRTonTarget
+            self.SRTMode = SRTMode
+            self.SRTTarget = SRTTarget
+            self.SRTTrack = SRTTrack
+            self.enObs = enObs
+            self.newAzEl = newAzEl
+            self.enSRT = enSRT
+            self.enSpec = enSpec
+            self.slewing = slewing
+            self.cmdstop = cmdstop
+            self.IsMoving = IsMoving
+            self.getStatus = getStatus
+            if portInUse is Ice._struct_marker:
+                self.portInUse = _M_ARIAPI.piu()
+            else:
+                self.portInUse = portInUse
+            self.spectra = spectra
+            self.RxSwitchMode = RxSwitchMode
+            self.toSource = toSource
+            self.SRTinitialized = SRTinitialized
+            self.initialized = initialized
+            self.Target = Target
+            self.obsTarget = obsTarget
+            self.az = az
+            self.el = el
+            self.aznow = aznow
+            self.elnow = elnow
+            self.azoffset = azoffset
+            self.eloffset = eloffset
+            self.axis = axis
+            self.tostow = tostow
+            self.elatstow = elatstow
+            self.azatstow = azatstow
+            self.slew = slew
+            self.serialport = serialport
+            self.lastSRTCom = lastSRTCom
+            self.lastSerialMsg = lastSerialMsg
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_ARIAPI.ClState):
+                return NotImplemented
+            else:
+                if self.name != other.name:
+                    return False
+                if self.time != other.time:
+                    return False
+                if self.SRTState != other.SRTState:
+                    return False
+                if self.SRTonTarget != other.SRTonTarget:
+                    return False
+                if self.SRTMode != other.SRTMode:
+                    return False
+                if self.SRTTarget != other.SRTTarget:
+                    return False
+                if self.SRTTrack != other.SRTTrack:
+                    return False
+                if self.enObs != other.enObs:
+                    return False
+                if self.newAzEl != other.newAzEl:
+                    return False
+                if self.enSRT != other.enSRT:
+                    return False
+                if self.enSpec != other.enSpec:
+                    return False
+                if self.slewing != other.slewing:
+                    return False
+                if self.cmdstop != other.cmdstop:
+                    return False
+                if self.IsMoving != other.IsMoving:
+                    return False
+                if self.getStatus != other.getStatus:
+                    return False
+                if self.portInUse != other.portInUse:
+                    return False
+                if self.spectra != other.spectra:
+                    return False
+                if self.RxSwitchMode != other.RxSwitchMode:
+                    return False
+                if self.toSource != other.toSource:
+                    return False
+                if self.SRTinitialized != other.SRTinitialized:
+                    return False
+                if self.initialized != other.initialized:
+                    return False
+                if self.Target != other.Target:
+                    return False
+                if self.obsTarget != other.obsTarget:
+                    return False
+                if self.az != other.az:
+                    return False
+                if self.el != other.el:
+                    return False
+                if self.aznow != other.aznow:
+                    return False
+                if self.elnow != other.elnow:
+                    return False
+                if self.azoffset != other.azoffset:
+                    return False
+                if self.eloffset != other.eloffset:
+                    return False
+                if self.axis != other.axis:
+                    return False
+                if self.tostow != other.tostow:
+                    return False
+                if self.elatstow != other.elatstow:
+                    return False
+                if self.azatstow != other.azatstow:
+                    return False
+                if self.slew != other.slew:
+                    return False
+                if self.serialport != other.serialport:
+                    return False
+                if self.lastSRTCom != other.lastSRTCom:
+                    return False
+                if self.lastSerialMsg != other.lastSerialMsg:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_ARIAPI._t_ClState)
+
+        __repr__ = __str__
+
+    _M_ARIAPI._t_ClState = IcePy.defineStruct('::ARIAPI::ClState', ClState, (), (
+        ('name', (), IcePy._t_string),
+        ('time', (), IcePy._t_string),
+        ('SRTState', (), IcePy._t_string),
+        ('SRTonTarget', (), IcePy._t_bool),
+        ('SRTMode', (), IcePy._t_string),
+        ('SRTTarget', (), IcePy._t_string),
+        ('SRTTrack', (), IcePy._t_bool),
+        ('enObs', (), IcePy._t_bool),
+        ('newAzEl', (), IcePy._t_bool),
+        ('enSRT', (), IcePy._t_bool),
+        ('enSpec', (), IcePy._t_bool),
+        ('slewing', (), IcePy._t_bool),
+        ('cmdstop', (), IcePy._t_bool),
+        ('IsMoving', (), IcePy._t_bool),
+        ('getStatus', (), IcePy._t_bool),
+        ('portInUse', (), _M_ARIAPI._t_piu),
+        ('spectra', (), IcePy._t_bool),
+        ('RxSwitchMode', (), IcePy._t_string),
+        ('toSource', (), IcePy._t_int),
+        ('SRTinitialized', (), IcePy._t_bool),
+        ('initialized', (), IcePy._t_bool),
+        ('Target', (), IcePy._t_string),
+        ('obsTarget', (), IcePy._t_string),
+        ('az', (), IcePy._t_float),
+        ('el', (), IcePy._t_float),
+        ('aznow', (), IcePy._t_float),
+        ('elnow', (), IcePy._t_float),
+        ('azoffset', (), IcePy._t_float),
+        ('eloffset', (), IcePy._t_float),
+        ('axis', (), IcePy._t_int),
+        ('tostow', (), IcePy._t_bool),
+        ('elatstow', (), IcePy._t_bool),
+        ('azatstow', (), IcePy._t_bool),
+        ('slew', (), IcePy._t_bool),
+        ('serialport', (), IcePy._t_string),
+        ('lastSRTCom', (), IcePy._t_string),
+        ('lastSerialMsg', (), IcePy._t_string)
+    ))
+
+    _M_ARIAPI.ClState = ClState
+    del ClState
+
 if 'API' not in _M_ARIAPI.__dict__:
     _M_ARIAPI.API = Ice.createTempClass()
     class API(Ice.Object):
@@ -44,25 +684,67 @@ if 'API' not in _M_ARIAPI.__dict__:
         def testConn(self, s, current=None):
             pass
 
-        def ChooseObservingMode(self, s1, s2, current=None):
+        def setObservingMode(self, s1, s2, current=None):
             pass
 
-        def Connect(self, current=None):
+        def createObservingMode(self, current=None):
             pass
 
-        def Initialize(self, current=None):
+        def setupArray(self, current=None):
             pass
 
-        def SetTarget(self, s1, s2, s3, current=None):
+        def observeWithArray(self, s1, s2, current=None):
             pass
 
-        def FindSources(self, current=None):
+        def setRxArray(self, f1, i1, current=None):
             pass
 
-        def StartTracking(self, current=None):
+        def setRxSwMode(self, s1, s2, current=None):
             pass
 
-        def StopTracking(self, current=None):
+        def enableSpectrumArray(self, current=None):
+            pass
+
+        def disableSpectrumArray(self, current=None):
+            pass
+
+        def npointScanMap(self, points, delta, spec, current=None):
+            pass
+
+        def findRaDecSources(self, current=None):
+            pass
+
+        def findPlanets(self, current=None):
+            pass
+
+        def findStars(self, current=None):
+            pass
+
+        def clientShutdown(self, current=None):
+            pass
+
+        def obsModeShutdown(self, current=None):
+            pass
+
+        def stowArray(self, current=None):
+            pass
+
+        def stopArray(self, current=None):
+            pass
+
+        def stopGoingToTarget(self, current=None):
+            pass
+
+        def setOffsetPointing(self, f1, f2, current=None):
+            pass
+
+        def getObsModeState(self, current=None):
+            pass
+
+        def getArrayState(self, current=None):
+            pass
+
+        def getLastSpectrum(self, current=None):
             pass
 
         def __str__(self):
@@ -82,68 +764,194 @@ if 'API' not in _M_ARIAPI.__dict__:
         def end_testConn(self, _r):
             return _M_ARIAPI.API._op_testConn.end(self, _r)
 
-        def ChooseObservingMode(self, s1, s2, _ctx=None):
-            return _M_ARIAPI.API._op_ChooseObservingMode.invoke(self, ((s1, s2), _ctx))
+        def setObservingMode(self, s1, s2, _ctx=None):
+            return _M_ARIAPI.API._op_setObservingMode.invoke(self, ((s1, s2), _ctx))
 
-        def begin_ChooseObservingMode(self, s1, s2, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_ARIAPI.API._op_ChooseObservingMode.begin(self, ((s1, s2), _response, _ex, _sent, _ctx))
+        def begin_setObservingMode(self, s1, s2, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_setObservingMode.begin(self, ((s1, s2), _response, _ex, _sent, _ctx))
 
-        def end_ChooseObservingMode(self, _r):
-            return _M_ARIAPI.API._op_ChooseObservingMode.end(self, _r)
+        def end_setObservingMode(self, _r):
+            return _M_ARIAPI.API._op_setObservingMode.end(self, _r)
 
-        def Connect(self, _ctx=None):
-            return _M_ARIAPI.API._op_Connect.invoke(self, ((), _ctx))
+        def createObservingMode(self, _ctx=None):
+            return _M_ARIAPI.API._op_createObservingMode.invoke(self, ((), _ctx))
 
-        def begin_Connect(self, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_ARIAPI.API._op_Connect.begin(self, ((), _response, _ex, _sent, _ctx))
+        def begin_createObservingMode(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_createObservingMode.begin(self, ((), _response, _ex, _sent, _ctx))
 
-        def end_Connect(self, _r):
-            return _M_ARIAPI.API._op_Connect.end(self, _r)
+        def end_createObservingMode(self, _r):
+            return _M_ARIAPI.API._op_createObservingMode.end(self, _r)
 
-        def Initialize(self, _ctx=None):
-            return _M_ARIAPI.API._op_Initialize.invoke(self, ((), _ctx))
+        def setupArray(self, _ctx=None):
+            return _M_ARIAPI.API._op_setupArray.invoke(self, ((), _ctx))
 
-        def begin_Initialize(self, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_ARIAPI.API._op_Initialize.begin(self, ((), _response, _ex, _sent, _ctx))
+        def begin_setupArray(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_setupArray.begin(self, ((), _response, _ex, _sent, _ctx))
 
-        def end_Initialize(self, _r):
-            return _M_ARIAPI.API._op_Initialize.end(self, _r)
+        def end_setupArray(self, _r):
+            return _M_ARIAPI.API._op_setupArray.end(self, _r)
 
-        def SetTarget(self, s1, s2, s3, _ctx=None):
-            return _M_ARIAPI.API._op_SetTarget.invoke(self, ((s1, s2, s3), _ctx))
+        def observeWithArray(self, s1, s2, _ctx=None):
+            return _M_ARIAPI.API._op_observeWithArray.invoke(self, ((s1, s2), _ctx))
 
-        def begin_SetTarget(self, s1, s2, s3, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_ARIAPI.API._op_SetTarget.begin(self, ((s1, s2, s3), _response, _ex, _sent, _ctx))
+        def begin_observeWithArray(self, s1, s2, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_observeWithArray.begin(self, ((s1, s2), _response, _ex, _sent, _ctx))
 
-        def end_SetTarget(self, _r):
-            return _M_ARIAPI.API._op_SetTarget.end(self, _r)
+        def end_observeWithArray(self, _r):
+            return _M_ARIAPI.API._op_observeWithArray.end(self, _r)
 
-        def FindSources(self, _ctx=None):
-            return _M_ARIAPI.API._op_FindSources.invoke(self, ((), _ctx))
+        def setRxArray(self, f1, i1, _ctx=None):
+            return _M_ARIAPI.API._op_setRxArray.invoke(self, ((f1, i1), _ctx))
 
-        def begin_FindSources(self, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_ARIAPI.API._op_FindSources.begin(self, ((), _response, _ex, _sent, _ctx))
+        def begin_setRxArray(self, f1, i1, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_setRxArray.begin(self, ((f1, i1), _response, _ex, _sent, _ctx))
 
-        def end_FindSources(self, _r):
-            return _M_ARIAPI.API._op_FindSources.end(self, _r)
+        def end_setRxArray(self, _r):
+            return _M_ARIAPI.API._op_setRxArray.end(self, _r)
 
-        def StartTracking(self, _ctx=None):
-            return _M_ARIAPI.API._op_StartTracking.invoke(self, ((), _ctx))
+        def setRxSwMode(self, s1, s2, _ctx=None):
+            return _M_ARIAPI.API._op_setRxSwMode.invoke(self, ((s1, s2), _ctx))
 
-        def begin_StartTracking(self, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_ARIAPI.API._op_StartTracking.begin(self, ((), _response, _ex, _sent, _ctx))
+        def begin_setRxSwMode(self, s1, s2, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_setRxSwMode.begin(self, ((s1, s2), _response, _ex, _sent, _ctx))
 
-        def end_StartTracking(self, _r):
-            return _M_ARIAPI.API._op_StartTracking.end(self, _r)
+        def end_setRxSwMode(self, _r):
+            return _M_ARIAPI.API._op_setRxSwMode.end(self, _r)
 
-        def StopTracking(self, _ctx=None):
-            return _M_ARIAPI.API._op_StopTracking.invoke(self, ((), _ctx))
+        def enableSpectrumArray(self, _ctx=None):
+            return _M_ARIAPI.API._op_enableSpectrumArray.invoke(self, ((), _ctx))
 
-        def begin_StopTracking(self, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_ARIAPI.API._op_StopTracking.begin(self, ((), _response, _ex, _sent, _ctx))
+        def begin_enableSpectrumArray(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_enableSpectrumArray.begin(self, ((), _response, _ex, _sent, _ctx))
 
-        def end_StopTracking(self, _r):
-            return _M_ARIAPI.API._op_StopTracking.end(self, _r)
+        def end_enableSpectrumArray(self, _r):
+            return _M_ARIAPI.API._op_enableSpectrumArray.end(self, _r)
+
+        def disableSpectrumArray(self, _ctx=None):
+            return _M_ARIAPI.API._op_disableSpectrumArray.invoke(self, ((), _ctx))
+
+        def begin_disableSpectrumArray(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_disableSpectrumArray.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_disableSpectrumArray(self, _r):
+            return _M_ARIAPI.API._op_disableSpectrumArray.end(self, _r)
+
+        def npointScanMap(self, points, delta, spec, _ctx=None):
+            return _M_ARIAPI.API._op_npointScanMap.invoke(self, ((points, delta, spec), _ctx))
+
+        def begin_npointScanMap(self, points, delta, spec, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_npointScanMap.begin(self, ((points, delta, spec), _response, _ex, _sent, _ctx))
+
+        def end_npointScanMap(self, _r):
+            return _M_ARIAPI.API._op_npointScanMap.end(self, _r)
+
+        def findRaDecSources(self, _ctx=None):
+            return _M_ARIAPI.API._op_findRaDecSources.invoke(self, ((), _ctx))
+
+        def begin_findRaDecSources(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_findRaDecSources.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_findRaDecSources(self, _r):
+            return _M_ARIAPI.API._op_findRaDecSources.end(self, _r)
+
+        def findPlanets(self, _ctx=None):
+            return _M_ARIAPI.API._op_findPlanets.invoke(self, ((), _ctx))
+
+        def begin_findPlanets(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_findPlanets.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_findPlanets(self, _r):
+            return _M_ARIAPI.API._op_findPlanets.end(self, _r)
+
+        def findStars(self, _ctx=None):
+            return _M_ARIAPI.API._op_findStars.invoke(self, ((), _ctx))
+
+        def begin_findStars(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_findStars.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_findStars(self, _r):
+            return _M_ARIAPI.API._op_findStars.end(self, _r)
+
+        def clientShutdown(self, _ctx=None):
+            return _M_ARIAPI.API._op_clientShutdown.invoke(self, ((), _ctx))
+
+        def begin_clientShutdown(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_clientShutdown.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_clientShutdown(self, _r):
+            return _M_ARIAPI.API._op_clientShutdown.end(self, _r)
+
+        def obsModeShutdown(self, _ctx=None):
+            return _M_ARIAPI.API._op_obsModeShutdown.invoke(self, ((), _ctx))
+
+        def begin_obsModeShutdown(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_obsModeShutdown.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_obsModeShutdown(self, _r):
+            return _M_ARIAPI.API._op_obsModeShutdown.end(self, _r)
+
+        def stowArray(self, _ctx=None):
+            return _M_ARIAPI.API._op_stowArray.invoke(self, ((), _ctx))
+
+        def begin_stowArray(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_stowArray.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_stowArray(self, _r):
+            return _M_ARIAPI.API._op_stowArray.end(self, _r)
+
+        def stopArray(self, _ctx=None):
+            return _M_ARIAPI.API._op_stopArray.invoke(self, ((), _ctx))
+
+        def begin_stopArray(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_stopArray.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_stopArray(self, _r):
+            return _M_ARIAPI.API._op_stopArray.end(self, _r)
+
+        def stopGoingToTarget(self, _ctx=None):
+            return _M_ARIAPI.API._op_stopGoingToTarget.invoke(self, ((), _ctx))
+
+        def begin_stopGoingToTarget(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_stopGoingToTarget.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_stopGoingToTarget(self, _r):
+            return _M_ARIAPI.API._op_stopGoingToTarget.end(self, _r)
+
+        def setOffsetPointing(self, f1, f2, _ctx=None):
+            return _M_ARIAPI.API._op_setOffsetPointing.invoke(self, ((f1, f2), _ctx))
+
+        def begin_setOffsetPointing(self, f1, f2, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_setOffsetPointing.begin(self, ((f1, f2), _response, _ex, _sent, _ctx))
+
+        def end_setOffsetPointing(self, _r):
+            return _M_ARIAPI.API._op_setOffsetPointing.end(self, _r)
+
+        def getObsModeState(self, _ctx=None):
+            return _M_ARIAPI.API._op_getObsModeState.invoke(self, ((), _ctx))
+
+        def begin_getObsModeState(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_getObsModeState.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_getObsModeState(self, _r):
+            return _M_ARIAPI.API._op_getObsModeState.end(self, _r)
+
+        def getArrayState(self, _ctx=None):
+            return _M_ARIAPI.API._op_getArrayState.invoke(self, ((), _ctx))
+
+        def begin_getArrayState(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_getArrayState.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_getArrayState(self, _r):
+            return _M_ARIAPI.API._op_getArrayState.end(self, _r)
+
+        def getLastSpectrum(self, _ctx=None):
+            return _M_ARIAPI.API._op_getLastSpectrum.invoke(self, ((), _ctx))
+
+        def begin_getLastSpectrum(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_ARIAPI.API._op_getLastSpectrum.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_getLastSpectrum(self, _r):
+            return _M_ARIAPI.API._op_getLastSpectrum.end(self, _r)
 
         def checkedCast(proxy, facetOrCtx=None, _ctx=None):
             return _M_ARIAPI.APIPrx.ice_checkedCast(proxy, '::ARIAPI::API', facetOrCtx, _ctx)
@@ -159,13 +967,27 @@ if 'API' not in _M_ARIAPI.__dict__:
     API._ice_type = _M_ARIAPI._t_API
 
     API._op_testConn = IcePy.Operation('testConn', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), IcePy._t_string, False, 0),), None, ())
-    API._op_ChooseObservingMode = IcePy.Operation('ChooseObservingMode', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0), ((), IcePy._t_string, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
-    API._op_Connect = IcePy.Operation('Connect', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
-    API._op_Initialize = IcePy.Operation('Initialize', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
-    API._op_SetTarget = IcePy.Operation('SetTarget', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0), ((), IcePy._t_float, False, 0), ((), IcePy._t_int, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
-    API._op_FindSources = IcePy.Operation('FindSources', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
-    API._op_StartTracking = IcePy.Operation('StartTracking', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
-    API._op_StopTracking = IcePy.Operation('StopTracking', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_setObservingMode = IcePy.Operation('setObservingMode', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0), ((), IcePy._t_string, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_createObservingMode = IcePy.Operation('createObservingMode', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_setupArray = IcePy.Operation('setupArray', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_observeWithArray = IcePy.Operation('observeWithArray', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0), ((), IcePy._t_string, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_setRxArray = IcePy.Operation('setRxArray', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0), ((), IcePy._t_int, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_setRxSwMode = IcePy.Operation('setRxSwMode', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0), ((), IcePy._t_string, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_enableSpectrumArray = IcePy.Operation('enableSpectrumArray', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_disableSpectrumArray = IcePy.Operation('disableSpectrumArray', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_npointScanMap = IcePy.Operation('npointScanMap', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_int, False, 0), ((), IcePy._t_float, False, 0), ((), IcePy._t_bool, False, 0)), (((), _M_ARIAPI._t_map, False, 0),), None, ())
+    API._op_findRaDecSources = IcePy.Operation('findRaDecSources', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_ARIAPI._t_sources, False, 0),), None, ())
+    API._op_findPlanets = IcePy.Operation('findPlanets', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_ARIAPI._t_sources, False, 0),), None, ())
+    API._op_findStars = IcePy.Operation('findStars', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_ARIAPI._t_sources, False, 0),), None, ())
+    API._op_clientShutdown = IcePy.Operation('clientShutdown', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_obsModeShutdown = IcePy.Operation('obsModeShutdown', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_stowArray = IcePy.Operation('stowArray', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_stopArray = IcePy.Operation('stopArray', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_stopGoingToTarget = IcePy.Operation('stopGoingToTarget', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_setOffsetPointing = IcePy.Operation('setOffsetPointing', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0), ((), IcePy._t_float, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
+    API._op_getObsModeState = IcePy.Operation('getObsModeState', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_ARIAPI._t_OMstate, False, 0),), None, ())
+    API._op_getArrayState = IcePy.Operation('getArrayState', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_ARIAPI._t_ClState, False, 0),), None, ())
+    API._op_getLastSpectrum = IcePy.Operation('getLastSpectrum', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_ARIAPI._t_lsp, False, 0),), None, ())
 
     _M_ARIAPI.API = API
     del API

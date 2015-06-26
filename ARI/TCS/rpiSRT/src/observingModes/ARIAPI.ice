@@ -82,6 +82,51 @@ module ARIAPI{
 		bool WaitingSpectrum;
     };
 
+    struct piu{
+        bool InUse;
+        string Routine;
+        };
+
+    struct ClState{
+        string name;
+        string time;
+        string SRTState;
+		bool SRTonTarget; 
+		string SRTMode; 
+		string SRTTarget; 
+		bool SRTTrack; 
+		bool enObs; 
+		bool newAzEl; 
+		bool enSRT; 
+		bool enSpec; 
+		bool slewing; 
+		bool cmdstop; 
+		bool IsMoving;  
+		bool getStatus;  
+		piu portInUse;  
+		bool spectra; 
+		string RxSwitchMode;  
+		int toSource; 
+		bool SRTinitialized; 
+		bool initialized;  
+		string Target;  
+		string obsTarget;
+		float az;
+		float el;
+		float aznow;
+		float elnow;
+		float azoffset;
+		float eloffset;
+		int axis;
+		bool tostow;
+		bool elatstow;
+		bool azatstow;
+		bool slew;
+		string serialport;
+		string lastSRTCom;
+		string lastSerialMsg;
+    };
+
 	interface API{
 		void testConn(string s, out string r);
 		void setObservingMode(string s1, string s2, out string r);
@@ -103,7 +148,7 @@ module ARIAPI{
         void stopGoingToTarget(out string r);
         void setOffsetPointing(float f1, float f2, out string r);
         void getObsModeState(out OMstate r);
-        void getArrayState(out string r);
+        void getArrayState(out ClState r);
         void getLastSpectrum(out lsp sp);
 	};
 };	
