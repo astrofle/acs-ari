@@ -84,6 +84,8 @@ class ObsBase():
 		self.scanMapInProgress = False
 		self.readSpectrum
 		self.radecSources =[]
+		self.ARI_controllers = {}
+		self.ARI_controllersTXT = {}
 		####
 		
 		
@@ -182,11 +184,13 @@ class ObsBase():
 	
 	def createObsMode(self):
 		self.ARI_controllers = {}
+		self.ARI_controllersTXT = {}
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" creating "+ self.observingMode
 		for node in self.nodes:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Connecting to "+ node
 			controller = self.connect(self.ARI_nodes[node], node)
 			self.ARI_controllers[node] = controller
+			self.ARI_controllersTXT[node] = str(controller)
 			if node.startswith('SRT'):
 			#Set SRT receiver switch mode
 				self.ARI_controllers[node].begin_setRxMode(self.mode, self.modeCB, self.failureCB);
@@ -518,7 +522,7 @@ class ObsBase():
 	def states(self):
 		print "observing mode:"+ str(self.observingMode)
 		print "nodes:"+ str(self.nodes)
-		print "ARI_controllers:"+ str(self.ARI_controllers)
+		print "ARI_controllers:"+ str(self.ARI_controllersTXT)
 		print "setup in progress:"+ str(self.setupInProgress)
 		print "initialized:"+ str(self.initialized)
 		print "atStow:"+ str(self.atStow)
@@ -567,11 +571,12 @@ class SRTSingleDish(ObsBase):
 	def rsetupCB(self,a):
 		#generic callback
 		print a
+		name = a.split(' ')[2].upper()
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ str(self.nodes)+ "Setup finished"
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
-		self.RxSetup[self.nodes[0]] = [self.freq, self.rec_mode]
+		self.RxSetup[name] = [self.freq, self.rec_mode]
 		return
 		
 class SRTDoubleSingleDish(ObsBase):
