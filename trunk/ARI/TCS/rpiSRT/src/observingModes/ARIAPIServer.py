@@ -246,25 +246,25 @@ class ARIAPII(ARIAPI.API):
 			_sts = ARIAPI.ClState(self.obsMode.Clientstatus[node].name,\
 			self.obsMode.Clientstatus[node].time,\
 			self.obsMode.Clientstatus[node].SRTState,\
-			self.obsMode.Clientstatus[node].SRTonTarget,\ 
-			self.obsMode.Clientstatus[node].SRTMode,\ 
-			self.obsMode.Clientstatus[node].SRTTarget,\ 
-			self.obsMode.Clientstatus[node].SRTTrack,\ 
-			self.obsMode.Clientstatus[node].enObs,\ 
-			self.obsMode.Clientstatus[node].newAzEl,\ 
-			self.obsMode.Clientstatus[node].enSRT,\ 
-			self.obsMode.Clientstatus[node].enSpec,\ 
-			self.obsMode.Clientstatus[node].slewing,\ 
-			self.obsMode.Clientstatus[node].cmdstop,\ 
-			self.obsMode.Clientstatus[node].IsMoving,\  
-			self.obsMode.Clientstatus[node].getStatus,\  
-			_piu,\  
-			self.obsMode.Clientstatus[node].spectra,\ 
-			self.obsMode.Clientstatus[node].RxSwitchMode,\  
-			self.obsMode.Clientstatus[node].toSource,\ 
-			self.obsMode.Clientstatus[node].SRTinitialized,\ 
-			self.obsMode.Clientstatus[node].initialized,\  
-			self.obsMode.Clientstatus[node].Target,\  
+			self.obsMode.Clientstatus[node].SRTonTarget,\
+			self.obsMode.Clientstatus[node].SRTMode,\
+			self.obsMode.Clientstatus[node].SRTTarget,\
+			self.obsMode.Clientstatus[node].SRTTrack,\
+			self.obsMode.Clientstatus[node].enObs,\
+			self.obsMode.Clientstatus[node].newAzEl,\
+			self.obsMode.Clientstatus[node].enSRT,\
+			self.obsMode.Clientstatus[node].enSpec,\
+			self.obsMode.Clientstatus[node].slewing,\
+			self.obsMode.Clientstatus[node].cmdstop,\
+			self.obsMode.Clientstatus[node].IsMoving,\
+			self.obsMode.Clientstatus[node].getStatus,\
+			_piu,\
+			self.obsMode.Clientstatus[node].spectra,\
+			self.obsMode.Clientstatus[node].RxSwitchMode,\
+			self.obsMode.Clientstatus[node].toSource,\
+			self.obsMode.Clientstatus[node].SRTinitialized,\
+			self.obsMode.Clientstatus[node].initialized,\
+			self.obsMode.Clientstatus[node].Target,\
 			self.obsMode.Clientstatus[node].obsTarget,\
 			self.obsMode.Clientstatus[node].az,\
 			self.obsMode.Clientstatus[node].el,\
