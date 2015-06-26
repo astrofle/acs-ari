@@ -30,11 +30,17 @@ if '_t_spectrum' not in _M_SRTClient.__dict__:
 if 'stamp' not in _M_SRTClient.__dict__:
     _M_SRTClient.stamp = Ice.createTempClass()
     class stamp(object):
-        def __init__(self, name='', timdate='', aznow=0.0, elnow=0.0):
+        def __init__(self, name='', timdate='', aznow=0.0, elnow=0.0, temperature=0.0, freq0=0.0, av=0, avc=0, nfreq=0, freqsep=0.0):
             self.name = name
             self.timdate = timdate
             self.aznow = aznow
             self.elnow = elnow
+            self.temperature = temperature
+            self.freq0 = freq0
+            self.av = av
+            self.avc = avc
+            self.nfreq = nfreq
+            self.freqsep = freqsep
 
         def __eq__(self, other):
             if other is None:
@@ -50,6 +56,18 @@ if 'stamp' not in _M_SRTClient.__dict__:
                     return False
                 if self.elnow != other.elnow:
                     return False
+                if self.temperature != other.temperature:
+                    return False
+                if self.freq0 != other.freq0:
+                    return False
+                if self.av != other.av:
+                    return False
+                if self.avc != other.avc:
+                    return False
+                if self.nfreq != other.nfreq:
+                    return False
+                if self.freqsep != other.freqsep:
+                    return False
                 return True
 
         def __ne__(self, other):
@@ -64,7 +82,13 @@ if 'stamp' not in _M_SRTClient.__dict__:
         ('name', (), IcePy._t_string),
         ('timdate', (), IcePy._t_string),
         ('aznow', (), IcePy._t_float),
-        ('elnow', (), IcePy._t_float)
+        ('elnow', (), IcePy._t_float),
+        ('temperature', (), IcePy._t_float),
+        ('freq0', (), IcePy._t_float),
+        ('av', (), IcePy._t_int),
+        ('avc', (), IcePy._t_int),
+        ('nfreq', (), IcePy._t_int),
+        ('freqsep', (), IcePy._t_float)
     ))
 
     _M_SRTClient.stamp = stamp
@@ -120,8 +144,322 @@ if 'specs' not in _M_SRTClient.__dict__:
     _M_SRTClient.specs = specs
     del specs
 
+if 'piu' not in _M_SRTClient.__dict__:
+    _M_SRTClient.piu = Ice.createTempClass()
+    class piu(object):
+        def __init__(self, InUse=False, Routine=''):
+            self.InUse = InUse
+            self.Routine = Routine
+
+        def __hash__(self):
+            _h = 0
+            _h = 5 * _h + Ice.getHash(self.InUse)
+            _h = 5 * _h + Ice.getHash(self.Routine)
+            return _h % 0x7fffffff
+
+        def __compare(self, other):
+            if other is None:
+                return 1
+            elif not isinstance(other, _M_SRTClient.piu):
+                return NotImplemented
+            else:
+                if self.InUse is None or other.InUse is None:
+                    if self.InUse != other.InUse:
+                        return (-1 if self.InUse is None else 1)
+                else:
+                    if self.InUse < other.InUse:
+                        return -1
+                    elif self.InUse > other.InUse:
+                        return 1
+                if self.Routine is None or other.Routine is None:
+                    if self.Routine != other.Routine:
+                        return (-1 if self.Routine is None else 1)
+                else:
+                    if self.Routine < other.Routine:
+                        return -1
+                    elif self.Routine > other.Routine:
+                        return 1
+                return 0
+
+        def __lt__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r < 0
+
+        def __le__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r <= 0
+
+        def __gt__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r > 0
+
+        def __ge__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r >= 0
+
+        def __eq__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r == 0
+
+        def __ne__(self, other):
+            r = self.__compare(other)
+            if r is NotImplemented:
+                return r
+            else:
+                return r != 0
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_SRTClient._t_piu)
+
+        __repr__ = __str__
+
+    _M_SRTClient._t_piu = IcePy.defineStruct('::SRTClient::piu', piu, (), (
+        ('InUse', (), IcePy._t_bool),
+        ('Routine', (), IcePy._t_string)
+    ))
+
+    _M_SRTClient.piu = piu
+    del piu
+
+if 'state' not in _M_SRTClient.__dict__:
+    _M_SRTClient.state = Ice.createTempClass()
+    class state(object):
+        def __init__(self, name='', time='', SRTState='', SRTonTarget=False, SRTMode='', SRTTarget='', SRTTrack=False, enObs=False, newAzEl=False, enSRT=False, enSpec=False, slewing=False, cmdstop=False, IsMoving=False, getStatus=False, portInUse=Ice._struct_marker, spectra=False, RxSwitchMode='', toSource=0, SRTinitialized=False, initialized=False, Target='', obsTarget='', az=0.0, el=0.0, aznow=0.0, elnow=0.0, azoffset=0.0, eloffset=0.0, axis=0, tostow=False, elatstow=False, azatstow=False, slew=False, serialport='', lastSRTCom='', lastSerialMsg=''):
+            self.name = name
+            self.time = time
+            self.SRTState = SRTState
+            self.SRTonTarget = SRTonTarget
+            self.SRTMode = SRTMode
+            self.SRTTarget = SRTTarget
+            self.SRTTrack = SRTTrack
+            self.enObs = enObs
+            self.newAzEl = newAzEl
+            self.enSRT = enSRT
+            self.enSpec = enSpec
+            self.slewing = slewing
+            self.cmdstop = cmdstop
+            self.IsMoving = IsMoving
+            self.getStatus = getStatus
+            if portInUse is Ice._struct_marker:
+                self.portInUse = _M_SRTClient.piu()
+            else:
+                self.portInUse = portInUse
+            self.spectra = spectra
+            self.RxSwitchMode = RxSwitchMode
+            self.toSource = toSource
+            self.SRTinitialized = SRTinitialized
+            self.initialized = initialized
+            self.Target = Target
+            self.obsTarget = obsTarget
+            self.az = az
+            self.el = el
+            self.aznow = aznow
+            self.elnow = elnow
+            self.azoffset = azoffset
+            self.eloffset = eloffset
+            self.axis = axis
+            self.tostow = tostow
+            self.elatstow = elatstow
+            self.azatstow = azatstow
+            self.slew = slew
+            self.serialport = serialport
+            self.lastSRTCom = lastSRTCom
+            self.lastSerialMsg = lastSerialMsg
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_SRTClient.state):
+                return NotImplemented
+            else:
+                if self.name != other.name:
+                    return False
+                if self.time != other.time:
+                    return False
+                if self.SRTState != other.SRTState:
+                    return False
+                if self.SRTonTarget != other.SRTonTarget:
+                    return False
+                if self.SRTMode != other.SRTMode:
+                    return False
+                if self.SRTTarget != other.SRTTarget:
+                    return False
+                if self.SRTTrack != other.SRTTrack:
+                    return False
+                if self.enObs != other.enObs:
+                    return False
+                if self.newAzEl != other.newAzEl:
+                    return False
+                if self.enSRT != other.enSRT:
+                    return False
+                if self.enSpec != other.enSpec:
+                    return False
+                if self.slewing != other.slewing:
+                    return False
+                if self.cmdstop != other.cmdstop:
+                    return False
+                if self.IsMoving != other.IsMoving:
+                    return False
+                if self.getStatus != other.getStatus:
+                    return False
+                if self.portInUse != other.portInUse:
+                    return False
+                if self.spectra != other.spectra:
+                    return False
+                if self.RxSwitchMode != other.RxSwitchMode:
+                    return False
+                if self.toSource != other.toSource:
+                    return False
+                if self.SRTinitialized != other.SRTinitialized:
+                    return False
+                if self.initialized != other.initialized:
+                    return False
+                if self.Target != other.Target:
+                    return False
+                if self.obsTarget != other.obsTarget:
+                    return False
+                if self.az != other.az:
+                    return False
+                if self.el != other.el:
+                    return False
+                if self.aznow != other.aznow:
+                    return False
+                if self.elnow != other.elnow:
+                    return False
+                if self.azoffset != other.azoffset:
+                    return False
+                if self.eloffset != other.eloffset:
+                    return False
+                if self.axis != other.axis:
+                    return False
+                if self.tostow != other.tostow:
+                    return False
+                if self.elatstow != other.elatstow:
+                    return False
+                if self.azatstow != other.azatstow:
+                    return False
+                if self.slew != other.slew:
+                    return False
+                if self.serialport != other.serialport:
+                    return False
+                if self.lastSRTCom != other.lastSRTCom:
+                    return False
+                if self.lastSerialMsg != other.lastSerialMsg:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_SRTClient._t_state)
+
+        __repr__ = __str__
+
+    _M_SRTClient._t_state = IcePy.defineStruct('::SRTClient::state', state, (), (
+        ('name', (), IcePy._t_string),
+        ('time', (), IcePy._t_string),
+        ('SRTState', (), IcePy._t_string),
+        ('SRTonTarget', (), IcePy._t_bool),
+        ('SRTMode', (), IcePy._t_string),
+        ('SRTTarget', (), IcePy._t_string),
+        ('SRTTrack', (), IcePy._t_bool),
+        ('enObs', (), IcePy._t_bool),
+        ('newAzEl', (), IcePy._t_bool),
+        ('enSRT', (), IcePy._t_bool),
+        ('enSpec', (), IcePy._t_bool),
+        ('slewing', (), IcePy._t_bool),
+        ('cmdstop', (), IcePy._t_bool),
+        ('IsMoving', (), IcePy._t_bool),
+        ('getStatus', (), IcePy._t_bool),
+        ('portInUse', (), _M_SRTClient._t_piu),
+        ('spectra', (), IcePy._t_bool),
+        ('RxSwitchMode', (), IcePy._t_string),
+        ('toSource', (), IcePy._t_int),
+        ('SRTinitialized', (), IcePy._t_bool),
+        ('initialized', (), IcePy._t_bool),
+        ('Target', (), IcePy._t_string),
+        ('obsTarget', (), IcePy._t_string),
+        ('az', (), IcePy._t_float),
+        ('el', (), IcePy._t_float),
+        ('aznow', (), IcePy._t_float),
+        ('elnow', (), IcePy._t_float),
+        ('azoffset', (), IcePy._t_float),
+        ('eloffset', (), IcePy._t_float),
+        ('axis', (), IcePy._t_int),
+        ('tostow', (), IcePy._t_bool),
+        ('elatstow', (), IcePy._t_bool),
+        ('azatstow', (), IcePy._t_bool),
+        ('slew', (), IcePy._t_bool),
+        ('serialport', (), IcePy._t_string),
+        ('lastSRTCom', (), IcePy._t_string),
+        ('lastSerialMsg', (), IcePy._t_string)
+    ))
+
+    _M_SRTClient.state = state
+    del state
+
 if '_t_spectrums' not in _M_SRTClient.__dict__:
     _M_SRTClient._t_spectrums = IcePy.defineSequence('::SRTClient::spectrums', (), _M_SRTClient._t_specs)
+
+if '_t_delta' not in _M_SRTClient.__dict__:
+    _M_SRTClient._t_delta = IcePy.defineSequence('::SRTClient::delta', (), IcePy._t_float)
+
+if 'mapel' not in _M_SRTClient.__dict__:
+    _M_SRTClient.mapel = Ice.createTempClass()
+    class mapel(object):
+        def __init__(self, azeloff=None, maspecs=Ice._struct_marker):
+            self.azeloff = azeloff
+            if maspecs is Ice._struct_marker:
+                self.maspecs = _M_SRTClient.specs()
+            else:
+                self.maspecs = maspecs
+
+        def __eq__(self, other):
+            if other is None:
+                return False
+            elif not isinstance(other, _M_SRTClient.mapel):
+                return NotImplemented
+            else:
+                if self.azeloff != other.azeloff:
+                    return False
+                if self.maspecs != other.maspecs:
+                    return False
+                return True
+
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def __str__(self):
+            return IcePy.stringify(self, _M_SRTClient._t_mapel)
+
+        __repr__ = __str__
+
+    _M_SRTClient._t_mapel = IcePy.defineStruct('::SRTClient::mapel', mapel, (), (
+        ('azeloff', (), _M_SRTClient._t_delta),
+        ('maspecs', (), _M_SRTClient._t_specs)
+    ))
+
+    _M_SRTClient.mapel = mapel
+    del mapel
+
+if '_t_map' not in _M_SRTClient.__dict__:
+    _M_SRTClient._t_map = IcePy.defineSequence('::SRTClient::map', (), _M_SRTClient._t_mapel)
 
 if 'Client' not in _M_SRTClient.__dict__:
     _M_SRTClient.Client = Ice.createTempClass()
@@ -146,10 +484,46 @@ if 'Client' not in _M_SRTClient.__dict__:
         def setup(self, current=None):
             pass
 
-        def trackSource(self, s, current=None):
+        def obsSRT(self, mode, target, current=None):
             pass
 
-        def stopTrack(self, current=None):
+        def StopObs(self, current=None):
+            pass
+
+        def getSpectrum(self, current=None):
+            pass
+
+        def setFreq(self, freq, rmode, current=None):
+            pass
+
+        def stopSpectrum(self, current=None):
+            pass
+
+        def startSpectrum(self, current=None):
+            pass
+
+        def setRxMode(self, mode, current=None):
+            pass
+
+        def SRTstate(self, current=None):
+            pass
+
+        def offsetPointing(self, azoff, eloff, current=None):
+            pass
+
+        def NpointScan(self, points, delta, sp, current=None):
+            pass
+
+        def SRTStow(self, current=None):
+            pass
+
+        def ClientThreads(self, current=None):
+            pass
+
+        def SRTStopGoingToTarget(self, current=None):
+            pass
+
+        def ClientShutdown(self, current=None):
             pass
 
         def __str__(self):
@@ -178,23 +552,131 @@ if 'Client' not in _M_SRTClient.__dict__:
         def end_setup(self, _r):
             return _M_SRTClient.Client._op_setup.end(self, _r)
 
-        def trackSource(self, s, _ctx=None):
-            return _M_SRTClient.Client._op_trackSource.invoke(self, ((s, ), _ctx))
+        def obsSRT(self, mode, target, _ctx=None):
+            return _M_SRTClient.Client._op_obsSRT.invoke(self, ((mode, target), _ctx))
 
-        def begin_trackSource(self, s, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_SRTClient.Client._op_trackSource.begin(self, ((s, ), _response, _ex, _sent, _ctx))
+        def begin_obsSRT(self, mode, target, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_obsSRT.begin(self, ((mode, target), _response, _ex, _sent, _ctx))
 
-        def end_trackSource(self, _r):
-            return _M_SRTClient.Client._op_trackSource.end(self, _r)
+        def end_obsSRT(self, _r):
+            return _M_SRTClient.Client._op_obsSRT.end(self, _r)
 
-        def stopTrack(self, _ctx=None):
-            return _M_SRTClient.Client._op_stopTrack.invoke(self, ((), _ctx))
+        def StopObs(self, _ctx=None):
+            return _M_SRTClient.Client._op_StopObs.invoke(self, ((), _ctx))
 
-        def begin_stopTrack(self, _response=None, _ex=None, _sent=None, _ctx=None):
-            return _M_SRTClient.Client._op_stopTrack.begin(self, ((), _response, _ex, _sent, _ctx))
+        def begin_StopObs(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_StopObs.begin(self, ((), _response, _ex, _sent, _ctx))
 
-        def end_stopTrack(self, _r):
-            return _M_SRTClient.Client._op_stopTrack.end(self, _r)
+        def end_StopObs(self, _r):
+            return _M_SRTClient.Client._op_StopObs.end(self, _r)
+
+        def getSpectrum(self, _ctx=None):
+            return _M_SRTClient.Client._op_getSpectrum.invoke(self, ((), _ctx))
+
+        def begin_getSpectrum(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_getSpectrum.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_getSpectrum(self, _r):
+            return _M_SRTClient.Client._op_getSpectrum.end(self, _r)
+
+        def setFreq(self, freq, rmode, _ctx=None):
+            return _M_SRTClient.Client._op_setFreq.invoke(self, ((freq, rmode), _ctx))
+
+        def begin_setFreq(self, freq, rmode, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_setFreq.begin(self, ((freq, rmode), _response, _ex, _sent, _ctx))
+
+        def end_setFreq(self, _r):
+            return _M_SRTClient.Client._op_setFreq.end(self, _r)
+
+        def stopSpectrum(self, _ctx=None):
+            return _M_SRTClient.Client._op_stopSpectrum.invoke(self, ((), _ctx))
+
+        def begin_stopSpectrum(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_stopSpectrum.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_stopSpectrum(self, _r):
+            return _M_SRTClient.Client._op_stopSpectrum.end(self, _r)
+
+        def startSpectrum(self, _ctx=None):
+            return _M_SRTClient.Client._op_startSpectrum.invoke(self, ((), _ctx))
+
+        def begin_startSpectrum(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_startSpectrum.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_startSpectrum(self, _r):
+            return _M_SRTClient.Client._op_startSpectrum.end(self, _r)
+
+        def setRxMode(self, mode, _ctx=None):
+            return _M_SRTClient.Client._op_setRxMode.invoke(self, ((mode, ), _ctx))
+
+        def begin_setRxMode(self, mode, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_setRxMode.begin(self, ((mode, ), _response, _ex, _sent, _ctx))
+
+        def end_setRxMode(self, _r):
+            return _M_SRTClient.Client._op_setRxMode.end(self, _r)
+
+        def SRTstate(self, _ctx=None):
+            return _M_SRTClient.Client._op_SRTstate.invoke(self, ((), _ctx))
+
+        def begin_SRTstate(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_SRTstate.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_SRTstate(self, _r):
+            return _M_SRTClient.Client._op_SRTstate.end(self, _r)
+
+        def offsetPointing(self, azoff, eloff, _ctx=None):
+            return _M_SRTClient.Client._op_offsetPointing.invoke(self, ((azoff, eloff), _ctx))
+
+        def begin_offsetPointing(self, azoff, eloff, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_offsetPointing.begin(self, ((azoff, eloff), _response, _ex, _sent, _ctx))
+
+        def end_offsetPointing(self, _r):
+            return _M_SRTClient.Client._op_offsetPointing.end(self, _r)
+
+        def NpointScan(self, points, delta, sp, _ctx=None):
+            return _M_SRTClient.Client._op_NpointScan.invoke(self, ((points, delta, sp), _ctx))
+
+        def begin_NpointScan(self, points, delta, sp, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_NpointScan.begin(self, ((points, delta, sp), _response, _ex, _sent, _ctx))
+
+        def end_NpointScan(self, _r):
+            return _M_SRTClient.Client._op_NpointScan.end(self, _r)
+
+        def SRTStow(self, _ctx=None):
+            return _M_SRTClient.Client._op_SRTStow.invoke(self, ((), _ctx))
+
+        def begin_SRTStow(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_SRTStow.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_SRTStow(self, _r):
+            return _M_SRTClient.Client._op_SRTStow.end(self, _r)
+
+        def ClientThreads(self, _ctx=None):
+            return _M_SRTClient.Client._op_ClientThreads.invoke(self, ((), _ctx))
+
+        def begin_ClientThreads(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_ClientThreads.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_ClientThreads(self, _r):
+            return _M_SRTClient.Client._op_ClientThreads.end(self, _r)
+
+        def SRTStopGoingToTarget(self, _ctx=None):
+            return _M_SRTClient.Client._op_SRTStopGoingToTarget.invoke(self, ((), _ctx))
+
+        def begin_SRTStopGoingToTarget(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_SRTStopGoingToTarget.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_SRTStopGoingToTarget(self, _r):
+            return _M_SRTClient.Client._op_SRTStopGoingToTarget.end(self, _r)
+
+        def ClientShutdown(self, _ctx=None):
+            return _M_SRTClient.Client._op_ClientShutdown.invoke(self, ((), _ctx))
+
+        def begin_ClientShutdown(self, _response=None, _ex=None, _sent=None, _ctx=None):
+            return _M_SRTClient.Client._op_ClientShutdown.begin(self, ((), _response, _ex, _sent, _ctx))
+
+        def end_ClientShutdown(self, _r):
+            return _M_SRTClient.Client._op_ClientShutdown.end(self, _r)
 
         def checkedCast(proxy, facetOrCtx=None, _ctx=None):
             return _M_SRTClient.ClientPrx.ice_checkedCast(proxy, '::SRTClient::Client', facetOrCtx, _ctx)
@@ -211,8 +693,20 @@ if 'Client' not in _M_SRTClient.__dict__:
 
     Client._op_message = IcePy.Operation('message', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), IcePy._t_string, False, 0),), None, ())
     Client._op_setup = IcePy.Operation('setup', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
-    Client._op_trackSource = IcePy.Operation('trackSource', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), _M_SRTClient._t_specs, False, 0),), None, ())
-    Client._op_stopTrack = IcePy.Operation('stopTrack', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_obsSRT = IcePy.Operation('obsSRT', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0), ((), IcePy._t_string, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_StopObs = IcePy.Operation('StopObs', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_getSpectrum = IcePy.Operation('getSpectrum', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_SRTClient._t_specs, False, 0),), None, ())
+    Client._op_setFreq = IcePy.Operation('setFreq', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0), ((), IcePy._t_string, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_stopSpectrum = IcePy.Operation('stopSpectrum', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_startSpectrum = IcePy.Operation('startSpectrum', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_setRxMode = IcePy.Operation('setRxMode', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_SRTstate = IcePy.Operation('SRTstate', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), _M_SRTClient._t_state, False, 0),), None, ())
+    Client._op_offsetPointing = IcePy.Operation('offsetPointing', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0), ((), IcePy._t_float, False, 0)), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_NpointScan = IcePy.Operation('NpointScan', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_int, False, 0), ((), IcePy._t_float, False, 0), ((), IcePy._t_bool, False, 0)), (((), _M_SRTClient._t_map, False, 0),), None, ())
+    Client._op_SRTStow = IcePy.Operation('SRTStow', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_ClientThreads = IcePy.Operation('ClientThreads', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_SRTStopGoingToTarget = IcePy.Operation('SRTStopGoingToTarget', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
+    Client._op_ClientShutdown = IcePy.Operation('ClientShutdown', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (((), IcePy._t_string, False, 0),), None, ())
 
     _M_SRTClient.Client = Client
     del Client

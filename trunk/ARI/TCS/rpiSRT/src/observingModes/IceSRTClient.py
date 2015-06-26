@@ -157,15 +157,17 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " set for " + self.mode
 	    
 	def SRTstate(self, current = None):
-		_st = SRTClient.state(str(self.name),time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()),str(self.SRTState),str(self.SRTonTarget), str(self.SRTMode),\
-		str(self.SRTTarget),str(self.SRTTrack),str(self.enObs),str(self.newAzEl),\
-		str(self.enSRT), str(self.enSpec),str(self.slewing),str(self.cmdstop),\
-		str(self.IsMoving),str(self.getStatus),str(self.portInUse),str(self.spectra),\
-		str(self.RxSwitchMode),str(self.toSource),str(self.SRTinitialized),\
-		str(self.initialized),str(self.tostow),str(self.Target),str(self.obsTarget),\
-		str(self.az),str(self.el),str(self.aznow),str(self.elnow),str(self.azoffset), str(self.eloffset),str(self.axis),\
-		str(self.tostow),str(self.elatstow),str(self.azatstow),str(self.slew),\
-		str(self.serialport),str(self.lastSRTCom),str(self.lastSerialMsg ))
+		_piu = SRTClient.piu(self.portInUse[0], self.portInUse[1])
+		_st = SRTClient.state(self.name, \
+		time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.SRTState,\
+		self.SRTonTarget, self.SRTMode, self.SRTTarget, self.SRTTrack,\
+		self.enObs , self.newAzEl, self.enSRT, self.enSpec, self.slewing\
+		self.cmdstop, self.IsMoving, self.getStatus, _piu, self.spectra,\
+		self.RxSwitchMode, self.toSource, self.SRTinitialized, self.initialized,\
+		str(self.Target), str(self.obsTarget), self.az, self.el, self.aznow,\
+		self.elnow, self.azoffset, self.eloffset, self.axis, self.tostow,\
+		self.elatstow, self.azatstow, self.slewing, str(self.serialport),\
+		str(self.lastSRTCom), str(self.lastSerialMsg))
 		return _st
 
 	def offsetPointing(self, azoff, eloff, current = None):
