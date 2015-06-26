@@ -43,7 +43,7 @@ module ARIAPI{
 
     sequence<mapel> map;
     
-    sequence<specs> lsp;
+    dictionary<string, specs> lsp;
 
 	interface API{
 		void testConn(string s, out string r);
