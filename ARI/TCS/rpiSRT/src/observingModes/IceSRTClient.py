@@ -161,7 +161,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		_st = SRTClient.state(self.name, \
 		time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), self.SRTState,\
 		self.SRTonTarget, self.SRTMode, self.SRTTarget, self.SRTTrack,\
-		self.enObs , self.newAzEl, self.enSRT, self.enSpec, self.slewing\
+		self.enObs , self.newAzEl, self.enSRT, self.enSpec, self.slewing,\
 		self.cmdstop, self.IsMoving, self.getStatus, _piu, self.spectra,\
 		self.RxSwitchMode, self.toSource, self.SRTinitialized, self.initialized,\
 		str(self.Target), str(self.obsTarget), self.az, self.el, self.aznow,\
