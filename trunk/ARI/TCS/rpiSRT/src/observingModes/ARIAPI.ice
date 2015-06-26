@@ -55,7 +55,7 @@ module ARIAPI{
         string mode;
         };
     
-    sequence<RxSet> RxSetList
+    sequence<RxSet> RxSetList;
     dictionary<string, RxSetList> RXSetup;
     
     struct OMstate{
