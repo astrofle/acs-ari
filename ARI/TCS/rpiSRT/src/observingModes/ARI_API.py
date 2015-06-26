@@ -23,6 +23,7 @@ class API():
 		self.stars = []
 		self.spectrum = {}
 		self.obsModeState = {}
+		self.arrayStatus = {}
 	
 	def connect(self, IP):
 		""" Connects to Observing Mode server
@@ -505,7 +506,7 @@ class API():
 		""" getArrayStatus Ice callback - 
 		Returns a list of status parameters of SRT antennae
 		"""
-		print a
+		self.arrayStatus = a
 		return
 	
 	def apiStatus(self):
