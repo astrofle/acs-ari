@@ -576,7 +576,7 @@ class SRTSingleDish(ObsBase):
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
-		self.RxSetup[name] = [self.freq, self.rec_mode]
+		self.RxSetup[name] = [ARIAPI.RxSet(self.freq, self.rec_mode)]
 		return
 		
 class SRTDoubleSingleDish(ObsBase):
@@ -613,7 +613,7 @@ class SRTDoubleSingleDish(ObsBase):
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
-		self.RxSetup[name] = [self.freq, self.rec_mode]
+		self.RxSetup[name] = [ARIAPI.RxSet(self.freq, self.rec_mode)]
 		return
 
 

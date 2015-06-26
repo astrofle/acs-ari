@@ -227,6 +227,7 @@ class ARIAPII(ARIAPI.API):
 	def getObsModeState(self, current = None):
 		self.obsMode.states()
 		msg = "Getting observing mode state"
+		rxmode = [ARIAPI.RxSet(Rx
 		st = ARIAPI.OMstate(self.obsMode.observingMode, self.obsMode.nodes,\
 		self.obsMode.ARI_controllersTXT, self.obsMode.setupInProgress,\
 		self.obsMode.initialized, self.obsMode.atStow, self.obsMode.stowInProgress,\
