@@ -43,10 +43,34 @@ module ARIAPI{
 
     sequence<mapel> map;
     
+    
     dictionary<string, specs> lsp;
+    sequence<string> txtList;
+    dictionary<string, string> txtDict;
+    dictionary<string, bool> boolDict;
     
     struct OMstate{
-        
+		string observingMode;
+		txtList nodes;
+		txtDict ARIcontrollers;
+		bool setupInProgress;
+		boolDict initialized;
+		boolDict atStow;
+		bool stowInProgress;
+		string mode;
+		txtDict RxSwitchMode;
+		print "SRT Rx setup
+		print "Array frequency:" + str(self.new_freq)
+		print "Array Rx Mode:" + str(self.new_rec_mode)
+		print "get Client status:"+ str(self.getClStatus)
+		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
+		print "Array on Target:"+ str(self.ArrayOnTarget)
+		print "Array Stop Command:"+ str(self.ArrayStopCmd)
+		print "Array offsets:" + str(self.offsets)
+		print "Scan map in progress: "+ str(self.scanMapInProgress)
+		print "Read spectrum: " + str(self.readSpectrum)
+		print "new spectrum to read: " + str(self.NewSpectrum)
+		print "Waiting spectrum: " + str(self.waitSpectrum) 
     }
 
 	interface API{
