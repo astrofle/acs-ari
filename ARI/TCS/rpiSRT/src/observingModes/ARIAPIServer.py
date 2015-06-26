@@ -236,8 +236,8 @@ class ARIAPII(ARIAPI.API):
 	def getLastSpectrum(self, current = None):
 		lastSpectrum = {}
 		for node in self.obsMode.nodes:
-			print str(self.obsMode.nodes)
 			_sp = self.obsMode.spectrum[node]
+			print _sp.sampleStamp.name
 			_stamp =ARIAPI.stamp(_sp.sampleStamp.name,_sp.sampleStamp.timdate,\
 			_sp.sampleStamp.aznow,_sp.sampleStamp.elnow,_sp.sampleStamp.temperature,\
 			_sp.sampleStamp.freq0,_sp.sampleStamp.av,_sp.sampleStamp.avc,\
