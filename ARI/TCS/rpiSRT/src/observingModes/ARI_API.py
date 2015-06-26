@@ -21,7 +21,7 @@ class API():
 		self.radecSources = []
 		self.planets = []
 		self.stars = []
-		self.spectrum = []
+		self.spectrum = {}
 	
 	def connect(self, IP):
 		""" Connects to Observing Mode server

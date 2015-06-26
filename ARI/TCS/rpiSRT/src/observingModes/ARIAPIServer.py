@@ -234,7 +234,7 @@ class ARIAPII(ARIAPI.API):
 		return msg
 		
 	def getLastSpectrum(self, current = None):
-		lastSpectrum = []
+		lastSpectrum = {}
 		for node in self.obsMode.nodes:
 			_sp = self.obsMode.spectrum[node]
 			_stamp =ARIAPI.stamp(_sp.sampleStamp.name,_sp.sampleStamp.timdate,\
@@ -242,7 +242,7 @@ class ARIAPII(ARIAPI.API):
 			_sp.sampleStamp.freq0,_sp.sampleStamp.av,_sp.sampleStamp.avc,\
 			_sp.sampleStamp.nfreq,_sp.sampleStamp.freqsep)
 			_specs = ARIAPI.specs(_stamp, _sp.spec,_sp.avspec,_sp.avspecc,_sp.specd)
-			lastSpectrum.append(_specs)
+			lastSpectrum.append[_sp.sampleStamp.name] = _specs
 		return lastSpectrum
 try:
 	if len(sys.argv)<2:
