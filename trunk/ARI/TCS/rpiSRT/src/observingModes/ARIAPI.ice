@@ -45,9 +45,18 @@ module ARIAPI{
     
     
     dictionary<string, specs> lsp;
+    
     sequence<string> txtList;
     dictionary<string, string> txtDict;
     dictionary<string, bool> boolDict;
+    
+    struct RxSet{
+        float freq;
+        string mode;
+        };
+    
+    sequence<RxSet> RxSetList
+    dictionary<string, RxSetList> RXSetup;
     
     struct OMstate{
 		string observingMode;
@@ -59,19 +68,19 @@ module ARIAPI{
 		bool stowInProgress;
 		string mode;
 		txtDict RxSwitchMode;
-		print "SRT Rx setup
-		print "Array frequency:" + str(self.new_freq)
-		print "Array Rx Mode:" + str(self.new_rec_mode)
-		print "get Client status:"+ str(self.getClStatus)
-		print "Array moving to target:"+ str(self.ArrayMovingToTarget)
-		print "Array on Target:"+ str(self.ArrayOnTarget)
-		print "Array Stop Command:"+ str(self.ArrayStopCmd)
-		print "Array offsets:" + str(self.offsets)
-		print "Scan map in progress: "+ str(self.scanMapInProgress)
-		print "Read spectrum: " + str(self.readSpectrum)
-		print "new spectrum to read: " + str(self.NewSpectrum)
-		print "Waiting spectrum: " + str(self.waitSpectrum) 
-    }
+		RXSetup SRTRxSetup;
+		float ArrayFrequency;
+		string ArrayRxMode;
+		bool getClientStatus;
+		bool ArrayMovingToTarget;
+		bool ArrayOnTarget;
+		bool ArrayStopCommand;
+		delta ArrayOffsets;
+		bool ScanMapInProgress;
+		bool ReadSpectrum;
+		boolDict NewSpectrumToRead;
+		bool WaitingSpectrum;
+    };
 
 	interface API{
 		void testConn(string s, out string r);
@@ -93,7 +102,7 @@ module ARIAPI{
         void stopArray(out string r);
         void stopGoingToTarget(out string r);
         void setOffsetPointing(float f1, float f2, out string r);
-        void getObsModeState(out string r);
+        void getObsModeState(out OMstate r);
         void getArrayState(out string r);
         void getLastSpectrum(out lsp sp);
 	};
