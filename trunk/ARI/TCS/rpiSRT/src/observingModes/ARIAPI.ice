@@ -44,6 +44,10 @@ module ARIAPI{
     sequence<mapel> map;
     
     dictionary<string, specs> lsp;
+    
+    struct OMstate{
+        
+    }
 
 	interface API{
 		void testConn(string s, out string r);
