@@ -242,7 +242,7 @@ class ARIAPII(ARIAPI.API):
 			_sp.sampleStamp.freq0,_sp.sampleStamp.av,_sp.sampleStamp.avc,\
 			_sp.sampleStamp.nfreq,_sp.sampleStamp.freqsep)
 			_specs = ARIAPI.specs(_stamp, _sp.spec,_sp.avspec,_sp.avspecc,_sp.specd)
-			lastSpectrum[_sp.sampleStamp.name] = _specs
+			lastSpectrum[_sp.sampleStamp.name.upper()] = _specs
 		return lastSpectrum
 try:
 	if len(sys.argv)<2:
