@@ -239,6 +239,48 @@ class ARIAPII(ARIAPI.API):
 
 	def getArrayState(self, current = None):
 		msg = "Getting array state"
+		_st = {}
+		for node in self.obsMode.nodes:
+			_piu = ARIAPI.piu(self.obsMode.Clientstatus[node].portInUse.InUse,\
+			self.obsMode.Clientstatus[node].portInUse.Routine)
+			_sts = ARIAPI.ClState(self.obsMode.Clientstatus[node].name,\
+			self.obsMode.Clientstatus[node].time,\
+			self.obsMode.Clientstatus[node].SRTState,\
+			self.obsMode.Clientstatus[node].SRTonTarget,\ 
+			self.obsMode.Clientstatus[node].SRTMode,\ 
+			self.obsMode.Clientstatus[node].SRTTarget,\ 
+			self.obsMode.Clientstatus[node].SRTTrack,\ 
+			self.obsMode.Clientstatus[node].enObs,\ 
+			self.obsMode.Clientstatus[node].newAzEl,\ 
+			self.obsMode.Clientstatus[node].enSRT,\ 
+			self.obsMode.Clientstatus[node].enSpec,\ 
+			self.obsMode.Clientstatus[node].slewing,\ 
+			self.obsMode.Clientstatus[node].cmdstop,\ 
+			self.obsMode.Clientstatus[node].IsMoving,\  
+			self.obsMode.Clientstatus[node].getStatus,\  
+			_piu,\  
+			self.obsMode.Clientstatus[node].spectra,\ 
+			self.obsMode.Clientstatus[node].RxSwitchMode,\  
+			self.obsMode.Clientstatus[node].toSource,\ 
+			self.obsMode.Clientstatus[node].SRTinitialized,\ 
+			self.obsMode.Clientstatus[node].initialized,\  
+			self.obsMode.Clientstatus[node].Target,\  
+			self.obsMode.Clientstatus[node].obsTarget,\
+			self.obsMode.Clientstatus[node].az,\
+			self.obsMode.Clientstatus[node].el,\
+			self.obsMode.Clientstatus[node].aznow,\
+			self.obsMode.Clientstatus[node].elnow,\
+			self.obsMode.Clientstatus[node].azoffset,\
+			self.obsMode.Clientstatus[node].eloffset,\
+			self.obsMode.Clientstatus[node].axis,\
+			self.obsMode.Clientstatus[node].tostow,\
+			self.obsMode.Clientstatus[node].elatstow,\
+			self.obsMode.Clientstatus[node].azatstow,\
+			self.obsMode.Clientstatus[node].slew,\
+			self.obsMode.Clientstatus[node].serialport,\
+			self.obsMode.Clientstatus[node].lastSRTCom,\
+			self.obsMode.Clientstatus[node].lastSerialMsg)
+			_st[node] = _sts
 		return msg
 		
 	def getLastSpectrum(self, current = None):

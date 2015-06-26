@@ -127,6 +127,8 @@ module ARIAPI{
 		string lastSerialMsg;
     };
 
+    dictionary<string, ClState> ClStateDict;
+
 	interface API{
 		void testConn(string s, out string r);
 		void setObservingMode(string s1, string s2, out string r);
@@ -148,7 +150,7 @@ module ARIAPI{
         void stopGoingToTarget(out string r);
         void setOffsetPointing(float f1, float f2, out string r);
         void getObsModeState(out OMstate r);
-        void getArrayState(out ClState r);
+        void getArrayState(out ClStateDict r);
         void getLastSpectrum(out lsp sp);
 	};
 };	
