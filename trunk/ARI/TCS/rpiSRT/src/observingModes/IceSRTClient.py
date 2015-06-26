@@ -138,7 +138,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def setFreq(self, freq, mode, current = None):
 		self.SetFreq(freq, str(mode))
 		print self.name +" setting receiver with freq " + str(freq) + " and mode " + str(mode)
-		return self.name + " receiver set" 
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) +" "+self.name + " receiver set" 
 
 	def stopSpectrum(self, current = None):
 		self.disableSpectrum()
