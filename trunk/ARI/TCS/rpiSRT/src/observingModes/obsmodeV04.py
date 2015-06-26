@@ -607,11 +607,13 @@ class SRTDoubleSingleDish(ObsBase):
 			
 	def rsetupCB(self,a):
 		#generic callback
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " "+a
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Radio Setup finished"
+		print a
+		name = a.split(' ')[2].upper()
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ str(self.nodes)+ "Setup finished"
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
+		self.RxSetup[name] = [self.freq, self.rec_mode]
 		return
 
 
