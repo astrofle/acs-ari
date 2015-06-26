@@ -22,6 +22,7 @@ class API():
 		self.planets = []
 		self.stars = []
 		self.spectrum = {}
+		self.obsModeState = {}
 	
 	def connect(self, IP):
 		""" Connects to Observing Mode server
@@ -485,7 +486,7 @@ class API():
 		""" getObsModeStatus Ice callback - 
 		returns a list with Observing Mode Server status parameters
 		"""
-		print a
+		self.obsModeState = a
 		return
 	
 	def getArrayStatus(self):

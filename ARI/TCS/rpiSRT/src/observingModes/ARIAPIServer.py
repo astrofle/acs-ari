@@ -227,7 +227,15 @@ class ARIAPII(ARIAPI.API):
 	def getObsModeState(self, current = None):
 		self.obsMode.states()
 		msg = "Getting observing mode state"
-		return msg
+		st = ARIAPI.OMstate(self.obsMode.observingMode, self.obsMode.nodes,\
+		self.obsMode.ARI_controllersTXT, self.obsMode.setupInProgress,\
+		self.obsMode.initialized, self.obsMode.atStow, self.obsMode.stowInProgress,\
+		self.obsMode.mode, self.obsMode.RxSwmode, self.obsMode.RxSetup,\
+		self.obsMode.new_freq, self.obsMode.new_rec_mode, self.obsMode.getClStatus,\
+		self.obsMode.ArrayMovingToTarget, self.obsMode.ArrayOnTarget,\
+		self.obsMode.ArrayStopCmd, self.obsMode.offsets, self.obsMode.scanMapInProgress,\
+		self.obsMode.readSpectrum, self.obsMode.NewSpectrum, self.obsMode.waitSpectrum)
+		return st
 
 	def getArrayState(self, current = None):
 		msg = "Getting array state"
