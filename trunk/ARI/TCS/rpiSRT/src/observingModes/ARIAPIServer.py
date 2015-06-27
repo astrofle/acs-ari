@@ -281,7 +281,7 @@ class ARIAPII(ARIAPI.API):
 			self.obsMode.Clientstatus[node].lastSRTCom,\
 			self.obsMode.Clientstatus[node].lastSerialMsg)
 			_st[node] = _sts
-		return msg
+		return _st
 		
 	def getLastSpectrum(self, current = None):
 		lastSpectrum = {}
