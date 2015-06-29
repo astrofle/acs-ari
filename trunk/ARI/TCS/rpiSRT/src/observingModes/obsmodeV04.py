@@ -340,7 +340,6 @@ class ObsBase():
 					onTargetnodes += 1
 				if ((node == 'SH') or (node == 'ROACH')):
 					onTargetnodes += 1
-				print onTargetnodes
 				if onTargetnodes == len(self.nodes):
 					self.ArrayMovingToTarget = False
 			time.sleep(1)
