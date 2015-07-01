@@ -616,5 +616,199 @@ class SRTDoubleSingleDish(ObsBase):
 		self.RxSetup[name] = [ARIAPI.RxSet(self.freq, self.rec_mode)]
 		return
 
+class ARI_SignalHound(ObsBase):
+	def __init__(self):
+		ObsBase.__init__(self)
+		#self.nodes =['SH']
+		self.mode = 'ARI'
+		self.nodes =['SRT1', 'SRT2', 'SH']
+		self.observingMode = 'ARI-SH'
+		self.SH_initialized = False
+		self.bw = 40e6
+		self.SH_bwSetup = False
+		self.fc = 1421.0e6
+		self.SH_fcSetup = False
+		self.filename = "script_mode.txt"
+		self.SH_filenameSetup = False
+		self.SH_readSpectrum = False
+		self.SH_headmade = False
+		self.SH_spWritten = False
+		self.SH_powerRead = False
+		
+	def initHound(self):
+		statusIC = 0
+		ic = None
+		self.SH_initialized = False
+		try:
+			print "Initializing SignalHound"
+			self.ARI_controllers['SH'].begin_SHinitHound(self.SHinitCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
 
+	def SHinitCB(self, a):
+		print a
+		self.SH_initialized = True
+
+	def SH_setBW(self, bw):
+		self.bw = bw
+		statusIC = 0
+		ic = None
+		self.SH_bwSetup = False
+		try:
+			print "Set SignalHound BW"
+			self.ARI_controllers['SH'].begin_SHsetBW(self.bw, self.SHBWCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHBWCB(self, a):
+		print a
+		self.SH_bwSetup = True
+		
+	def SH_setfc(self, fc):
+		self.fc = fc
+		statusIC = 0
+		ic = None
+		self.SH_fcSetup = False
+		try:
+			print "Set SignalHound central frequency"
+			self.ARI_controllers['SH'].begin_SHsetFc(self.fc, self.SHfcCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHfcCB(self, a):
+		print a
+		self.SH_fcSetup = True
+
+	def SH_setFileName(self, filename):
+		self.filename = filename
+		statusIC = 0
+		ic = None
+		self.SH_filenameSetup = False
+		try:
+			print "Set SignalHound spectrum filename"
+			self.ARI_controllers['SH'].begin_SHsetFileName(self.filename, self.SHfilenameCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHfilenameCB(self, a):
+		print a
+		self.SH_filenameSetup = True
+		
+	def SH_getSpectrum(self):
+		statusIC = 0
+		ic = None
+		self.SH_readSpectrum = False
+		try:
+			print "Getting Signal hound spectrum"
+			self.ARI_controllers['SH'].begin_SHgetSpectrum(self.SHspCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHspCB(self, a):
+		self.SHspectrum = a
+		self.SH_readSpectrum = True
+
+	def SH_makeHead(self):
+		statusIC = 0
+		ic = None
+		self.SH_headmade = False
+		try:
+			print "Creating header for spectrum file"
+			self.ARI_controllers['SH'].begin_SHmakeHead('SRT1', 'SRT2', 'Dummy', self.SHmheadCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHmheadCB(self, a):
+		print a
+		self.SH_headmade = True
+
+	def SH_writeSpectrum(self):
+		statusIC = 0
+		ic = None
+		self.SH_spectrumWritten = False
+		try:
+			print "Writing spectrum to file"
+			self.ARI_controllers['SH'].begin_SHwriteSpectrum(self.SHspWCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHspWCB(self, a):
+		print a
+		self.SH_spWritten = True
+
+	def SH_getSpectralPower(self):
+		statusIC = 0
+		ic = None
+		self.SH_powerRead = False
+		try:
+			print "Getting spectrum power"
+			self.ARI_controllers['SH'].begin_SHgetSpectralPower(self.SHspPwCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHspPwCB(self, a):
+		print a
+		self.SH_powerRead = True
+		
+	def SH_routine(self):
+		self.initHound()
+		while(not self.SH_initialized):
+			time.sleep(0.5)
+		self.SH_setBW(self.bw)
+		while(not self.SH_bwSetup):
+			time.sleep(0.5)
+		self.SH_setfc(self.fc)
+		while(not self.SH_fcSetup):
+			time.sleep(0.5)
+		self.SH_setFileName("script_mode.txt")
+		while(not self.SH_filenameSetup):
+			time.sleep(0.5)
+		self.SH_getSpectrum()
+		while(not self.SH_readSpectrum):
+			time.sleep(0.5)
+		self.SH_makeHead()
+		while(not self.SH_headmade):
+			time.sleep(0.5)
+		self.SH_writeSpectrum()
+		while(not self.SH_spWritten):
+			time.sleep(0.5)
+		self.SH_getSpectralPower()
+		while(not self.SH_powerRead):
+			time.sleep(0.5)
+		
+	def observation_thread(self, mode, target, freq, bw):
+		self.obswSRT(mode, target)
+		while(self.observe):
+			while(self.getSHsp):
+				self.SH_getSpectrum()
+				while(not self.SH_readSpectrum):
+					time.sleep(0.5)
+				self.SH_getSpectralPower()
+				while(not self.SH_powerRead):
+					time.sleep(0.5)
+				time.sleep(2)
+	
+	def ARI_observation(self, mode, target, freq, bw):
+		self.observe = True
+		obs_Thread = threading.Thread(target = self.observation_thread, args=(mode, target, freq, bw), name='observation')
+		obs_Thread.start()
+		
+	def stop_ARI_obs(self):
+		self.observe = False
+		self.getSHsp = False
+		self.stopSRT()
+	
+	def enableSHspectrum(self):
+		self.getSHsp = True
+		
+	def disableSHspectrum(self):
+		self.getSHsp = False
 
