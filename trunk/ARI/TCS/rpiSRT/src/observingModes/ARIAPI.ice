@@ -129,6 +129,22 @@ module ARIAPI{
 
     dictionary<string, ClState> ClStateDict;
 
+	struct SHstamp{
+		string time;
+		int seq;
+		float freqi;
+		float freqf;
+		int channels;
+		float chbw;
+		float aznow;
+		float elnow;
+	};
+	struct SHspectrum{
+		SHstamp samplestamp;
+		spectrum SHspec;
+	};
+
+
 	interface API{
 		void testConn(string s, out string r);
 		void setObservingMode(string s1, string s2, out string r);
