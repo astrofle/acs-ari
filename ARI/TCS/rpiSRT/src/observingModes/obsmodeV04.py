@@ -87,7 +87,7 @@ class ObsBase():
 		self.ARI_controllers = {}
 		self.ARI_controllersTXT = {}
 		####
-		
+		self.SpectralPower = []
 		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
@@ -756,7 +756,7 @@ class ARI_SignalHound(ObsBase):
 			self.statusIC = 1
 
 	def SHspPwCB(self, a):
-		print a
+		self.SpectralPower =  a
 		self.SH_powerRead = True
 		
 	def SH_routine(self):
