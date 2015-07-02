@@ -164,9 +164,9 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         print "Obtaining Singal Hound spectral power"
         Pdbm = self.get_spectral_power()
         self.SH_powerUpdated = True
-        print "spectral power is " + Pdbm.split(';')[0]
-        print "central frequenct power is " + Pdbm.split(';')[1]
-        return "Spectral power: " + Pdbm 
+        print "spectral power is " + str(Pdbm[0])
+        print "central frequenct power is " + str(Pdbm[1])
+        return Pdbm 
 
     def SHvalidFFFSize(self, fft, current = None):
         self.SH_FFTSizeCheck = False

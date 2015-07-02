@@ -1,5 +1,6 @@
 module SHControl{
 	sequence<float> spectrum;
+	sequence<float> power
 
 	struct SHstamp{
 		string time;
@@ -30,7 +31,7 @@ module SHControl{
 		void SHwriteSpectrum(out string r);
 		void SHmakeHead(string ant1, string ant2, string source, out string r);
 		void SHvalidFFTSize(int fft, out string r);
-		void SHgetSpectralPower(out string r);
+		void SHgetSpectralPower(out power r);
 	};
 };
 

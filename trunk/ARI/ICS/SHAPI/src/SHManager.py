@@ -245,7 +245,7 @@ class SHManager:
         print "spectral power is: " + str(Pdbm)
         print "power for fc: " + str(self.freq[int(self.num_channel/2)]) + " is " + str(fcdbm)
 
-        return str(Pdbm)+";"+str(fcdbm)
+        return [Pdbm, fcdbm]
 
     def valid_fft_size(self, _fft):
         """
