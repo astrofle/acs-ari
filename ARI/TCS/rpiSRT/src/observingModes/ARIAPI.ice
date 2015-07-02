@@ -139,8 +139,12 @@ module ARIAPI{
 		float chbw;
 		float spectralPower;
 		float centerFreqPower;
-		float aznow;
-		float elnow;
+		float SRT1aznow;
+		float SRT1elnow;
+		float SRT2aznow;
+		float SRT2elnow;
+		float az;
+		float el;
 	};
 	struct SHspectrum{
 		SHstamp samplestamp;

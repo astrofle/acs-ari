@@ -813,3 +813,4 @@ class ARI_SignalHound(ObsBase):
 	def disableSHspectrum(self):
 		self.getSHsp = False
 
+
