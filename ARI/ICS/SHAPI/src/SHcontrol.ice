@@ -1,6 +1,6 @@
 module SHControl{
 	sequence<float> spectrum;
-	sequence<float> power
+	sequence<float> power;
 
 	struct SHstamp{
 		string time;
