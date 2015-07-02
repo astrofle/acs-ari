@@ -129,6 +129,7 @@ module ARIAPI{
 
     dictionary<string, ClState> ClStateDict;
 
+
 	struct SHstamp{
 		string time;
 		int seq;
@@ -136,6 +137,8 @@ module ARIAPI{
 		float freqf;
 		int channels;
 		float chbw;
+		float spectralPower;
+		float centerFreqPower;
 		float aznow;
 		float elnow;
 	};
