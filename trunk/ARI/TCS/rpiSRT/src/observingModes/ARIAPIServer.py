@@ -137,6 +137,14 @@ class ARIAPII(ARIAPI.API):
 		print msg
 		return msg
 		
+	def setARISH(self, fc, bw):
+		self.obsMode.SH_setBW(bw)
+		while(not self.obsMode.SH_bwSetup):
+			time.sleep(0.5)
+		self.obsMode.SH_setfc(fc)
+		while(not self.SH_fcSetup):
+			time.sleep(0.5)
+		
 	def setRxSwMode(self, node, RxSwMode, current = None):
 		self.obsmode.SwRxMode(self, node, mode)
 		msg = "Receiver Switch Mode Set"

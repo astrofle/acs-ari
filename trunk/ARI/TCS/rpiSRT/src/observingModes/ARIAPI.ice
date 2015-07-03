@@ -175,6 +175,7 @@ module ARIAPI{
         void getObsModeState(out OMstate r);
         void getArrayState(out ClStateDict r);
         void getLastSpectrum(out lsp sp);
+        void setARISH(float fc, float bw, out string r);
 	};
 };	
 
