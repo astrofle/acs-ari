@@ -799,7 +799,7 @@ class ARI_SignalHound(ObsBase):
 			time.sleep(0.5)
 		
 	def observation_thread(self, mode, target, freq, bw):
-		self.obswSRT(mode, target)
+		self.obswArray(mode, target)
 		while(self.observe):
 			while(self.getSHsp):
 				self.SH_getSpectrum()
