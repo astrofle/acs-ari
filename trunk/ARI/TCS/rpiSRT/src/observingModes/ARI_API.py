@@ -227,7 +227,7 @@ class API():
 			print "This method is not compatible with the selected observing mode"
 		return
 		
-	del setSHCB(self, a):
+	def setSHCB(self, a):
 		""" setSHArray Ice callback -
 		"""
 		print a
