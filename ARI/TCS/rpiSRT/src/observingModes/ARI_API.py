@@ -215,7 +215,7 @@ class API():
 		statusIC = 0
 		ic = None
 		self.SHArray = [None, None]
-		if self.obsmode[1] == 'SH':
+		if self.obsMode[1] == 'SH':
 			try:
 				self.controller.begin_setARISH(fc, bw, self.setSHCB, self.failureCB);
 				print "Setting Signal Hound"
