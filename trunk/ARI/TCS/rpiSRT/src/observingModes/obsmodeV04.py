@@ -389,8 +389,7 @@ class ObsBase():
 		self.ArrayMovingToTarget = False
 		
 	def stopGoingtoTarget(self):
-	#Stops array to a target - use it only for this purpose - \
-	StopArray is still needed after this.
+	#Stops array to a target - use it only for this purpose - StopArray is still needed after this.
 	#Does not work for stopping stow
 		statusIC = 0
 		ic = None
