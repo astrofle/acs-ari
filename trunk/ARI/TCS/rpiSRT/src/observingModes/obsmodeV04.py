@@ -349,7 +349,8 @@ class ObsBase():
 			onTargetnodes = 0
 			time.sleep(2)
 			for node in self.nodes:
-				self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
+				if node.startswith('SRT'):
+					self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
 				if (self.ArrayOnTarget[node]):
 					onTargetnodes += 1
 				if ((node == 'SH') or (node == 'ROACH')):
