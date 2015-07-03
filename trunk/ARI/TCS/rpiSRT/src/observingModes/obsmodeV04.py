@@ -198,7 +198,7 @@ class ObsBase():
 			if node.startswith('SRT'):
 			#Set SRT receiver switch mode
 				self.ARI_controllers[node].\
-				begin_setRxMode(self.mode, self.modeCB, self.failureCB);
+				begin_setRxMode(self.mode, self.modeCB, self.failureCB)
 		
 		ClientStatus_Thread = threading.Thread(target = \
 		self.getClientStatusThread, name='Clientstatus')

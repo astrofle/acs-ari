@@ -137,7 +137,9 @@ class ARIAPII(ARIAPI.API):
 		print msg
 		return msg
 		
-	def setARISH(self, fc, bw):
+	def setARISH(self, _fc, _bw):
+		fc = _fc*1e6
+		bw = _bw*1e6
 		self.obsMode.SH_setBW(bw)
 		while(not self.obsMode.SH_bwSetup):
 			time.sleep(0.5)
