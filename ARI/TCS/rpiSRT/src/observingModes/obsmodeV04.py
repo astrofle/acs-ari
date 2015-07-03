@@ -100,7 +100,8 @@ class ObsBase():
 	def find_radec(self, disp):
 		self.radecSources = sites.find_SRTsources(sites.SRTsources, sites.site, disp)
 		if disp:
-			print str(len(self.radecSources)) + " observabable stars: " + str(self.radecSources)
+			print str(len(self.radecSources)) + " observabable stars: " +\
+			str(self.radecSources)
 		return
 
 	def clean(self):
@@ -165,7 +166,8 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_ClientShutdown(self.genericCB, self.failureCB);
+					self.ARI_controllers[node].\
+					begin_ClientShutdown(self.genericCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
 					" initializing antenna " + node
 		except:
@@ -185,24 +187,29 @@ class ObsBase():
 	def createObsMode(self):
 		self.ARI_controllers = {}
 		self.ARI_controllersTXT = {}
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" creating "+ self.observingMode
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+		" creating "+ self.observingMode
 		for node in self.nodes:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Connecting to "+ node
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+			" Connecting to "+ node
 			controller = self.connect(self.ARI_nodes[node], node)
 			self.ARI_controllers[node] = controller
 			self.ARI_controllersTXT[node] = str(controller)
 			if node.startswith('SRT'):
 			#Set SRT receiver switch mode
-				self.ARI_controllers[node].begin_setRxMode(self.mode, self.modeCB, self.failureCB);
+				self.ARI_controllers[node].\
+				begin_setRxMode(self.mode, self.modeCB, self.failureCB);
 		
-		ClientStatus_Thread = threading.Thread(target = self.getClientStatusThread, name='Clientstatus')
+		ClientStatus_Thread = threading.Thread(target = \
+		self.getClientStatusThread, name='Clientstatus')
 		ClientStatus_Thread.start()
 		print "starting status thread"
 		time.sleep(1)
 		for node in self.nodes:
 			if node.startswith('SRT'):
 				if (self.Clientstatus[node].initialized == 'True'):
-					print node + " is initialized - setup not needed - see self.Clientstatus for node status"
+					print node + " is initialized - setup not needed - \
+					see self.Clientstatus for node status"
 				else:
 					print node + " requires initialization - do self.setup() "
 
@@ -219,7 +226,8 @@ class ObsBase():
 		statusIC = 0
 		ic = None
 		if self.setupInProgress:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " setup process in progress, wait"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ \
+			" setup process in progress, wait"
 			return
 		else:
 			self.setupInProgress = True
@@ -227,7 +235,12 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_setup(self.setupCB, self.failureCB);
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" initializing antenna " + node
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ \
+					" initializing antenna " + node
+				elif (node == 'SH'):
+					self.initHound()
+					while(not self.SH_initialized):
+						time.sleep(0.5)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1

@@ -112,7 +112,8 @@ class API():
 		ic = None
 		self.obsMode = ['','']
 		try:
-			self.controller.begin_setObservingMode(mode, instrument, self.setObsModeCB, self.failureCB);
+			self.controller.begin_setObservingMode(mode, instrument,\
+			self.setObsModeCB, self.failureCB);
 			print "Setting observing mode"
 			self.obsMode = [mode, instrument]
 		except:
@@ -172,7 +173,7 @@ class API():
 		return
 		
 	def setRxArray(self,freq, rxmode):
-		""" Sets array SRT receiver (does not includes Signal hound yet) - 
+		""" Sets array SRT receiver  - 
 		freq: type: (float), the SRT receiver frequency in MHz
 		      values: Range to be determined but typical use around 1420.4 MHz
 		mode: type: (int), the SRT receiver mode as documented in the SRT manual
@@ -187,19 +188,51 @@ class API():
 		statusIC = 0
 		ic = None
 		self.RxArray = [None,None]
-		try:
-			self.controller.begin_setRxArray(freq, rxmode, self.setRxArrayCB, self.failureCB);
-			print "Setting Rx"
-			self.RxArray = [freq, rxmode]
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		if self.obsMode[0] == 'SD':
+			try:
+				self.controller.begin_setRxArray(freq, rxmode,\
+				self.setRxArrayCB, self.failureCB);
+				print "Setting Rx"
+				self.RxArray = [freq, rxmode]
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			print "This method is not compatible with the selected observing mode"
+		return
 		
 	def setRxArrayCB(self, a):
 		""" setRxArray Ice callback - 
 		"""
 		print a
 		return
+		
+	def setSHArray(self, fc, bw):
+		""" Sets array Signal Hound instrument -
+		fc: type (float) The SignalHound central frequency in MHz
+		bw: type (float) The signalHound spectrum span (bandwidth) in MHz
+		"""
+		statusIC = 0
+		ic = None
+		self.SHArray = [None, None]
+		if self.obsmode[1] = 'SH':
+			try:
+				self.controller.begin_setARISH(fc, bw, self.setSHCB, self.failureCB);
+				print "Setting Signal Hound"
+				self.SHArray = [fc, bw]
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			print "This method is not compatible with the selected observing mode"
+		return
+		
+	del setSHCB(self, a):
+		""" setSHArray Ice callback -
+		"""
+		print a
+		return
+
 	
 	def observeWithArray(self, mode, target):
 		""" Starts observation with Array - 
