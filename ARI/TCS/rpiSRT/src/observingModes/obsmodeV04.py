@@ -287,8 +287,11 @@ class ObsBase():
 		self.atStow[antenna] = True
 		stownodes = 0
 		for node in self.nodes:
-		    if (self.atStow[node]):
-		        stownodes += 1
+			if node.startswith('SRT'):
+			    if (self.atStow[node]):
+			        stownodes += 1
+			else:
+				stownodes += 1
 		if stownodes == len(self.nodes):
 			self.stowInProgress = False
 			print "Array at stow"
