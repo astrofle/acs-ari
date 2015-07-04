@@ -151,6 +151,7 @@ module ARIAPI{
 		spectrum SHspec;
 	};
 
+    dictionary<string, SHspectrum> lspSH;
 
 	interface API{
 		void testConn(string s, out string r);
@@ -176,6 +177,7 @@ module ARIAPI{
         void getArrayState(out ClStateDict r);
         void getLastSpectrum(out lsp sp);
         void setARISH(float fc, float bw, out string r);
+        void getLastSHSpectrum(out lspSH sp);
 	};
 };	
 

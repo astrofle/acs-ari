@@ -299,13 +299,28 @@ class ARIAPII(ARIAPI.API):
 		for node in self.obsMode.nodes:
 			_sp = self.obsMode.spectrum[node]
 			print _sp.sampleStamp.name
-			_stamp =ARIAPI.stamp(_sp.sampleStamp.name,_sp.sampleStamp.timdate,\
-			_sp.sampleStamp.aznow,_sp.sampleStamp.elnow,_sp.sampleStamp.temperature,\
+			_stamp =ARIAPI.stamp(_sp.sampleStamp.name,\
+			_sp.sampleStamp.timdate,_sp.sampleStamp.aznow,\
+			_sp.sampleStamp.elnow,_sp.sampleStamp.temperature,\
 			_sp.sampleStamp.freq0,_sp.sampleStamp.av,_sp.sampleStamp.avc,\
 			_sp.sampleStamp.nfreq,_sp.sampleStamp.freqsep)
-			_specs = ARIAPI.specs(_stamp, _sp.spec,_sp.avspec,_sp.avspecc,_sp.specd)
+			_specs = ARIAPI.specs(_stamp,\
+			_sp.spec,_sp.avspec,_sp.avspecc,_sp.specd)
 			lastSpectrum[_sp.sampleStamp.name.upper()] = _specs
 		return lastSpectrum
+		
+	def getLastSHSpectrum(self, current = None):
+		lastSHSpectrum = {}
+		_sp = self.obsMode.SHspectrum
+		_stamp = ARIAPI.SHstamp(_sp.samplestamp.time,\
+		_sp.samplestamp.seq,_sp.samplestamp.freqi,\
+		_sp.samplestamp.freqf, _sp.samplestamp.channels,\
+		_sp.samplestamp.chbw, self.obsMode.SpectralPower[0], self.obsMode.SpectralPower[1],\
+		self.obsMode.Clientstatus['SRT1'].aznow, self.obsMode.Clientstatus['SRT1'].elnow,\
+		self.obsMode.Clientstatus['SRT2'].aznow, self.obsMode.Clientstatus['SRT2'].elnow, \
+		self.obsMode.Clientstatus['SRT1'].az, self.obsMode.Clientstatus['SRT1'].el)
+		lastSHSpectrum['SH'] = ARIAPI.SHspectrum(_stamp, _sp.SHspec)
+		return lastSHSpectrum
 try:
 	if len(sys.argv)<2:
 		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
