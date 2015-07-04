@@ -838,7 +838,7 @@ class ARI_SignalHound(ObsBase):
 		
 	def SHSpectrum_thread(self):
 		while(self.getSHsp):
-			self.NewSpectrum['SH'] = True 
+			self.NewSpectrum['SH'] = False 
 			self.SH_getSpectrum()
 			while(not self.SH_readSpectrum):
 				time.sleep(0.5)
