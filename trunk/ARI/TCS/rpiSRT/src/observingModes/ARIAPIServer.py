@@ -308,7 +308,6 @@ class ARIAPII(ARIAPI.API):
 			_specs = ARIAPI.specs(_stamp,\
 			_sp.spec,_sp.avspec,_sp.avspecc,_sp.specd)
 			lastSpectrum[_sp.sampleStamp.name.upper()] = _specs
-			self.obsMode.NewSpectrum[node] = False
 		return lastSpectrum
 		
 	def getLastSHSpectrum(self, current = None):
@@ -322,7 +321,6 @@ class ARIAPII(ARIAPI.API):
 		self.obsMode.Clientstatus['SRT2'].aznow, self.obsMode.Clientstatus['SRT2'].elnow, \
 		self.obsMode.Clientstatus['SRT1'].az, self.obsMode.Clientstatus['SRT1'].el)
 		lastSHSpectrum['SH'] = ARIAPI.SHspectrum(_stamp, _sp.SHspec)
-		self.obsMode.NewSpectrum['SH'] = False
 		return lastSHSpectrum
 try:
 	if len(sys.argv)<2:
