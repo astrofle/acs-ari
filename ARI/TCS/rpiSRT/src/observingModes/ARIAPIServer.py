@@ -252,7 +252,7 @@ class ARIAPII(ARIAPI.API):
 		msg = "Getting array state"
 		_st = {}
 		for node in self.obsMode.nodes:
-			if node.starswith('SRT'):
+			if node.startswith('SRT'):
 				_piu = ARIAPI.piu(self.obsMode.Clientstatus[node].portInUse.InUse,\
 				self.obsMode.Clientstatus[node].portInUse.Routine)
 				_sts = ARIAPI.ClState(self.obsMode.Clientstatus[node].name,\
