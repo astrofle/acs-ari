@@ -9,6 +9,8 @@ module SHControl{
 		float freqf;
 		int channels;
 		float chbw;
+		float sppow;
+		float fcpow;
 	};
 	struct SHspectrum{
 		SHstamp samplestamp;

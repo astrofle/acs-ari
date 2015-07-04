@@ -73,7 +73,8 @@ class ObsBase():
 		}
 		self.NewSpectrum ={
 		'SRT1':False,
-		'SRT2':False
+		'SRT2':False,
+		'SH' : False
 		}
 		self.ArrayMovingToTarget = False
 		self.ArrayStopCmd = False
@@ -333,7 +334,8 @@ class ObsBase():
 					self.ArrayOnTarget[node] = False
 					self.ARI_controllers[node].begin_obsSRT(mode, str(target)\
 					, self.trackCB, self.failureCB);
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving antenna" + node + " to target"
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving\
+					antenna" + node + " to target"
 			OnTrg_Thread = threading.Thread(target = self.onTarget_Thread, name='onTarget')
 			OnTrg_Thread.start()
 			print "starting onTarget thread"
@@ -839,9 +841,9 @@ class ARI_SignalHound(ObsBase):
 			self.SH_getSpectrum()
 			while(not self.SH_readSpectrum):
 				time.sleep(0.5)
-			self.SH_getSpectralPower()
-			while(not self.SH_powerRead):
-				time.sleep(0.5)
+			#self.SH_getSpectralPower()
+			#while(not self.SH_powerRead):
+			#	time.sleep(0.5)
 			time.sleep(2)
 	
 	def ARI_SHSpectrum(self):
