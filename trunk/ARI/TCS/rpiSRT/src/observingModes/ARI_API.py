@@ -339,12 +339,20 @@ class API():
 		"""
 		statusIC = 0
 		ic = None
-		try:
-			self.controller.begin_getLastSpectrum(self.lastSpecCB, self.failureCB);
-			print "disabling spectrum reading for array"
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		if self.obsMode[1] == 'SH':
+			try:
+				self.controller.begin_getLastSHSpectrum(self.lastSpecCB, self.failureCB);
+				print "getting last SignalHound spectrum available in observing mode"
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			try:
+				self.controller.begin_getLastSpectrum(self.lastSpecCB, self.failureCB);
+				print "getting last spectrum available in observing mode"
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
 
 	def lastSpecCB(self, a):
 		""" getLastSpectrumArray Ice callback - 
