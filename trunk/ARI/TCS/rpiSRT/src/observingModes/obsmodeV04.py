@@ -100,6 +100,11 @@ class ObsBase():
 		'SRT2': self.setupSRT2CB,
 		}
 		
+		self.StowNodeCB = {
+		'SRT1': self.stowSRT1CB,
+		'SRT2': self.stowSRT2CB
+		}
+		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -268,14 +273,6 @@ class ObsBase():
 			traceback.print_exc()
 			self.statusIC = 1
 			
-	def setupCB(self, a):
-		#generic callback
-		print a
-		antenna = a.split(' ')[2].upper()
-		self.initialized[antenna] = True
-		self.atStow[antenna] = True
-		self.checkInit()
-		return
 		
 	def setupSRT1CB(self, a):
 		#generic callback
@@ -306,7 +303,6 @@ class ObsBase():
 		else:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Initialization in progress"
 		
-
 	def Stow(self):
 		statusIC = 0
 		ic = None
@@ -319,7 +315,7 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ArrayOnTarget[node] = False
-					self.ARI_controllers[node].begin_SRTStow(self.stowCB, self.failureCB);
+					self.ARI_controllers[node].begin_SRTStow(self.StowNodeCB[node], self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stowing Antenna: " + node
 		except:
 			traceback.print_exc()
@@ -329,6 +325,33 @@ class ObsBase():
 		print a
 		antenna = a.split(' ')[2].upper()
 		self.atStow[antenna] = True
+		stownodes = 0
+		for node in self.nodes:
+			if node.startswith('SRT'):
+			    if (self.atStow[node]):
+			        stownodes += 1
+			else:
+				stownodes += 1
+		if stownodes == len(self.nodes):
+			self.stowInProgress = False
+			print "Array at stow"
+		return
+		
+	def stowSRT1CB(self, a):
+		print a
+		antenna = a.split(' ')[2].upper()
+		self.atStow[antenna] = True
+		self.checkStow()
+		return
+		
+	def stowSRT2CB(self, a):
+		print a
+		antenna = a.split(' ')[2].upper()
+		self.atStow[antenna] = True
+		self.checkStow()
+		return
+	
+	def checkStow(self)
 		stownodes = 0
 		for node in self.nodes:
 			if node.startswith('SRT'):
