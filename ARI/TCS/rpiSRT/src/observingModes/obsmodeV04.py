@@ -277,7 +277,7 @@ class ObsBase():
 		checkInit()
 		return
 		
-	self.setupSRT1CB(self, a):
+	def setupSRT1CB(self, a):
 		#generic callback
 		print a
 		antenna = a.split(' ')[2].upper()
@@ -286,7 +286,7 @@ class ObsBase():
 		checkInit()
 		return
 	
-	self.setupSRT2CB(self, a):
+	def setupSRT2CB(self, a):
 		#generic callback
 		print a
 		antenna = a.split(' ')[2].upper()
