@@ -233,6 +233,19 @@ class ObsBase():
 		antenna = a.split(' ')[2].upper()
 		mode = a.split(' ')[-1]
 		self.RxSwmode[antenna] = mode
+		
+	def SwModeSRT1CB(self, a):
+		print a
+		antenna = a.split(' ')[2].upper()
+		mode = a.split(' ')[-1]
+		self.RxSwmode[antenna] = mode
+		
+	def SwModeSRT2CB(self, a):
+		print a
+		antenna = a.split(' ')[2].upper()
+		mode = a.split(' ')[-1]
+		self.RxSwmode[antenna] = mode
+		
 
 	def SwRxMode(self, node, mode):
 		self.ARI_controllers[node].begin_setRxMode(mode, self.modeCB, self.failureCB);
