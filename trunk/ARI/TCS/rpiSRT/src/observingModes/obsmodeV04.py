@@ -485,7 +485,7 @@ class ObsBase():
 			if node.startswith('SRT'):
 				if self.stopFlag[node]:
 					stopNodes += 1
-			elif:
+			else:
 				stopNodes += 1
 		if (stopNodes == len(self.nodes):
 			self.ArrayMovingToTarget = False
