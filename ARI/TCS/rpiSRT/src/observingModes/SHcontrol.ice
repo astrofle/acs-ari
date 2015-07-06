@@ -49,6 +49,6 @@ module SHControl{
 		void SHmakeHead(string ant1, string ant2, string source, out string r);
 		void SHvalidFFTSize(int fft, out string r);
 		void SHgetSpectralPower(out power r);
-		void SH_Status(out state r);
+		void SHStatus(out state r);
 	};
 };
