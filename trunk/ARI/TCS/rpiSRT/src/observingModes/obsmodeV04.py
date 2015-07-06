@@ -91,7 +91,7 @@ class ObsBase():
 		self.SpectralPower = []
 		####
 		# Callback functions - dictionaries
-		self.SWModeCB = {
+		self.SwModeCB = {
 		'SRT1': self.SwModeSRT1CB,
 		'SRT2': self.SwModeSRT2CB
 		}
@@ -205,7 +205,7 @@ class ObsBase():
 			if node.startswith('SRT'):
 			#Set SRT receiver switch mode
 				self.ARI_controllers[node].\
-				begin_setRxMode(self.mode, self.modeCB, self.failureCB)
+				begin_setRxMode(self.mode, self.SwModeCB[node], self.failureCB)
 		
 		ClientStatus_Thread = threading.Thread(target = \
 		self.getClientStatusThread, name='Clientstatus')
