@@ -95,6 +95,10 @@ class ObsBase():
 		'SRT1': self.SwModeSRT1CB,
 		'SRT2': self.SwModeSRT2CB
 		}
+		self.SetupNodesCB{
+		'SRT1': self.setupSRT1CB,
+		'SRT2': self.setupSRT2CB,
+		}
 		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
@@ -225,15 +229,7 @@ class ObsBase():
 					see self.Clientstatus for node status"
 				else:
 					print node + " requires initialization - do self.setup() "
-					
 	
-
-	def modeCB(self, a):
-		print a
-		antenna = a.split(' ')[2].upper()
-		mode = a.split(' ')[-1]
-		self.RxSwmode[antenna] = mode
-		
 	def SwModeSRT1CB(self, a):
 		print a
 		antenna = a.split(' ')[2].upper()
@@ -245,10 +241,9 @@ class ObsBase():
 		antenna = a.split(' ')[2].upper()
 		mode = a.split(' ')[-1]
 		self.RxSwmode[antenna] = mode
-		
-
+	
 	def SwRxMode(self, node, mode):
-		self.ARI_controllers[node].begin_setRxMode(mode, self.modeCB, self.failureCB);
+		self.ARI_controllers[node].begin_setRxMode(mode, self.SwModeCB[node], self.failureCB);
 
 	def setup(self):
 		statusIC = 0
@@ -262,7 +257,7 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_setup(self.setupCB, self.failureCB);
+					self.ARI_controllers[node].begin_setup(self.SetupNodesCB[node], self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ \
 					" initializing antenna " + node
 				elif (node == 'SH'):
@@ -279,6 +274,28 @@ class ObsBase():
 		antenna = a.split(' ')[2].upper()
 		self.initialized[antenna] = True
 		self.atStow[antenna] = True
+		checkInit()
+		return
+		
+	self.setupSRT1CB(self, a):
+		#generic callback
+		print a
+		antenna = a.split(' ')[2].upper()
+		self.initialized[antenna] = True
+		self.atStow[antenna] = True
+		checkInit()
+		return
+	
+	self.setupSRT2CB(self, a):
+		#generic callback
+		print a
+		antenna = a.split(' ')[2].upper()
+		self.initialized[antenna] = True
+		self.atStow[antenna] = True
+		checkInit()
+		return
+	
+	def checkInit(self):
 		initnodes = 0
 		for node in self.nodes:
 		    if (self.initialized[node]):
@@ -288,7 +305,7 @@ class ObsBase():
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Initialization complete"
 		else:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Initialization in progress"
-		return
+		
 
 	def Stow(self):
 		statusIC = 0
@@ -730,6 +747,7 @@ class ARI_SignalHound(ObsBase):
 		print a
 		self.SH_initialized = True
 		self.initialized['SH'] = True
+		checkInit()
 
 	def SH_setBW(self, bw):
 		self.bw = bw
