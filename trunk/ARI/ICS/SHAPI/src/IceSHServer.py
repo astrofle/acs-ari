@@ -176,6 +176,11 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         print "Done"
         return str(check)
 
+    def SH_Status(self, current = None):
+        _st = SHControl.state(self.SH_initialized, self.bw, self.fc, self.fi, self.ff,\
+        self.fft, self.rbw, self.chw, self.decimation, self.acc_num, self.num_channel)
+        return _st
+
 try:
 	if len(sys.argv)<2:
 		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"

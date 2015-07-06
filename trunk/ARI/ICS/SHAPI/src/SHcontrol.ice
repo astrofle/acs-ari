@@ -16,6 +16,20 @@ module SHControl{
 		SHstamp samplestamp;
 		spectrum SHspec;
 	};
+	
+	struct state{
+		bool initialized;
+		float bw;
+		float fc; 
+		float fi;
+		float ff;
+		int fft;
+		float rbw;
+		float chw;
+		int decimation; 
+		float acc_num;
+		int num_channel;
+		}
 
 	interface SignalHound{
 		void message(string s, out string r);
@@ -34,6 +48,7 @@ module SHControl{
 		void SHmakeHead(string ant1, string ant2, string source, out string r);
 		void SHvalidFFTSize(int fft, out string r);
 		void SHgetSpectralPower(out power r);
+		void SH_Status(out state r);
 	};
 };
 
