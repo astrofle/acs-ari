@@ -27,9 +27,9 @@ module SHControl{
 		float rbw;
 		float chw;
 		int decimation; 
-		float acc_num;
-		int num_channel;
-		}
+		float accNum;
+		int numChannel;
+		};
 
 	interface SignalHound{
 		void message(string s, out string r);
