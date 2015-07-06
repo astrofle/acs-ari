@@ -19,6 +19,7 @@ module SHControl{
 	
 	
 	struct state{
+	    string name;
 		bool initialized;
 		float bw;
 		float fc; 
