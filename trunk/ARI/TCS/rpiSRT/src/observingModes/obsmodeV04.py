@@ -95,7 +95,7 @@ class ObsBase():
 		'SRT1': self.SwModeSRT1CB,
 		'SRT2': self.SwModeSRT2CB
 		}
-		self.SetupNodesCB{
+		self.SetupNodesCB = {
 		'SRT1': self.setupSRT1CB,
 		'SRT2': self.setupSRT2CB,
 		}
