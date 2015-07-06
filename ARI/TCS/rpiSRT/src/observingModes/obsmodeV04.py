@@ -487,7 +487,7 @@ class ObsBase():
 					stopNodes += 1
 			else:
 				stopNodes += 1
-		if (stopNodes == len(self.nodes):
+		if (stopNodes == len(self.nodes)):
 			self.ArrayMovingToTarget = False
 			print "Array stopped"
 	
