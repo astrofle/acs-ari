@@ -274,7 +274,7 @@ class ObsBase():
 		antenna = a.split(' ')[2].upper()
 		self.initialized[antenna] = True
 		self.atStow[antenna] = True
-		checkInit()
+		self.checkInit()
 		return
 		
 	def setupSRT1CB(self, a):
@@ -283,7 +283,7 @@ class ObsBase():
 		antenna = a.split(' ')[2].upper()
 		self.initialized[antenna] = True
 		self.atStow[antenna] = True
-		checkInit()
+		self.checkInit()
 		return
 	
 	def setupSRT2CB(self, a):
@@ -292,7 +292,7 @@ class ObsBase():
 		antenna = a.split(' ')[2].upper()
 		self.initialized[antenna] = True
 		self.atStow[antenna] = True
-		checkInit()
+		self.checkInit()
 		return
 	
 	def checkInit(self):
@@ -747,7 +747,7 @@ class ARI_SignalHound(ObsBase):
 		print a
 		self.SH_initialized = True
 		self.initialized['SH'] = True
-		checkInit()
+		self.checkInit()
 
 	def SH_setBW(self, bw):
 		self.bw = bw
