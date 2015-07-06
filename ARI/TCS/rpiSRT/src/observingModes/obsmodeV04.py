@@ -105,6 +105,12 @@ class ObsBase():
 		'SRT2': self.stowSRT2CB
 		}
 		
+		self.getNodeClientStatusCB = {
+		'SRT1': self.getClientStatusSRT1,
+		'SRT2': self.getClientStatusSRT2,
+		'SH': self.getClientStatusSH
+		}
+		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -320,23 +326,7 @@ class ObsBase():
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
-    
-	def stowCB(self, a):
-		print a
-		antenna = a.split(' ')[2].upper()
-		self.atStow[antenna] = True
-		stownodes = 0
-		for node in self.nodes:
-			if node.startswith('SRT'):
-			    if (self.atStow[node]):
-			        stownodes += 1
-			else:
-				stownodes += 1
-		if stownodes == len(self.nodes):
-			self.stowInProgress = False
-			print "Array at stow"
-		return
-		
+	
 	def stowSRT1CB(self, a):
 		print a
 		antenna = a.split(' ')[2].upper()
@@ -375,19 +365,26 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_SRTstate(self.getClientStatusCB, self.failureCB);
+					self.ARI_controllers[node].begin_SRTstate(self.getNodeClientStatusCB[node], self.failureCB);
 					#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
 				if node == 'SH':
-					self.ARI_controllers['SH'].begin_SHStatus(self.getClientStatusCB, self.failureCB)
+					self.ARI_controllers['SH'].begin_SHStatus(self.getNodeClientStatusCB[node], self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 	
-	def getClientStatusCB(self, a):
+	def getClientStatusSRT1(self, a):
 		node = a.name.upper()
 		self.Clientstatus[node] = a
-		#if ((float(self.Clientstatus[node].az) - float(self.Clientstatus[node].aznow)) >= 3.5):
-		#	self.ArrayOnTarget[node] = False
+		
+	def getClientStatusSRT2(self, a):
+		node = a.name.upper()
+		self.Clientstatus[node] = a
+		
+	def getClientStatusSH(self, a):
+		node = a.name.upper()
+		self.Clientstatus[node] = a
+		
 #####Antenna Operation##################################################
 	def obswArray(self, mode, target):
 		statusIC = 0
