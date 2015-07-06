@@ -89,6 +89,12 @@ class ObsBase():
 		self.ARI_controllersTXT = {}
 		####
 		self.SpectralPower = []
+		####
+		# Callback functions - dictionaries
+		self.SWModeCB = {
+		'SRT1': self.SwModeSRT1CB,
+		'SRT2': self.SwModeSRT2BC
+		}
 		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
@@ -208,11 +214,19 @@ class ObsBase():
 		time.sleep(1)
 		for node in self.nodes:
 			if node.startswith('SRT'):
-				if (self.Clientstatus[node].initialized == 'True'):
+				if (self.Clientstatus[node].initialized):
 					print node + " is initialized - setup not needed - \
 					see self.Clientstatus for node status"
 				else:
 					print node + " requires initialization - do self.setup() "
+			if node == 'SH':
+				if (self.Clientstatus[node].initialized):
+					print node + " is initialized -- setup not needed - \
+					see self.Clientstatus for node status"
+				else:
+					print node + " requires initialization - do self.setup() "
+					
+	
 
 	def modeCB(self, a):
 		print a
