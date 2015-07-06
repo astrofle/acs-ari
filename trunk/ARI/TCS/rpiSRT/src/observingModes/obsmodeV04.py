@@ -93,7 +93,7 @@ class ObsBase():
 		# Callback functions - dictionaries
 		self.SWModeCB = {
 		'SRT1': self.SwModeSRT1CB,
-		'SRT2': self.SwModeSRT2BC
+		'SRT2': self.SwModeSRT2CB
 		}
 		
 	def find_planets(self, disp):
