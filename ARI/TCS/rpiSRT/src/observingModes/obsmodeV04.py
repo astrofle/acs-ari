@@ -111,6 +111,16 @@ class ObsBase():
 		'SH': self.getClientStatusSH
 		}
 		
+		self.nodeStopTrackCB = {
+		'SRT1': self.stopTrackSRT1CB,
+		'SRT2': self.stopTrackSRT2CB
+		}
+		
+		self.stopFlag = {
+		'SRT1': False,
+		'SRT2': False
+		}
+		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -445,7 +455,7 @@ class ObsBase():
 			self.ArrayStopCmd = True
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_StopObs(self.stopTrackCB,\
+					self.ARI_controllers[node].begin_StopObs(self.nodeStopTrackCB[node],\
 					self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
 					" Stopping Antenna " + node
@@ -453,12 +463,34 @@ class ObsBase():
 			traceback.print_exc()
 			self.statusIC = 1
 	
-	def stopTrackCB(self, a):
+		
+	def stopTrackSRT1CB(self, a):
 		print a
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
 		" Antenna Stopped"
-		self.ArrayMovingToTarget = False
+		self.stopFlag['SRT1'] = True
+		self.checkStop()
+
 		
+	def stopTrackSRT2CB(self, a):
+		print a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+		" Antenna Stopped"
+		self.stopFlag['SRT2'] = True
+		self.checkStop()
+	
+	def checkStop(self):
+		stopNodes = 0
+		for node in self.nodes:
+			if node.startswith('SRT'):
+				if self.stopFlag[node]:
+					stopNodes += 1
+			elif:
+				stopNodes += 1
+		if (stopNodes == len(self.nodes):
+			self.ArrayMovingToTarget = False
+			print "Array stopped"
+	
 	def stopGoingtoTarget(self):
 	#Stops array to a target - use it only for this purpose - StopArray is still needed after this.
 	#Does not work for stopping stow
@@ -469,7 +501,7 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_SRTStopGoingToTarget\
-					(self.stopTrackCB, self.failureCB);
+					(self.self.nodeStopTrackCB[node], self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
 					" Stopping Antenna " + node
 		except:
