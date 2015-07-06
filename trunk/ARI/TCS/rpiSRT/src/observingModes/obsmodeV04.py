@@ -354,6 +354,8 @@ class ObsBase():
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_SRTstate(self.getClientStatusCB, self.failureCB);
 					#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
+				if node == 'SH':
+					self.ARI_controllers['SH'].begin_SHStatus(self.getClientStatusCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
