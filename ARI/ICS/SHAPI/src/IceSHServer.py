@@ -42,7 +42,8 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         self.set_chw(self.chw)
         self.head = []
         self.power = 0.0
-
+        
+        self.name = 'SH'
         self.SH_initialized = False
         self.SH_freqUpdated = False
         self.SH_bwUpdated = False
@@ -177,7 +178,7 @@ class SHControlI(SHControl.SignalHound, SH.SHManager):
         return str(check)
 
     def SHStatus(self, current = None):
-        _st = SHControl.state(self.SH_initialized, self.bw, self.fc, self.fi, self.ff,\
+        _st = SHControl.state(self.name, self.SH_initialized, self.bw, self.fc, self.fi, self.ff,\
         self.fft, self.rbw, self.chw, self.decimation, self.acc_num, self.num_channel)
         return _st
 
