@@ -351,7 +351,7 @@ class ObsBase():
 		self.checkStow()
 		return
 	
-	def checkStow(self)
+	def checkStow(self):
 		stownodes = 0
 		for node in self.nodes:
 			if node.startswith('SRT'):
