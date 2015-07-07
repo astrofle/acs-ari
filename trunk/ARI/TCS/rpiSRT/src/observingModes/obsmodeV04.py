@@ -126,7 +126,7 @@ class ObsBase():
 		'SRT2': self.nScanSRT2CB
 		}
 		
-		self.getNodeSpectrumCB{
+		self.getNodeSpectrumCB = {
 		'SRT1': self.getSpectrumSRT1CB,
 		'SRT2': self.getSpectrumSRT2CB
 		}
