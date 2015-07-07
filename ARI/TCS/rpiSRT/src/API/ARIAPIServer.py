@@ -10,6 +10,7 @@ import threading
 import os
 import socket
 import sites
+import time
 
 class ARIAPII(ARIAPI.API):
 	def __init__(self):
@@ -137,6 +138,16 @@ class ARIAPII(ARIAPI.API):
 		print msg
 		return msg
 		
+	def setARISH(self, _fc, _bw, current = None):
+		fc = _fc*1e6
+		bw = _bw*1e6
+		self.obsMode.SH_setBW(bw)
+		while(not self.obsMode.SH_bwSetup):
+			time.sleep(0.5)
+		self.obsMode.SH_setfc(fc)
+		while(not self.obsMode.SH_fcSetup):
+			time.sleep(0.5)
+		
 	def setRxSwMode(self, node, RxSwMode, current = None):
 		self.obsmode.SwRxMode(self, node, mode)
 		msg = "Receiver Switch Mode Set"
@@ -227,13 +238,90 @@ class ARIAPII(ARIAPI.API):
 	def getObsModeState(self, current = None):
 		self.obsMode.states()
 		msg = "Getting observing mode state"
-		return msg
+		st = ARIAPI.OMstate(self.obsMode.observingMode, self.obsMode.nodes,\
+		self.obsMode.ARI_controllersTXT, self.obsMode.setupInProgress,\
+		self.obsMode.initialized, self.obsMode.atStow, self.obsMode.stowInProgress,\
+		self.obsMode.mode, self.obsMode.RxSwmode, self.obsMode.RxSetup,\
+		self.obsMode.new_freq, self.obsMode.new_rec_mode, self.obsMode.getClStatus,\
+		self.obsMode.ArrayMovingToTarget, self.obsMode.ArrayOnTarget,\
+		self.obsMode.ArrayStopCmd, self.obsMode.offsets, self.obsMode.scanMapInProgress,\
+		self.obsMode.readSpectrum, self.obsMode.NewSpectrum, self.obsMode.waitSpectrum)
+		return st
 
 	def getArrayState(self, current = None):
 		msg = "Getting array state"
-		return msg
-
-
+		_st = {}
+		for node in self.obsMode.nodes:
+			if node.startswith('SRT'):
+				_piu = ARIAPI.piu(self.obsMode.Clientstatus[node].portInUse.InUse,\
+				self.obsMode.Clientstatus[node].portInUse.Routine)
+				_sts = ARIAPI.ClState(self.obsMode.Clientstatus[node].name,\
+				self.obsMode.Clientstatus[node].time,\
+				self.obsMode.Clientstatus[node].SRTState,\
+				self.obsMode.Clientstatus[node].SRTonTarget,\
+				self.obsMode.Clientstatus[node].SRTMode,\
+				self.obsMode.Clientstatus[node].SRTTarget,\
+				self.obsMode.Clientstatus[node].SRTTrack,\
+				self.obsMode.Clientstatus[node].enObs,\
+				self.obsMode.Clientstatus[node].newAzEl,\
+				self.obsMode.Clientstatus[node].enSRT,\
+				self.obsMode.Clientstatus[node].enSpec,\
+				self.obsMode.Clientstatus[node].slewing,\
+				self.obsMode.Clientstatus[node].cmdstop,\
+				self.obsMode.Clientstatus[node].IsMoving,\
+				self.obsMode.Clientstatus[node].getStatus,\
+				_piu,\
+				self.obsMode.Clientstatus[node].spectra,\
+				self.obsMode.Clientstatus[node].RxSwitchMode,\
+				self.obsMode.Clientstatus[node].toSource,\
+				self.obsMode.Clientstatus[node].SRTinitialized,\
+				self.obsMode.Clientstatus[node].initialized,\
+				self.obsMode.Clientstatus[node].Target,\
+				self.obsMode.Clientstatus[node].obsTarget,\
+				self.obsMode.Clientstatus[node].az,\
+				self.obsMode.Clientstatus[node].el,\
+				self.obsMode.Clientstatus[node].aznow,\
+				self.obsMode.Clientstatus[node].elnow,\
+				self.obsMode.Clientstatus[node].azoffset,\
+				self.obsMode.Clientstatus[node].eloffset,\
+				self.obsMode.Clientstatus[node].axis,\
+				self.obsMode.Clientstatus[node].tostow,\
+				self.obsMode.Clientstatus[node].elatstow,\
+				self.obsMode.Clientstatus[node].azatstow,\
+				self.obsMode.Clientstatus[node].slew,\
+				self.obsMode.Clientstatus[node].serialport,\
+				self.obsMode.Clientstatus[node].lastSRTCom,\
+				self.obsMode.Clientstatus[node].lastSerialMsg)
+				_st[node] = _sts
+		return _st
+		
+	def getLastSpectrum(self, current = None):
+		lastSpectrum = {}
+		for node in self.obsMode.nodes:
+			_sp = self.obsMode.spectrum[node]
+			print _sp.sampleStamp.name
+			_stamp =ARIAPI.stamp(_sp.sampleStamp.name,\
+			_sp.sampleStamp.timdate,_sp.sampleStamp.aznow,\
+			_sp.sampleStamp.elnow,_sp.sampleStamp.temperature,\
+			_sp.sampleStamp.freq0,_sp.sampleStamp.av,_sp.sampleStamp.avc,\
+			_sp.sampleStamp.nfreq,_sp.sampleStamp.freqsep)
+			_specs = ARIAPI.specs(_stamp,\
+			_sp.spec,_sp.avspec,_sp.avspecc,_sp.specd)
+			lastSpectrum[_sp.sampleStamp.name.upper()] = _specs
+		return lastSpectrum
+		
+	def getLastSHSpectrum(self, current = None):
+		lastSHSpectrum = {}
+		_sp = self.obsMode.SHspectrum
+		_stamp = ARIAPI.SHstamp(_sp.samplestamp.time,\
+		_sp.samplestamp.seq,_sp.samplestamp.freqi,\
+		_sp.samplestamp.freqf, _sp.samplestamp.channels,\
+		_sp.samplestamp.chbw, _sp.samplestamp.sppow,_sp.samplestamp.fcpow,\
+		self.obsMode.Clientstatus['SRT1'].aznow, self.obsMode.Clientstatus['SRT1'].elnow,\
+		self.obsMode.Clientstatus['SRT2'].aznow, self.obsMode.Clientstatus['SRT2'].elnow, \
+		self.obsMode.Clientstatus['SRT1'].az, self.obsMode.Clientstatus['SRT1'].el)
+		lastSHSpectrum['SH'] = ARIAPI.SHspectrum(_stamp, _sp.SHspec)
+		return lastSHSpectrum
 try:
 	if len(sys.argv)<2:
 		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"

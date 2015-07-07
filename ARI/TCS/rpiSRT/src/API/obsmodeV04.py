@@ -73,20 +73,64 @@ class ObsBase():
 		}
 		self.NewSpectrum ={
 		'SRT1':False,
-		'SRT2':False
+		'SRT2':False,
+		'SH' : False
 		}
 		self.ArrayMovingToTarget = False
 		self.ArrayStopCmd = False
 		self.Clientstatus ={}
 		self.getClStatus = True
 		self.offsets = [0,0]
-		self.map =None
+		self.map = {}
 		self.scanMapInProgress = False
 		self.readSpectrum
 		self.radecSources =[]
+		self.ARI_controllers = {}
+		self.ARI_controllersTXT = {}
 		####
+		self.SpectralPower = []
+		####
+		# Callback functions - dictionaries
+		self.SwModeCB = {
+		'SRT1': self.SwModeSRT1CB,
+		'SRT2': self.SwModeSRT2CB
+		}
+		self.SetupNodesCB = {
+		'SRT1': self.setupSRT1CB,
+		'SRT2': self.setupSRT2CB,
+		}
 		
+		self.StowNodeCB = {
+		'SRT1': self.stowSRT1CB,
+		'SRT2': self.stowSRT2CB
+		}
 		
+		self.getNodeClientStatusCB = {
+		'SRT1': self.getClientStatusSRT1,
+		'SRT2': self.getClientStatusSRT2,
+		'SH': self.getClientStatusSH
+		}
+		
+		self.nodeStopTrackCB = {
+		'SRT1': self.stopTrackSRT1CB,
+		'SRT2': self.stopTrackSRT2CB
+		}
+		
+		self.stopFlag = {
+		'SRT1': False,
+		'SRT2': False
+		}
+		
+		self.nodeNScanCB = {
+		'SRT1': self.nScanSRT1CB,
+		'SRT2': self.nScanSRT2CB
+		}
+		
+		self.getNodeSpectrumCB = {
+		'SRT1': self.getSpectrumSRT1CB,
+		'SRT2': self.getSpectrumSRT2CB
+		}
+	
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -98,7 +142,8 @@ class ObsBase():
 	def find_radec(self, disp):
 		self.radecSources = sites.find_SRTsources(sites.SRTsources, sites.site, disp)
 		if disp:
-			print str(len(self.radecSources)) + " observabable stars: " + str(self.radecSources)
+			print str(len(self.radecSources)) + " observabable stars: " +\
+			str(self.radecSources)
 		return
 
 	def clean(self):
@@ -163,7 +208,8 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_ClientShutdown(self.genericCB, self.failureCB);
+					self.ARI_controllers[node].\
+					begin_ClientShutdown(self.genericCB, self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
 					" initializing antenna " + node
 		except:
@@ -182,69 +228,107 @@ class ObsBase():
 	
 	def createObsMode(self):
 		self.ARI_controllers = {}
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" creating "+ self.observingMode
+		self.ARI_controllersTXT = {}
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+		" creating "+ self.observingMode
 		for node in self.nodes:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Connecting to "+ node
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+			" Connecting to "+ node
 			controller = self.connect(self.ARI_nodes[node], node)
 			self.ARI_controllers[node] = controller
+			self.ARI_controllersTXT[node] = str(controller)
 			if node.startswith('SRT'):
 			#Set SRT receiver switch mode
-				self.ARI_controllers[node].begin_setRxMode(self.mode, self.modeCB, self.failureCB);
+				self.ARI_controllers[node].\
+				begin_setRxMode(self.mode, self.SwModeCB[node], self.failureCB)
 		
-		ClientStatus_Thread = threading.Thread(target = self.getClientStatusThread, name='Clientstatus')
+		ClientStatus_Thread = threading.Thread(target = \
+		self.getClientStatusThread, name='Clientstatus')
 		ClientStatus_Thread.start()
 		print "starting status thread"
 		time.sleep(1)
 		for node in self.nodes:
-			if (self.Clientstatus[node].initialized == 'True'):
-				print node + " is initialized - setup not needed - see self.Clientstatus for node status"
-			else:
-				print node + " requires initialization - do self.setup() "
-
-	def modeCB(self, a):
+			if node.startswith('SRT'):
+				if (self.Clientstatus[node].initialized):
+					print node + " is initialized - setup not needed - \
+					see self.Clientstatus for node status"
+				else:
+					print node + " requires initialization - do self.setup() "
+			if node == 'SH':
+				if (self.Clientstatus[node].initialized):
+					print node + " is initialized -- setup not needed - \
+					see self.Clientstatus for node status"
+				else:
+					print node + " requires initialization - do self.setup() "
+	
+	def SwModeSRT1CB(self, a):
 		print a
 		antenna = a.split(' ')[2].upper()
 		mode = a.split(' ')[-1]
 		self.RxSwmode[antenna] = mode
-
+		
+	def SwModeSRT2CB(self, a):
+		print a
+		antenna = a.split(' ')[2].upper()
+		mode = a.split(' ')[-1]
+		self.RxSwmode[antenna] = mode
+	
 	def SwRxMode(self, node, mode):
-		self.ARI_controllers[node].begin_setRxMode(mode, self.modeCB, self.failureCB);
+		self.ARI_controllers[node].begin_setRxMode(mode, self.SwModeCB[node], self.failureCB);
 
 	def setup(self):
 		statusIC = 0
 		ic = None
 		if self.setupInProgress:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " setup process in progress, wait"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ \
+			" setup process in progress, wait"
 			return
 		else:
 			self.setupInProgress = True
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_setup(self.setupCB, self.failureCB);
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" initializing antenna " + node
+					self.ARI_controllers[node].begin_setup(self.SetupNodesCB[node], self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ \
+					" initializing antenna " + node
+				elif (node == 'SH'):
+					self.initHound()
+					while(not self.SH_initialized):
+						time.sleep(0.5)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 			
-	def setupCB(self, a):
+		
+	def setupSRT1CB(self, a):
 		#generic callback
 		print a
 		antenna = a.split(' ')[2].upper()
 		self.initialized[antenna] = True
 		self.atStow[antenna] = True
+		self.checkInit()
+		return
+	
+	def setupSRT2CB(self, a):
+		#generic callback
+		print a
+		antenna = a.split(' ')[2].upper()
+		self.initialized[antenna] = True
+		self.atStow[antenna] = True
+		self.checkInit()
+		return
+	
+	def checkInit(self):
 		initnodes = 0
 		for node in self.nodes:
 		    if (self.initialized[node]):
 		        initnodes += 1
-
 		if initnodes == len(self.nodes):
 			self.setupInProgress = False
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Initialization complete"
 		else:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Initialization in progress"
-		return
-
+		
 	def Stow(self):
 		statusIC = 0
 		ic = None
@@ -257,20 +341,34 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ArrayOnTarget[node] = False
-					self.ARI_controllers[node].begin_SRTStow(self.stowCB, self.failureCB);
+					self.ARI_controllers[node].begin_SRTStow(self.StowNodeCB[node], self.failureCB);
 					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stowing Antenna: " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
-    
-	def stowCB(self, a):
+	
+	def stowSRT1CB(self, a):
 		print a
 		antenna = a.split(' ')[2].upper()
 		self.atStow[antenna] = True
+		self.checkStow()
+		return
+		
+	def stowSRT2CB(self, a):
+		print a
+		antenna = a.split(' ')[2].upper()
+		self.atStow[antenna] = True
+		self.checkStow()
+		return
+	
+	def checkStow(self):
 		stownodes = 0
 		for node in self.nodes:
-		    if (self.atStow[node]):
-		        stownodes += 1
+			if node.startswith('SRT'):
+			    if (self.atStow[node]):
+			        stownodes += 1
+			else:
+				stownodes += 1
 		if stownodes == len(self.nodes):
 			self.stowInProgress = False
 			print "Array at stow"
@@ -287,23 +385,33 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_SRTstate(self.getClientStatusCB, self.failureCB);
+					self.ARI_controllers[node].begin_SRTstate(self.getNodeClientStatusCB[node], self.failureCB);
 					#print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Getting status: " + node
+				if node == 'SH':
+					self.ARI_controllers['SH'].begin_SHStatus(self.getNodeClientStatusCB[node], self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 	
-	def getClientStatusCB(self, a):
+	def getClientStatusSRT1(self, a):
 		node = a.name.upper()
 		self.Clientstatus[node] = a
-		#if ((float(self.Clientstatus[node].az) - float(self.Clientstatus[node].aznow)) >= 3.5):
-		#	self.ArrayOnTarget[node] = False
+		
+	def getClientStatusSRT2(self, a):
+		node = a.name.upper()
+		self.Clientstatus[node] = a
+		
+	def getClientStatusSH(self, a):
+		node = a.name.upper()
+		self.Clientstatus[node] = a
+		
 #####Antenna Operation##################################################
 	def obswArray(self, mode, target):
 		statusIC = 0
 		ic = None
 		if self.ArrayMovingToTarget:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array is moving, wait or command Stop before"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+			" Array is moving, wait or command Stop before"
 			return
 		else:
 			self.ArrayStopCmd = False
@@ -313,8 +421,10 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ArrayOnTarget[node] = False
-					self.ARI_controllers[node].begin_obsSRT(mode, str(target), self.trackCB, self.failureCB);
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving antenna" + node + " to target"
+					self.ARI_controllers[node].begin_obsSRT(mode, str(target)\
+					, self.trackCB, self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" moving\
+					antenna" + node + " to target"
 			OnTrg_Thread = threading.Thread(target = self.onTarget_Thread, name='onTarget')
 			OnTrg_Thread.start()
 			print "starting onTarget thread"
@@ -331,18 +441,21 @@ class ObsBase():
 			onTargetnodes = 0
 			time.sleep(2)
 			for node in self.nodes:
-				self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
-				if (self.ArrayOnTarget[node] == 'True'):
-					onTargetnodes += 1
+				if node.startswith('SRT'):
+					self.ArrayOnTarget[node] = self.Clientstatus[node].SRTonTarget
+					if (self.ArrayOnTarget[node]):
+						onTargetnodes += 1
 				if ((node == 'SH') or (node == 'ROACH')):
 					onTargetnodes += 1
 				if onTargetnodes == len(self.nodes):
 					self.ArrayMovingToTarget = False
 			time.sleep(1)
 		if self.ArrayStopCmd:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array command to stop"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+			" Array command to stop"
 		else:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Array on Target"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+			" Array on Target"
 	
 	def stopArray(self):
 	#Stop array to track a target - mandatory for pointing the array to a different target
@@ -352,17 +465,44 @@ class ObsBase():
 			self.ArrayStopCmd = True
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_StopObs(self.stopTrackCB, self.failureCB);
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stopping Antenna " + node
+					self.ARI_controllers[node].begin_StopObs(self.nodeStopTrackCB[node],\
+					self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+					" Stopping Antenna " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 	
-	def stopTrackCB(self, a):
-		print a
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Antenna Stopped"
-		self.ArrayMovingToTarget = False
 		
+	def stopTrackSRT1CB(self, a):
+		print a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+		" Antenna Stopped"
+		self.stopFlag['SRT1'] = True
+		self.checkStop()
+
+		
+	def stopTrackSRT2CB(self, a):
+		print a
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+		" Antenna Stopped"
+		self.stopFlag['SRT2'] = True
+		self.checkStop()
+	
+	def checkStop(self):
+		stopNodes = 0
+		for node in self.nodes:
+			if node.startswith('SRT'):
+				if self.stopFlag[node]:
+					stopNodes += 1
+			else:
+				stopNodes += 1
+		if (stopNodes == len(self.nodes)):
+			self.ArrayMovingToTarget = False
+			print "Array stopped"
+			self.stopFlag['SRT1']= False
+			self.stopFlag['SRT2']= False
+	
 	def stopGoingtoTarget(self):
 	#Stops array to a target - use it only for this purpose - StopArray is still needed after this.
 	#Does not work for stopping stow
@@ -372,8 +512,10 @@ class ObsBase():
 			self.ArrayStopCmd = True
 			for node in self.nodes:
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_SRTStopGoingToTarget(self.stopTrackCB, self.failureCB);
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Stopping Antenna " + node
+					self.ARI_controllers[node].begin_SRTStopGoingToTarget\
+					(self.self.nodeStopTrackCB[node], self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+					" Stopping Antenna " + node
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -387,7 +529,8 @@ class ObsBase():
 		try:
 			for node in self.nodes:
 				self.offsets = [azoff, eloff]
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"setting pointing offset"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+				"setting pointing offset"
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].begin_offsetPointing(azoff, eloff, self.offsetCB, self.failureCB);
 		except:
@@ -401,25 +544,31 @@ class ObsBase():
 		statusIC = 0
 		ic = None
 		if self.scanMapInProgress:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Scan map is in progress, wait"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+			" Scan map is in progress, wait"
 			return
 		else:
 			self.scanMapInProgress = True
 		try:
 			for node in self.nodes:
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+"setting pointing offset"
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+				"setting pointing offset"
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_NpointScan(points, delta, spec, self.nscanCB, self.failureCB);
+					self.ARI_controllers[node].begin_NpointScan(points, delta, spec, self.nodeNScanCB[node], self.failureCB);
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 			
-	def nscanCB(self,a):
+	
+	def nScanSRT1CB(self, a):
 		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan completed"
 		self.scanMapInProgress = False
-		self.map = a
-		
-		
+		self.map['SRT1'] = a
+
+	def nScanSRT2CB(self, a):
+		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan completed"
+		self.scanMapInProgress = False
+		self.map['SRT2'] = a
 
 ######################### Receiver spectrum
 	def getSpectrum(self):
@@ -431,15 +580,17 @@ class ObsBase():
 					self.NewSpectrum[node] = False
 					self.waitSpectrum = True
 					if node.startswith('SRT'):
-						self.ARI_controllers[node].begin_getSpectrum(self.spectrumCB, self.failureCB);
-						print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ node + " Getting spectrum"
+						self.ARI_controllers[node].begin_getSpectrum\
+						(self.getNodeSpectrumCB[node], self.failureCB);
+						print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+						" "+ node + " Getting spectrum"
 				while(self.waitSpectrum):
 					time.sleep(1)
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
-		
-	def spectrumCB(self, sp):
+	
+	def getSpectrumSRT1CB(self, sp):
 		self.spec = sp
 		#self.spectrum[sp.sampleStamp.name] = self.spec
 		name = sp.sampleStamp.name.upper()  
@@ -448,6 +599,22 @@ class ObsBase():
 		print name+" "+tim
 		self.spectrum[name] = self.spec
 		self.NewSpectrum[name] = True
+		self.checkSpectrum()
+		return
+		
+	def getSpectrumSRT2CB(self, sp):
+		self.spec = sp
+		#self.spectrum[sp.sampleStamp.name] = self.spec
+		name = sp.sampleStamp.name.upper()  
+		tim = sp.sampleStamp.timdate
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
+		print name+" "+tim
+		self.spectrum[name] = self.spec
+		self.NewSpectrum[name] = True
+		self.checkSpectrum()
+		return
+	
+	def checkSpectrum(self):
 		spNodes = 0
 		for node in self.nodes:
 			if self.NewSpectrum[node]:
@@ -455,21 +622,29 @@ class ObsBase():
 		if (spNodes == len(self.nodes)):
 			self.waitSpectrum = False
 		return
-		
+	
 	def enableSpectrum(self):
 		statusIC = 0
 		ic = None
-		try:
-			for node in self.nodes:
-				self.readSpectrum = True
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ node + " starting spectrum reading"
-				self.ARI_controllers[node].begin_startSpectrum(self.stopspCB, self.failureCB)
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+node+" starting spectrum reading thread"
-			getSpec_thread = threading.Thread(target = self.getSpectrum, name = 'getSpecLoop')
-			getSpec_thread.start()
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		if self.observingMode == 'ARI-SH':
+			self.enableSHspectrum()
+			self.ARI_SHSpectrum()
+		else:
+			try:
+				for node in self.nodes:
+					self.readSpectrum = True
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ node +\
+					" starting spectrum reading"
+					self.ARI_controllers[node].begin_startSpectrum(self.stopspCB,\
+					self.failureCB)
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+node+\
+					" starting spectrum reading thread"
+				getSpec_thread = threading.Thread(target = self.getSpectrum, \
+				name = 'getSpecLoop')
+				getSpec_thread.start()
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
 
 	def stopspCB(self, a):
 		print a
@@ -478,15 +653,20 @@ class ObsBase():
 	def disableSpectrum(self):
 		statusIC = 0
 		ic = None
-		try:
-			for node in self.nodes:
-				print time.strftime('%Y-%m# -%d %H:%M:%S', time.localtime())+" stopping spectrum reading"
-				self.ARI_controllers[node].begin_stopSpectrum(self.stopspCB, self.failureCB)
-				self.readSpectrum = False
-				self.waitSpectrum = False
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		if self.observingMode == 'ARI-SH':
+			self.disableSHspectrum()
+		else:
+			try:
+				for node in self.nodes:
+					print time.strftime('%Y-%m# -%d %H:%M:%S', time.localtime())+\
+					" stopping spectrum reading"
+					self.ARI_controllers[node].begin_stopSpectrum(self.stopspCB, \
+					self.failureCB)
+					self.readSpectrum = False
+					self.waitSpectrum = False
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
 
 
 
@@ -510,7 +690,8 @@ class ObsBase():
 			for node in self.nodes:
 				if node.startswith('SRT'):
 					self.ARI_controllers[node].ClientThreads();
-					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Client threads"
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+					" Client threads"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -518,7 +699,7 @@ class ObsBase():
 	def states(self):
 		print "observing mode:"+ str(self.observingMode)
 		print "nodes:"+ str(self.nodes)
-		print "ARI_controllers:"+ str(self.ARI_controllers)
+		print "ARI_controllers:"+ str(self.ARI_controllersTXT)
 		print "setup in progress:"+ str(self.setupInProgress)
 		print "initialized:"+ str(self.initialized)
 		print "atStow:"+ str(self.atStow)
@@ -552,8 +733,10 @@ class SRTSingleDish(ObsBase):
 		try:
 			self.new_freq = freq
 			self.new_rec_mode = str(rec_mode)
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + str(self.nodes)+" "+ "setting receiver"
-			self.ARI_controllers[self.nodes[0]].begin_setFreq(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+			" " + str(self.nodes)+" "+ "setting receiver"
+			self.ARI_controllers[self.nodes[0]].begin_setFreq\
+			(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -567,11 +750,13 @@ class SRTSingleDish(ObsBase):
 	def rsetupCB(self,a):
 		#generic callback
 		print a
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ str(self.nodes)+ "Setup finished"
+		name = a.split(' ')[2].upper()
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+ \
+		str(self.nodes)+ "Setup finished"
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
-		self.RxSetup[self.nodes[0]] = [self.freq, self.rec_mode]
+		self.RxSetup[name] = [ARIAPI.RxSet(self.freq, self.rec_mode)]
 		return
 		
 class SRTDoubleSingleDish(ObsBase):
@@ -588,8 +773,10 @@ class SRTDoubleSingleDish(ObsBase):
 			self.new_freq = freq
 			self.new_rec_mode = str(rec_mode)
 			for node in self.nodes:
-				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " "+node+" "+"setting receiver "
-				self.ARI_controllers[node].begin_setFreq(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
+				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
+				" "+node+" "+"setting receiver "
+				self.ARI_controllers[node].begin_setFreq\
+				(self.new_freq, self.new_rec_mode, self.rsetupCB, self.failureCB)
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
@@ -602,12 +789,214 @@ class SRTDoubleSingleDish(ObsBase):
 			
 	def rsetupCB(self,a):
 		#generic callback
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " "+a
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Radio Setup finished"
+		print a
+		name = a.split(' ')[2].upper()
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+\
+		str(self.nodes)+ "Setup finished"
 		self.radio_config= True
 		self.freq = self.new_freq
 		self.rec_mode = self.new_rec_mode
+		self.RxSetup[name] = [ARIAPI.RxSet(self.freq, self.rec_mode)]
 		return
 
+class ARI_SignalHound(ObsBase):
+	def __init__(self):
+		ObsBase.__init__(self)
+		#self.nodes =['SH']
+		self.mode = 'ARI'
+		self.nodes =['SRT1', 'SRT2', 'SH']
+		self.observingMode = 'ARI-SH'
+		self.SH_initialized = False
+		self.bw = 40e6
+		self.SH_bwSetup = False
+		self.fc = 1421.0e6
+		self.SH_fcSetup = False
+		self.filename = "script_mode.txt"
+		self.SH_filenameSetup = False
+		self.SH_readSpectrum = False
+		self.SH_headmade = False
+		self.SH_spWritten = False
+		self.SH_powerRead = False
+		
+	def initHound(self):
+		statusIC = 0
+		ic = None
+		self.SH_initialized = False
+		try:
+			print "Initializing SignalHound"
+			self.ARI_controllers['SH'].begin_SHinitHound(self.SHinitCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHinitCB(self, a):
+		print a
+		self.SH_initialized = True
+		self.initialized['SH'] = True
+		self.checkInit()
+
+	def SH_setBW(self, bw):
+		self.bw = bw
+		statusIC = 0
+		ic = None
+		self.SH_bwSetup = False
+		try:
+			print "Set SignalHound BW"
+			self.ARI_controllers['SH'].begin_SHsetBW(self.bw, self.SHBWCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHBWCB(self, a):
+		print a
+		self.SH_bwSetup = True
+		
+	def SH_setfc(self, fc):
+		self.fc = fc
+		statusIC = 0
+		ic = None
+		self.SH_fcSetup = False
+		try:
+			print "Set SignalHound central frequency"
+			self.ARI_controllers['SH'].begin_SHsetFc(self.fc, self.SHfcCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHfcCB(self, a):
+		print a
+		self.SH_fcSetup = True
+
+	def SH_setFileName(self, filename):
+		self.filename = filename
+		statusIC = 0
+		ic = None
+		self.SH_filenameSetup = False
+		try:
+			print "Set SignalHound spectrum filename"
+			self.ARI_controllers['SH'].begin_SHsetFileName(self.filename,\
+			self.SHfilenameCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHfilenameCB(self, a):
+		print a
+		self.SH_filenameSetup = True
+		
+	def SH_getSpectrum(self):
+		statusIC = 0
+		ic = None
+		self.SH_readSpectrum = False
+		try:
+			print "Getting Signal hound spectrum"
+			self.ARI_controllers['SH'].begin_SHgetSpectrum(self.SHspCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHspCB(self, a):
+		self.SHspectrum = a
+		self.SH_readSpectrum = True
+
+	def SH_makeHead(self):
+		statusIC = 0
+		ic = None
+		self.SH_headmade = False
+		try:
+			print "Creating header for spectrum file"
+			self.ARI_controllers['SH'].begin_SHmakeHead('SRT1', 'SRT2', 'Dummy', self.SHmheadCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHmheadCB(self, a):
+		print a
+		self.SH_headmade = True
+
+	def SH_writeSpectrum(self):
+		statusIC = 0
+		ic = None
+		self.SH_spectrumWritten = False
+		try:
+			print "Writing spectrum to file"
+			self.ARI_controllers['SH'].begin_SHwriteSpectrum(self.SHspWCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHspWCB(self, a):
+		print a
+		self.SH_spWritten = True
+
+	def SH_getSpectralPower(self):
+		statusIC = 0
+		ic = None
+		self.SH_powerRead = False
+		try:
+			print "Getting spectrum power"
+			self.ARI_controllers['SH'].begin_SHgetSpectralPower(self.SHspPwCB, self.failureCB)
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+
+	def SHspPwCB(self, a):
+		self.SpectralPower =  a
+		self.SH_powerRead = True
+		
+	def SH_routine(self):
+		self.initHound()
+		while(not self.SH_initialized):
+			time.sleep(0.5)
+		self.SH_setBW(self.bw)
+		while(not self.SH_bwSetup):
+			time.sleep(0.5)
+		self.SH_setfc(self.fc)
+		while(not self.SH_fcSetup):
+			time.sleep(0.5)
+		self.SH_setFileName("script_mode.txt")
+		while(not self.SH_filenameSetup):
+			time.sleep(0.5)
+		self.SH_getSpectrum()
+		while(not self.SH_readSpectrum):
+			time.sleep(0.5)
+		self.SH_makeHead()
+		while(not self.SH_headmade):
+			time.sleep(0.5)
+		self.SH_writeSpectrum()
+		while(not self.SH_spWritten):
+			time.sleep(0.5)
+		self.SH_getSpectralPower()
+		while(not self.SH_powerRead):
+			time.sleep(0.5)
+		
+	def SHSpectrum_thread(self):
+		while(self.getSHsp):
+			self.NewSpectrum['SH'] = False 
+			self.SH_getSpectrum()
+			while(not self.SH_readSpectrum):
+				time.sleep(0.5)
+			self.NewSpectrum['SH'] = True
+			#self.SH_getSpectralPower()
+			#while(not self.SH_powerRead):
+			#	time.sleep(0.5)
+			time.sleep(2)
+	
+	def ARI_SHSpectrum(self):
+		self.observe = True
+		obs_Thread = threading.Thread(target = self.SHSpectrum_thread, name='SHSpectrum')
+		obs_Thread.start()
+		
+	def stop_ARI_obs(self):
+		self.observe = False
+		self.getSHsp = False
+		self.stopSRT()
+	
+	def enableSHspectrum(self):
+		self.getSHsp = True
+		
+	def disableSHspectrum(self):
+		self.getSHsp = False
+		self.NewSpectrum['SH'] = False
 
 

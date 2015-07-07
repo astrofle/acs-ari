@@ -2,7 +2,7 @@
 import sys, traceback, Ice
 import time
 import ARIAPI
-import SRTClient
+
 
 class API():
 	def __init__(self):
@@ -21,6 +21,9 @@ class API():
 		self.radecSources = []
 		self.planets = []
 		self.stars = []
+		self.spectrum = {}
+		self.obsModeState = {}
+		self.arrayStatus = {}
 	
 	def connect(self, IP):
 		""" Connects to Observing Mode server
@@ -109,7 +112,8 @@ class API():
 		ic = None
 		self.obsMode = ['','']
 		try:
-			self.controller.begin_setObservingMode(mode, instrument, self.setObsModeCB, self.failureCB);
+			self.controller.begin_setObservingMode(mode, instrument,\
+			self.setObsModeCB, self.failureCB);
 			print "Setting observing mode"
 			self.obsMode = [mode, instrument]
 		except:
@@ -169,7 +173,7 @@ class API():
 		return
 		
 	def setRxArray(self,freq, rxmode):
-		""" Sets array SRT receiver (does not includes Signal hound yet) - 
+		""" Sets array SRT receiver  - 
 		freq: type: (float), the SRT receiver frequency in MHz
 		      values: Range to be determined but typical use around 1420.4 MHz
 		mode: type: (int), the SRT receiver mode as documented in the SRT manual
@@ -184,19 +188,51 @@ class API():
 		statusIC = 0
 		ic = None
 		self.RxArray = [None,None]
-		try:
-			self.controller.begin_setRxArray(freq, rxmode, self.setRxArrayCB, self.failureCB);
-			print "Setting Rx"
-			self.RxArray = [freq, rxmode]
-		except:
-			traceback.print_exc()
-			self.statusIC = 1
+		if self.obsMode[0] == 'SD':
+			try:
+				self.controller.begin_setRxArray(freq, rxmode,\
+				self.setRxArrayCB, self.failureCB);
+				print "Setting Rx"
+				self.RxArray = [freq, rxmode]
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			print "This method is not compatible with the selected observing mode"
+		return
 		
 	def setRxArrayCB(self, a):
 		""" setRxArray Ice callback - 
 		"""
 		print a
 		return
+		
+	def setSHArray(self, fc, bw):
+		""" Sets array Signal Hound instrument -
+		fc: type (float) The SignalHound central frequency in MHz
+		bw: type (float) The signalHound spectrum span (bandwidth) in MHz
+		"""
+		statusIC = 0
+		ic = None
+		self.SHArray = [None, None]
+		if self.obsMode[1] == 'SH':
+			try:
+				self.controller.begin_setARISH(fc, bw, self.setSHCB, self.failureCB);
+				print "Setting Signal Hound"
+				self.SHArray = [fc, bw]
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			print "This method is not compatible with the selected observing mode"
+		return
+		
+	def setSHCB(self, a):
+		""" setSHArray Ice callback -
+		"""
+		print a
+		return
+
 	
 	def observeWithArray(self, mode, target):
 		""" Starts observation with Array - 
@@ -297,6 +333,35 @@ class API():
 		self.spectrumEnabled = False
 		return
 	
+	
+	def getLastSpectrumArray(self):
+		""" get last spectrum reading from array receivers
+		"""
+		statusIC = 0
+		ic = None
+		if self.obsMode[1] == 'SH':
+			try:
+				self.controller.begin_getLastSHSpectrum(self.lastSpecCB, self.failureCB);
+				print "getting last SignalHound spectrum available in observing mode"
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+		else:
+			try:
+				self.controller.begin_getLastSpectrum(self.lastSpecCB, self.failureCB);
+				print "getting last spectrum available in observing mode"
+			except:
+				traceback.print_exc()
+				self.statusIC = 1
+
+	def lastSpecCB(self, a):
+		""" getLastSpectrumArray Ice callback - 
+		obtains the spectrum data
+		"""
+		print "last spectrum obtained"
+		self.spectrum = a
+		return
+		
 	def npointScanMap(self, points, delta, spectrum):
 		""" Stars n-point scan map around a target
 		points: type (int): the number of points to scan in a single dimension, 
@@ -463,7 +528,7 @@ class API():
 		""" getObsModeStatus Ice callback - 
 		returns a list with Observing Mode Server status parameters
 		"""
-		print a
+		self.obsModeState = a
 		return
 	
 	def getArrayStatus(self):
@@ -482,7 +547,7 @@ class API():
 		""" getArrayStatus Ice callback - 
 		Returns a list of status parameters of SRT antennae
 		"""
-		print a
+		self.arrayStatus = a
 		return
 	
 	def apiStatus(self):
