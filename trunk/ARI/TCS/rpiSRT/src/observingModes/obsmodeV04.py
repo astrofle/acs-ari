@@ -81,7 +81,7 @@ class ObsBase():
 		self.Clientstatus ={}
 		self.getClStatus = True
 		self.offsets = [0,0]
-		self.map =None
+		self.map = {}
 		self.scanMapInProgress = False
 		self.readSpectrum
 		self.radecSources =[]
@@ -121,6 +121,16 @@ class ObsBase():
 		'SRT2': False
 		}
 		
+		self.nodeNScanCB = {
+		'SRT1': self.nScanSRT1CB,
+		'SRT2': self.nScanSRT2CB
+		}
+		
+		self.getNodeSpectrumCB{
+		'SRT1': self.getSpectrumSRT1CB,
+		'SRT2': self.getSpectrumSRT2CB
+		}
+	
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -490,6 +500,8 @@ class ObsBase():
 		if (stopNodes == len(self.nodes)):
 			self.ArrayMovingToTarget = False
 			print "Array stopped"
+			self.stopFlag['SRT1']= False
+			self.stopFlag['SRT2']= False
 	
 	def stopGoingtoTarget(self):
 	#Stops array to a target - use it only for this purpose - StopArray is still needed after this.
@@ -542,17 +554,21 @@ class ObsBase():
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
 				"setting pointing offset"
 				if node.startswith('SRT'):
-					self.ARI_controllers[node].begin_NpointScan(points, delta, spec, self.nscanCB, self.failureCB);
+					self.ARI_controllers[node].begin_NpointScan(points, delta, spec, self.nodeNScanCB[node], self.failureCB);
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
 			
-	def nscanCB(self,a):
+	
+	def nScanSRT1CB(self, a):
 		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan completed"
 		self.scanMapInProgress = False
-		self.map = a
-		
-		
+		self.map['SRT1'] = a
+
+	def nScanSRT2CB(self, a):
+		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan completed"
+		self.scanMapInProgress = False
+		self.map['SRT2'] = a
 
 ######################### Receiver spectrum
 	def getSpectrum(self):
@@ -565,7 +581,7 @@ class ObsBase():
 					self.waitSpectrum = True
 					if node.startswith('SRT'):
 						self.ARI_controllers[node].begin_getSpectrum\
-						(self.spectrumCB, self.failureCB);
+						(self.getNodeSpectrumCB[node], self.failureCB);
 						print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
 						" "+ node + " Getting spectrum"
 				while(self.waitSpectrum):
@@ -591,6 +607,39 @@ class ObsBase():
 			self.waitSpectrum = False
 		return
 		
+	def getSpectrumSRT1CB(self, sp):
+		self.spec = sp
+		#self.spectrum[sp.sampleStamp.name] = self.spec
+		name = sp.sampleStamp.name.upper()  
+		tim = sp.sampleStamp.timdate
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
+		print name+" "+tim
+		self.spectrum[name] = self.spec
+		self.NewSpectrum[name] = True
+		self.checkSpectrum()
+		return
+		
+	def getSpectrumSRT2CB(self, sp):
+		self.spec = sp
+		#self.spectrum[sp.sampleStamp.name] = self.spec
+		name = sp.sampleStamp.name.upper()  
+		tim = sp.sampleStamp.timdate
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
+		print name+" "+tim
+		self.spectrum[name] = self.spec
+		self.NewSpectrum[name] = True
+		self.checkSpectrum()
+		return
+	
+	def checkSpectrum(self):
+		spNodes = 0
+		for node in self.nodes:
+			if self.NewSpectrum[node]:
+				spNodes += 1
+		if (spNodes == len(self.nodes)):
+			self.waitSpectrum = False
+		return
+	
 	def enableSpectrum(self):
 		statusIC = 0
 		ic = None
