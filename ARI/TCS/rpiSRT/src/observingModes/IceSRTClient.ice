@@ -93,7 +93,9 @@ module SRTClient{
 		void setRxMode(string mode, out string r);
 		void SRTstate(out state st);
 		void offsetPointing(float azoff, float eloff, out string r);
-		void NpointScan(int points, float delta, bool sp, out map ml);
+		void NpointScan(int points, float delta, bool sp, out string r);
+		void NpointScanInProgress(out bool t);
+		void getNpointScanMap(out map sm);
 		void SRTStow(out string r);
 		void ClientThreads(out string r);
 		void SRTStopGoingToTarget(out string r);
