@@ -184,7 +184,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		print sp
 		self.npointScan_Thread(points, delta, sp)
 		#self.npointScan(points, delta, sp)
-		return self.map
+		return "starting n-point map"
 		
 	def NpointScanInProgress(self, curent = None):
 		return self.mapStarted
