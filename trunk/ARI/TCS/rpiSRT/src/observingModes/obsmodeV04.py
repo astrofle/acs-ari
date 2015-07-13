@@ -589,24 +589,7 @@ class ObsBase():
 			except:
 				traceback.print_exc()
 				self.statusIC = 1
-		
-	def spectrumCB(self, sp):
-		self.spec = sp
-		#self.spectrum[sp.sampleStamp.name] = self.spec
-		name = sp.sampleStamp.name.upper()  
-		tim = sp.sampleStamp.timdate
-		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" "+name + " Spectrum Obtained"
-		print name+" "+tim
-		self.spectrum[name] = self.spec
-		self.NewSpectrum[name] = True
-		spNodes = 0
-		for node in self.nodes:
-			if self.NewSpectrum[node]:
-				spNodes += 1
-		if (spNodes == len(self.nodes)):
-			self.waitSpectrum = False
-		return
-		
+	
 	def getSpectrumSRT1CB(self, sp):
 		self.spec = sp
 		#self.spectrum[sp.sampleStamp.name] = self.spec
