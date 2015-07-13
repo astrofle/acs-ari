@@ -744,6 +744,7 @@ class SRT():
 	def npointScan_Thread(self, points, delta, sp):
 		npointscan_thread = threading.Thread(target = self.npointScan,\
 		args = (points, delta, sp), name = 'npointScan')
+		npointscan_thread.start()
 	
 	def npointScan(self, points, delta, sp):
 		self.mapStarted = True
