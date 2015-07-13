@@ -82,7 +82,12 @@ class ObsBase():
 		self.getClStatus = True
 		self.offsets = [0,0]
 		self.map = {}
-		self.scanMapInProgress = False
+		self.ArrayscanMapInProgress = False
+		self.scanMapInProgress = {
+		'SRT1':False,
+		'SRT2':False
+		}
+		self.SMCheckTh_initialized = False
 		self.readSpectrum
 		self.radecSources =[]
 		self.ARI_controllers = {}
@@ -543,12 +548,12 @@ class ObsBase():
 	def npointScanMap(self, points, delta, spec):
 		statusIC = 0
 		ic = None
-		if self.scanMapInProgress:
+		if self.ArrayscanMapInProgress:
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
 			" Scan map is in progress, wait"
 			return
 		else:
-			self.scanMapInProgress = True
+			self.ArrayscanMapInProgress = True
 		try:
 			for node in self.nodes:
 				print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+\
@@ -561,14 +566,41 @@ class ObsBase():
 			
 	
 	def nScanSRT1CB(self, a):
-		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan completed"
-		self.scanMapInProgress = False
+		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan started"
+		self.scanMapInProgress['SRT1'] = True
 		self.map['SRT1'] = a
+		self.checkMap()
 
 	def nScanSRT2CB(self, a):
-		print  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan completed"
-		self.scanMapInProgress = False
+		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()) + "scan started"
+		self.scanMapInProgress['SRT2'] = True
 		self.map['SRT2'] = a
+		time.sleep(1)
+		self.checkMap()
+	
+	def checkMap(self):
+		if not self.SMCheckTh_initialized:
+			CMThread = threading.thread(target = checkMap_thread, name = 'scanMapCheck')
+			CMThread.start()
+			self.SMCheckTh_initialized =  True
+		
+	def checkMap_thread(self):
+		while(self.ArrayscanMapInProgress):
+			sm = 0
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.scanMapInProgress[node] = self.ARI_controllers[node].NpointScanInProgress()
+				if not self.scanMapInProgress[node]:
+					sm +=1
+				if node == 'SH':
+					sm +=1
+			if sm == len(self.nodes):
+				print "Scan map finished"
+				for node in self.nodes:
+					if node.startswith('SRT'):
+						self.map[node] = self.ARI_controllers[node].getNpointScanMap()
+				self.ArrayscanMapInProgress = False
+			time.sleep(5)
 
 ######################### Receiver spectrum
 	def getSpectrum(self):
