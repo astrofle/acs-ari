@@ -741,6 +741,10 @@ class SRT():
 		self.azoffset = 0.0
 		self.eloffset = 0.0
 	
+	def npointScan_Thread(self, points, delta, sp):
+		npointscan_thread = threading.Thread(target = self.npointScan,\
+		args = (points, delta, sp), name = 'npointScan')
+	
 	def npointScan(self, points, delta, sp):
 		self.mapStarted = True
 		if points%2 == 0:
