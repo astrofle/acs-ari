@@ -580,7 +580,7 @@ class ObsBase():
 	
 	def checkMap(self):
 		if not self.SMCheckTh_initialized:
-			CMThread = threading.thread(target = checkMap_thread, name = 'scanMapCheck')
+			CMThread = threading.Thread(target = checkMap_thread, name = 'scanMapCheck')
 			CMThread.start()
 			self.SMCheckTh_initialized =  True
 		
