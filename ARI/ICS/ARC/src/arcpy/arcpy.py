@@ -33,7 +33,7 @@ def format_line(head, data,
 class ARCManager():
     
     def __init__(self, bw=100e6, chw=97656.25, fft=1024, gain=1000, 
-                 acc_len=2**28/1024, log_handler=None, ip=arcp.roach_ip, 
+                 acc_len=(2**28)/1024, log_handler=None, ip=arcp.roach_ip, 
                  synth=True):
         """
         @param bw: Detector bandwidth
@@ -83,9 +83,11 @@ class ARCManager():
         # Writes firmware configuration to ROACH board
         self.boffile = self._config_to_boffile()
         self._set_bof_file()
-        self._reset_firmware()
         self._set_fft_shift()
         self._set_acc_len(self.acc_len)
+        self._reset_firmware()
+        #self._set_fft_shift()
+        #self._set_acc_len(self.acc_len)
         self._set_gain(gain)
         self.set_coarse_delay(0, self.cdelay)
         self.set_coarse_delay(1, self.cdelay)
@@ -176,7 +178,7 @@ class ARCManager():
                    'Using default of %0.f MHz.') % (bw/1e6)
         self.set_ref_clck(2*bw/1e6)
         self.bw = bw
-        self._update_boffile()
+        #self._update_boffile()
         
     def set_chw(self, chw):
         """
@@ -204,7 +206,7 @@ class ARCManager():
         self.amp_ba = numpy.empty(self.fft)
         self.amp_a = numpy.empty(self.fft)
         self.amp_b = numpy.empty(self.fft)
-        self._update_boffile()
+        #self._update_boffile()
     
     def _update_boffile(self):
         """
@@ -452,8 +454,8 @@ class ARCManager():
             self.amp_ba.append(complex(b_0r[i], b_0i[i]))
             self.amp_ba.append(complex(b_1r[i], b_1i[i]))
             
-        self.amp_ab = numpy.array(self.amp_ab)
-        self.amp_ba = numpy.array(self.amp_ba)
+        self.amp_ab = numpy.array(self.amp_ab)[::-1]
+        self.amp_ba = numpy.array(self.amp_ba)[::-1]
 
         return self.acc_num, self.amp_ab, self.amp_ba
 
@@ -506,8 +508,8 @@ class ARCManager():
             self.amp_b.append(b_0[i])
             self.amp_b.append(b_1[i])
         
-        self.amp_a = numpy.array(self.amp_a)
-        self.amp_b = numpy.array(self.amp_b)
+        self.amp_a = numpy.array(self.amp_a)[::-1]
+        self.amp_b = numpy.array(self.amp_b)[::-1]
 
         return self.acc_num, self.amp_a, self.amp_b
     
