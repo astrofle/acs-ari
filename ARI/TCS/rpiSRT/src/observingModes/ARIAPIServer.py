@@ -98,7 +98,7 @@ class ARIAPII(ARIAPI.API):
 				self.obsMode = ARIobsMode.SRTDoubleSingleDish()
 				msg = "Double Single Dish Mode chosen"
 			else:
-				self.obsMode = ARIobsModee.SRTSingleDish(s2)
+				self.obsMode = ARIobsMode.SRTSingleDish(s2)
 				msg = "Single Dish Mode chosen with " + s2
 		elif (s1 == "ARI"):
 			if (s2 == "SH"):
