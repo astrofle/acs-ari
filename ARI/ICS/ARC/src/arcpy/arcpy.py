@@ -480,12 +480,12 @@ class ARCManager():
         self.acc_num = acc_num
 
         # Minimum BRAM size is 2048
-        if self.fft <= 2048:
+        if self.fft < 2048:
             fft = 2048
             sdef = 512
         else:
-            fft = self.fft
-            sdef = self.fft//4
+            fft = self.fft*2
+            sdef = self.fft//2
         
         baseline = 'aa'
         a_0 = struct.unpack('>{0:d}l'.format(sdef),
@@ -501,7 +501,7 @@ class ARCManager():
         self.amp_a = []
         self.amp_b = []
 
-        for i in xrange(sdef):
+        for i in xrange(self.fft//2):
             #print i
             self.amp_a.append(a_0[i])
             self.amp_a.append(a_1[i])
