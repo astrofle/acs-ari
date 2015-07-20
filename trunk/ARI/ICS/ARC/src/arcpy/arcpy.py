@@ -454,8 +454,8 @@ class ARCManager():
             self.amp_ba.append(complex(b_0r[i], b_0i[i]))
             self.amp_ba.append(complex(b_1r[i], b_1i[i]))
             
-        self.amp_ab = numpy.array(self.amp_ab)[::-1]
-        self.amp_ba = numpy.array(self.amp_ba)[::-1]
+        self.amp_ab = numpy.array(self.amp_ab)#[::-1]
+        self.amp_ba = numpy.array(self.amp_ba)#[::-1]
 
         return self.acc_num, self.amp_ab, self.amp_ba
 
@@ -508,8 +508,8 @@ class ARCManager():
             self.amp_b.append(b_0[i])
             self.amp_b.append(b_1[i])
         
-        self.amp_a = numpy.array(self.amp_a)[::-1]
-        self.amp_b = numpy.array(self.amp_b)[::-1]
+        self.amp_a = numpy.array(self.amp_a)#[::-1]
+        self.amp_b = numpy.array(self.amp_b)#[::-1]
 
         return self.acc_num, self.amp_a, self.amp_b
     

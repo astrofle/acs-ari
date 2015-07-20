@@ -1,4 +1,15 @@
-from setuptools import setup
+from setuptools import setup, Command
+import os
+
+class CleanCommand(Command):
+    """Custom clean command to tidy up the project root."""
+    user_options = []
+    def initialize_options(self):
+        pass
+    def finalize_options(self):
+        pass
+    def run(self):
+        os.system('rm -vrf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info')
 
 #def readme():
     #with open('README.rst') as f:
@@ -14,4 +25,5 @@ setup(name='arcpy',
       packages=['arcpy'],
       zip_safe=False,
       install_requires=['corr', 'ValonSynth'],
-      dependency_links=['', 'https://github.com/nrao/ValonSynth#egg=ValonSynth-1.0'])
+      dependency_links=['', 'https://github.com/nrao/ValonSynth#egg=ValonSynth-1.0'],
+      cmdclass={'clean':CleanCommand})
