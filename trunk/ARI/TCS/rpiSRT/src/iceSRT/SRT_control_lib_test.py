@@ -95,10 +95,10 @@ class Antenna:
 		self.name = os.uname()[1] #Antenna name
 		self.sampleStamp = []
 		self.portInUse = [False, '']
-		self.azlim1
-		self.azlim2
-		self.ellim1
-		self.ellim2
+		self.azlim1 = None
+		self.azlim2 = None
+		self.ellim1 = None
+		self.ellim2 = None
 
 
 	def status(self, disp):
@@ -705,6 +705,7 @@ class Antenna:
 			msg = struct.pack('b4s4b', 0, 'freq', b11, b10, b9, b8)
 		except:
 			#in case of error in the freq value de 1420.4 equivalent is set
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+ " error in freq value, setting freq to 1420.4"
 			msg = struct.pack('b4s4b', 0, 'freq', 2, 42, 54, 0)
 		self.freqa = (((b11*256.0 + (b10 & 0xff))*64.0 + (b9 & 0xff))*0.04 - 0.8)
 		#Enviar comando por puerto serial y esperar respuesta en variable recv
