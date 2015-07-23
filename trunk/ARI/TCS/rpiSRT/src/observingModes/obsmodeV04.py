@@ -135,7 +135,24 @@ class ObsBase():
 		'SRT1': self.getSpectrumSRT1CB,
 		'SRT2': self.getSpectrumSRT2CB
 		}
-	
+		
+		self.calcons = {
+		'SRT1': 1.0,
+		'SRT2': 1.0
+		}
+		
+		self.calibrated = {
+		'SRT1': False,
+		'SRT2': False
+		}
+		
+		self.calibrationCB = {
+		'SRT1': self.calibSRT1CB,
+		'SRT2': self.calibSRT2CB
+		}
+		
+		self.CalibrationInProgress = False
+		
 	def find_planets(self, disp):
 		self.planets = sites.find_planets(sites.planet_list, self.site, disp)
 		print str(len(self.planets))+ " observabable planets: " + str(self.planets)
@@ -379,6 +396,49 @@ class ObsBase():
 			print "Array at stow"
 		return
 		
+	def SRTCalibration(self, method):
+		statusIC = 0
+		ic = None
+		if self.CalibrationInProgress:
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Stow in progress, wait"
+			return
+		else:
+			self.CalibrationInProgress = True
+		try:
+			for node in self.nodes:
+				if node.startswith('SRT'):
+					self.calibrated[node] = False
+					self.ARI_controllers[node].begin_SRTCalibration(method, self.calibrationCB[node], self.failureCB);
+					print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" Calibrating Antenna: " + node
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+		
+	def calibSRT1CB(self, calcons):
+		print calcons
+		self.calcons['SRT1'] = calcons
+		self.checkCalibration()
+		return
+		
+	def calibSRT2CB(self, calcons):
+		print calcons
+		self.calcons['SRT2'] = calcons
+		self.checkCalibration()
+		return
+	
+	def checkCalibration(self):
+		calnodes = 0
+		for node in self.nodes:
+			if node.startswith('SRT'):
+			    if (self.calibrated[node]):
+			        stownodes += 1
+			else:
+				stownodes += 1
+		if calnodes == len(self.nodes):
+			self.CalibrationInProgress = False
+			print "Array Calibrated (SRT receivers)"
+		return
+	
 	def getClientStatusThread(self):
 		while(self.getClStatus):
 			self.getClientStatus()

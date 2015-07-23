@@ -86,6 +86,10 @@ class ARIAPII(ARIAPI.API):
 		self.scanMapInProgress = False
 		self.readSpectrum
 		####
+		self.calcons = {
+		'SRT1': 1.0,
+		'SRT2': 1.0
+		}
 
 	def testConn(self, s, current = None):
 		print s
@@ -175,7 +179,10 @@ class ARIAPII(ARIAPI.API):
 		self.obsMode.npointScanMap(points, delta, specB)
 		msg = "Executing n-points Scan Map"
 		print msg
-		return self.map
+		return msg
+		
+	def getLastScanMap(self, current = None):
+		return self.obsMode.map
 	
 	def findRaDecSources(self, current = None):
 		sources = []
@@ -245,7 +252,7 @@ class ARIAPII(ARIAPI.API):
 		self.obsMode.new_freq, self.obsMode.new_rec_mode, self.obsMode.getClStatus,\
 		self.obsMode.ArrayMovingToTarget, self.obsMode.ArrayOnTarget,\
 		self.obsMode.ArrayStopCmd, self.obsMode.offsets, self.obsMode.scanMapInProgress,\
-		self.obsMode.readSpectrum, self.obsMode.NewSpectrum, self.obsMode.waitSpectrum)
+		self.obsMode.readSpectrum, self.obsMode.NewSpectrum, self.obsMode.waitSpectrum, self.obsMode.calibrated)
 		return st
 
 	def getArrayState(self, current = None):
@@ -322,6 +329,11 @@ class ARIAPII(ARIAPI.API):
 		self.obsMode.Clientstatus['SRT1'].az, self.obsMode.Clientstatus['SRT1'].el)
 		lastSHSpectrum['SH'] = ARIAPI.SHspectrum(_stamp, _sp.SHspec)
 		return lastSHSpectrum
+		
+	def SRTCalibrate(self, method, current = None):
+		self.obsMode.SRTCalibration(method)
+		return self.calcons
+		
 try:
 	if len(sys.argv)<2:
 		print "use SRTcontrolServer.py  -h 192.168.0.6 -p 10000"
