@@ -34,7 +34,7 @@ class ARCManager():
     
     def __init__(self, bw=100e6, chw=97656.25, fft=1024, gain=1000, 
                  acc_len=(2**28)/1024, log_handler=None, ip=arcp.roach_ip, 
-                 synth=True):
+                 synth=True, synth_port='/dev/ttyUSB0'):
         """
         @param bw: Detector bandwidth
         @param chw: detector channel spacing
@@ -54,7 +54,7 @@ class ARCManager():
         # SYNTH_B is the ADC clock, SYNTH_A the LO
         self.synth = synth
         if synth:
-            self.synth = vs.Synthesizer(arcp.synth_port)
+            self.synth = vs.Synthesizer(synth_port)
         
         # Connect to ROACH
         self.ip = ip
@@ -420,12 +420,12 @@ class ARCManager():
         self.acc_num = acc_num
 
         # Minimum BRAM size is 2048
-        if self.fft <= 2048:
+        if self.fft < 2048:
             fft = 2048
             sdef = 512
         else:
-            fft = self.fft
-            sdef = self.fft//4
+            fft = self.fft*2
+            sdef = self.fft//2
             
         # get the data...
         a_0r = struct.unpack('>{0:d}l'.format(sdef), 
@@ -448,7 +448,7 @@ class ARCManager():
         self.amp_ab = []
         self.amp_ba = []
 
-        for i in xrange(sdef):
+        for i in xrange(self.fft//2):
             self.amp_ab.append(complex(a_0r[i], a_0i[i]))
             self.amp_ab.append(complex(a_1r[i], a_1i[i]))
             self.amp_ba.append(complex(b_0r[i], b_0i[i]))
