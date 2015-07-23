@@ -431,9 +431,9 @@ class ObsBase():
 		for node in self.nodes:
 			if node.startswith('SRT'):
 			    if (self.calibrated[node]):
-			        stownodes += 1
+			        calnodes += 1
 			else:
-				stownodes += 1
+				calnodes += 1
 		if calnodes == len(self.nodes):
 			self.CalibrationInProgress = False
 			print "Array Calibrated (SRT receivers)"
