@@ -16,6 +16,7 @@ class API():
 		self.spectrumEnabled = False
 		self.scanMapinProgress = False
 		self.stowinProgress = False
+		self.calibrated = False
 		self.offsets = [0.0, 0.0]
 		###############
 		self.radecSources = []
@@ -24,6 +25,7 @@ class API():
 		self.spectrum = {}
 		self.obsModeState = {}
 		self.arrayStatus = {}
+		self.arrayMap = {}
 	
 	def connect(self, IP):
 		""" Connects to Observing Mode server
@@ -398,6 +400,24 @@ class API():
 		self.scanMapinProgress = False
 		return
 	
+	def getLastScanMap(self):
+		""" Obtains last scan map available at the observing mode server
+		"""
+		statusIC = 0
+		ic = None
+		try:
+			self.controller.begin_getLastScanMap(self.getScanMapCB, self.failureCB)
+			print "Performing Scan Map"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+			
+	def getScanMapCB(self, scanMap):
+		""" getLastScanMap Ice callback
+		"""
+		self.arrayMap = scanMap
+		return
+	
 	def findRadecSources(self):
 		""" return a list of observable sources with (Ra, Dec) coordinates
 		The catalog of (Ra,Dec) sources is the used by the original SRT software
@@ -548,6 +568,28 @@ class API():
 		Returns a list of status parameters of SRT antennae
 		"""
 		self.arrayStatus = a
+		return
+		
+	def calibrateSRT(self, method):
+		""" Performs Calibration of SRT receiver
+		use method = ‘noise’
+		"""
+		statusIC = 0
+		ic = None
+		self.calibrated = False
+		try:
+			self.controller.begin_SRTCalibrate(method, self.calibrateSRTCB, self.failureCB);
+			print "Calibration SRT receivers"
+		except:
+			traceback.print_exc()
+			self.statusIC = 1
+	
+	def calibrateSRTCB(self, calcons):
+		""" CalibrateSRT Ice callback 
+		Returns calibration constant self.calcons
+		"""
+		self.calcons = calcons
+		self.calibrated = True
 		return
 	
 	def apiStatus(self):

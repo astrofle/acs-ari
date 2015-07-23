@@ -64,6 +64,7 @@ module SRTClient{
 		bool elatstow;
 		bool azatstow;
 		bool slew;
+		bool calibrated;
 		string serialport;
 		string lastSRTCom;
 		string lastSerialMsg;
@@ -100,5 +101,6 @@ module SRTClient{
 		void ClientThreads(out string r);
 		void SRTStopGoingToTarget(out string r);
 		void ClientShutdown(out string r);
+		void SRTCalibration(string method, out float c);
 	};
 };

@@ -80,6 +80,7 @@ module ARIAPI{
 		bool ReadSpectrum;
 		boolDict NewSpectrumToRead;
 		bool WaitingSpectrum;
+		boolDict SRTcalibrated;
     };
 
     struct piu{
@@ -152,6 +153,7 @@ module ARIAPI{
 	};
 
     dictionary<string, SHspectrum> lspSH;
+    dictionary<string, float> calConstant;
 
 	interface API{
 		void testConn(string s, out string r);
@@ -163,7 +165,8 @@ module ARIAPI{
         void setRxSwMode(string s1, string s2, out string r);
         void enableSpectrumArray(out string r);
         void disableSpectrumArray(out string r);
-        void npointScanMap(int points, float delta, bool spec, out map sm);
+        void npointScanMap(int points, float delta, bool spec, out string r);
+        void getLastScanMap(out map sm);
         void findRaDecSources(out sources r);
         void findPlanets(out sources r);
         void findStars(out sources r);
@@ -178,6 +181,7 @@ module ARIAPI{
         void getLastSpectrum(out lsp sp);
         void setARISH(float fc, float bw, out string r);
         void getLastSHSpectrum(out lspSH sp);
+        void SRTCalibrate(out calConstant cal);
 	};
 };	
 

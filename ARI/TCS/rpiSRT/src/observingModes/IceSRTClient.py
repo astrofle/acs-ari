@@ -81,6 +81,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.STOP = False
 		self.map = []
 		self.mapStarted = False
+		self.calcons = 1.0
+		self.calibrated = False
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 	
 	def setup(self, current = None):
@@ -166,7 +168,7 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		self.RxSwitchMode, self.toSource, self.SRTinitialized, self.initialized,\
 		str(self.Target), str(self.obsTarget), self.az, self.el, self.aznow,\
 		self.elnow, self.azoffset, self.eloffset, self.axis, self.tostow,\
-		self.elatstow, self.azatstow, self.slewing, str(self.serialport),\
+		self.elatstow, self.azatstow, self.slewing, self.calibrated, str(self.serialport),\
 		str(self.lastSRTCom), str(self.lastSerialMsg))
 		return _st
 
@@ -213,6 +215,11 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 	def ClientShutdown(self, current = None):
 		self.shutdown()
 		return self.name + " shutdown"
+		
+	def SRTCalibration(self, method, current = None):
+		self.do_calibration(method)
+		self.calibrated = True
+		return self.calcons
 
 
 		
