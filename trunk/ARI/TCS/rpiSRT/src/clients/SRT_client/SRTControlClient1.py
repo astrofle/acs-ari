@@ -87,6 +87,8 @@ class SRT():
 		self.Target = ''
 		self.map = []
 		self.mapStarted = False
+		self.calibrated = False
+		self.calcons = 1.0
 		print "Call shutdown before quiting ipython in order to kill all running threads, in a.o.c. exec ps and kill -9 in the console"
 
 	def find_planets(self, disp):
@@ -143,6 +145,7 @@ class SRT():
 	
 	def docalCB(self, calcons):
 		#call by do_calibration
+		self.calibrated = True
 		self.calcons = calcons
 		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name + " calibration done"
 	
@@ -498,6 +501,7 @@ class SRT():
 		#Call for receiver calibration
 		self.statusIC = 0
 		self.ic = None
+		self.calibrated = False
 		try:
 			target = self.controller.begin_SRTDoCalibration(method, self.docalCB, self.failureCB)
 			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " + self.name + " calibrating receiver"
@@ -828,6 +832,7 @@ class SRT():
 		print "toStow: " + str(self.tostow)
 		print "Target: " + str(self.Target)
 		print "obsTarget: " + str(self.obsTarget)
+		print "calibrated: " + str(self.calibrated)
 		
 	def getThreads(self):
 		SRTthreads = []
