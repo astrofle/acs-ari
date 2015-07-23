@@ -400,7 +400,7 @@ class ObsBase():
 		statusIC = 0
 		ic = None
 		if self.CalibrationInProgress:
-			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Stow in progress, wait"
+			print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+ " Calibration in progress, wait"
 			return
 		else:
 			self.CalibrationInProgress = True
