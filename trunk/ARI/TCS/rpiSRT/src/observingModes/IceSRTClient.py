@@ -218,6 +218,8 @@ class SRTClientI(SRTClient.Client, SRTControl.SRT):
 		
 	def SRTCalibration(self, method, current = None):
 		self.do_calibration(method)
+		while(not self.calibrated):
+			time.sleep(1)
 		self.calibrated = True
 		return self.calcons
 
