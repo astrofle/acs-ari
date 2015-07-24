@@ -588,6 +588,7 @@ class API():
 		""" CalibrateSRT Ice callback 
 		Returns calibration constant self.calcons
 		"""
+		print "Array calibrated: ", str(calcons)
 		self.calcons = calcons
 		self.calibrated = True
 		return
