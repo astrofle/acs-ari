@@ -181,7 +181,7 @@ module ARIAPI{
         void getLastSpectrum(out lsp sp);
         void setARISH(float fc, float bw, out string r);
         void getLastSHSpectrum(out lspSH sp);
-        void SRTCalibrate(out calConstant cal);
+        void SRTCalibrate(string me, out calConstant cal);
 	};
 };	
 
