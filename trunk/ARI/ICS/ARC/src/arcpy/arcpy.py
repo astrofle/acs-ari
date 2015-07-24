@@ -8,6 +8,8 @@ Author: Jason Manley
 Modified: Pedro Salas, July 2014.
 '''
 
+__docformat__ = 'reStructuredText'
+
 from __future__ import division
 
 import sys
@@ -22,6 +24,10 @@ import arc_params as arcp
     
 def format_line(head, data, 
                 fmt=( '%Y-%m-%d-%H-%M-%S.%f {head} data: {data} \r\n' )):
+    """
+    Concatenated the header and the data in a single string.
+    This is based on the original MIT SRT java software output.
+    """
    
     data_line = datetime.datetime.now().\
                 strftime(fmt).format(head=" ".join([str(h) for h in head]),
@@ -31,23 +37,35 @@ def format_line(head, data,
         
 
 class ARCManager():
+    """
+    Class used to manage an Academic Radio Correlator (ARC).
+    """
     
     def __init__(self, bw=100e6, chw=97656.25, fft=1024, gain=1000, 
                  acc_len=(2**28)/1024, log_handler=None, ip=arcp.roach_ip, 
                  synth=True, synth_port='/dev/ttyUSB0'):
+        
         """
-        @param bw: Detector bandwidth
-        @param chw: detector channel spacing
-        @param fft: fft size. must be compatible with bandwidth 
-                    and channel spacing.
-        @param gain: gain factor to multiply channel amplitudes
-        @param acc_len: number of spectra to accumulate in one integration.
-        @param log_handler: log handler used to store error messages.
-        @param ip: ip of the ROACH board. 
-                   SRT control room:146.155.121.6
-                   AIUC:146.155.21.32
-        @param synth: True if the syntheziser is connected to a control PC
-                      with the USB cable. False otherwise.
+        Creates an ARCManager object.
+        
+        Parameters
+        ----------
+        :param bw: Detector bandwidth.
+        :param chw: Detector channel spacing.
+        :param fft: FFT size. must be compatible with the bandwidth and channel spacing.
+        :param gain: Gain factor. Each channel amplitude is multiplied by this value.
+        :param acc_len: Number of spectra to accumulate in one integration.
+        :param log_handler: Log handler used to store error messages.
+        :param ip: Ip of the ROACH board. **SRT control room**: 146.155.121.6. **AIUC**:146.155.21.32
+        :param synth: True if the syntheziser is connected to a control PC with the USB cable. False otherwise.
+        :type bw: int, float
+        :type chw: int, float
+        :type fft: int, float
+        :type gain: int
+        :type acc_len: int
+        :type log_handler: Logger object
+        :type ip: str
+        :type synth: bool
         """
 
         # Opens the Valon 5007 dual synth
@@ -86,20 +104,19 @@ class ARCManager():
         self._set_fft_shift()
         self._set_acc_len(self.acc_len)
         self._reset_firmware()
-        #self._set_fft_shift()
-        #self._set_acc_len(self.acc_len)
         self._set_gain(gain)
         self.set_coarse_delay(0, self.cdelay)
         self.set_coarse_delay(1, self.cdelay)
         
         # Sets io detector parameters
         # Separate real from imag output
-        self.filename_abr = 'default_abr'
-        self.filename_bar = 'default_bar'
-        self.filename_abi = 'default_abi'
-        self.filename_bai = 'default_bai'
-        self.filename_aa = 'default_aa'
-        self.filename_bb = 'default_bb'
+        data_date = time.strftime("%Y%m%d-%H%M")
+        self.filename_abr = data_date + '_abr'
+        self.filename_bar = data_date + '_bar'
+        self.filename_abi = data_date + '_abi'
+        self.filename_bai = data_date + '_bai'
+        self.filename_aa = data_date + '_aa'
+        self.filename_bb = data_date + '_bb'
         self.datafile_abr = None
         self.datafile_abi = None
         self.datafile_bar = None
@@ -111,14 +128,27 @@ class ARCManager():
         self.amp_a = numpy.empty(self.fft)
         self.amp_b = numpy.empty(self.fft)
         
+    def close_files(self):
+        """
+        Closes the files where the spectra is being written to.
+        """
+        
+        if self.datafile_aa != None:
+            self.datafile_aa.close()
+        if self.datafile_bb != None:
+            self.datafile_bb.close()
+        if self.datafile_abr != None:
+            self.datafile_abr.close()
+        if self.datafile_abi != None:
+            self.datafile_abi.close()
+        if self.datafile_bar != None:
+            self.datafile_bar.close()
+        if self.datafile_bai != None:
+            self.datafile_bai.close()
+        
     def _config_to_boffile(self):
         """
         Outputs the .bof filename for a given bw and fft.
-        
-        Parameters
-        ----------
-        var1 : ARCManager
-            self
         """
         
         # Bandwidth is given in MHz in the .bof file names
@@ -130,11 +160,9 @@ class ARCManager():
         
         Parameters
         ----------
-        var1 : ARCManager
-            self
-        var2 : LO frequency
-            Frequency in MHz.
+        :param lofreq: LO frequency in MHz.
         """
+        
         if not self.synth:
             print ('No synthesizer on ROACH.'
                    'The LO frequency can not be changed.')
@@ -147,11 +175,9 @@ class ARCManager():
         
         Parameters
         ----------
-        var1 : ARCManager
-            self
-        var2 : ADC reference frequency
-            Frequency in MHz.
+        :param adcfreq: ADC reference frequency in MHz.
         """
+        
         if not self.synth:
             print ('No synthesizer on ROACH.'
                    'The ADC reference frequency can not be changed.')
@@ -166,10 +192,7 @@ class ARCManager():
         
         Parameters
         ----------
-        var1 : ARCManager
-            self
-        var2 : float
-            Band width. 100 MHz<BW<400 MHz.
+        :param bw: Band width. 100 MHz or 400 MHz.
         """
         
         if bw not in arcp.allowed_config.keys():
@@ -178,7 +201,6 @@ class ARCManager():
                    'Using default of %0.f MHz.') % (bw/1e6)
         self.set_ref_clck(2*bw/1e6)
         self.bw = bw
-        #self._update_boffile()
         
     def set_chw(self, chw):
         """
@@ -188,34 +210,29 @@ class ARCManager():
         
         Parameters
         ----------
-        var1 : ARCManager
-            self
-        var2 : float
-            Channel width. Must be an allowed value.
+        :param chw: Channel width. Must be an allowed value.
+        :type chw: float
         """
         
         fft = int(self.bw/chw)
+        
+        # Check if there is a .bof file for the requested configuration
         if chw not in arcp.allowed_config[self.bw]:
             fft = 1024
             chw = arcp.allowed_config[self.bw][0]
             print ('Channel width not implemented.' 
                    'Using default of %0.f kHz') % (chw/1e3)
+            
         self.chw = chw
         self.fft = int(fft)
         self.amp_ab = numpy.empty(self.fft)
         self.amp_ba = numpy.empty(self.fft)
         self.amp_a = numpy.empty(self.fft)
         self.amp_b = numpy.empty(self.fft)
-        #self._update_boffile()
     
     def _update_boffile(self):
         """
         Sets the FPGA bof file based on the current ARC configuration.
-        
-        Parameters
-        ----------
-        var1 : ARCManager
-            self
         """
         
         self.boffile = self._config_to_boffile()
@@ -226,6 +243,10 @@ class ARCManager():
     def get_chw(self):
         """
         Returns the current channel width.
+        
+        Return
+        ------
+        ARC channel width in Hz.
         """
         
         print 'Using a channel width of %.0f' % self.chw
@@ -234,6 +255,10 @@ class ARCManager():
     def get_bw(self):
         """
         Returns the current band width.
+        
+        Return
+        ------
+        ARC bandwidth in Hz.
         """
         
         print 'Using a band width of %.0f' % self.bw
@@ -243,6 +268,14 @@ class ARCManager():
         """
         Connects to a ROACH board through katcp_port using the corr
         module.
+        
+        Parameters
+        ----------
+        :param katcp_port: Port on the ROACH board to connect to.
+        
+        Return
+        ------
+        An FPGA object from the corr module.
         """
         
         print 'Connecting to server %s on port %i... ' % (self.ip, katcp_port),
@@ -263,6 +296,10 @@ class ARCManager():
     def _init_log(self, ip):
         """
         Initializes the event log.
+        
+        Parameters
+        ----------
+        :param ip: ROACH ip.
         """
         
         lh = corr.log_handlers.DebugLogHandler()
@@ -302,10 +339,8 @@ class ARCManager():
         
         Parameters
         ----------
-        var1 : ARCManager
-            self
-        var2 : int
-            Channel gain. Uses the same gain for every channel.
+        :param gain: Channel gain. Uses the same gain for every channel.
+        :type gain: int
         """
         
         # EQ SCALING!
@@ -332,10 +367,8 @@ class ARCManager():
         
         Parameters
         ----------
-        var1 : ARCManager
-            self
-        var2 : int
-            Number of spectra to accumulate before output.
+        :param acc_len: Number of spectra to accumulate before output.
+        :type acc_len: int
         """
         
         print 'Configuring accumulation period...',
@@ -351,12 +384,10 @@ class ARCManager():
         
         Parameters
         ----------
-        var1 : ARCManager
-            self
-        var2 : int
-            Antenna number, 0 or 1 for ARI.
-        var3 : int
-            Coarse delay value in clock cycles.
+        :param antenna: Which antenna the delay is applied to. 
+        :type antenna: int
+        :param delay: Coarse delay to be applied. It should have units of clock cycles. 
+        :type delay: int
         """
         
         print 'Configuring coarse delay...',
@@ -374,7 +405,17 @@ class ARCManager():
         self.fpga.write_int('fft_shift', shift)
         print 'done'
         
-    def set_file_name(self, _filename, product=None):
+    def set_file_name(self, filename, product=None):
+        """
+        Sets the name of the files that will contain the spectra.
+        
+        Parameters
+        ----------
+        :param filename: name of the output files.
+        :type filename: string
+        :param product: product to rename. By default all products output will be renamed.
+                        The allowed values are: abr, abi, bar, bai, aa or bb.
+        """
         #print "Set file name: existent output file %s will be updated to %s" % (self.filename, _filename)
         if product == 'abr':
             self.filename_abr = _filename
@@ -409,10 +450,8 @@ class ARCManager():
         
         Parameters
         ----------
-        var1 : ARCManager
-            self
-        var2 : str
-            Baseline name. ARI only has an ab baseline
+        :param baseline: Baseline name. ARI only has an ab baseline.
+        :type baseline: string
         """
         
         acc_num = self.fpga.read_uint('acc_num')
@@ -462,11 +501,6 @@ class ARCManager():
     def get_data_auto(self):
         """
         Reads the autocorrelation data from the FPGA.
-        
-        Parameters
-        ----------
-        var1 : ARCManager
-            self
         
         Return
         ------
@@ -518,6 +552,8 @@ class ARCManager():
         Grabs both auto and cross correlation data.
         It does not guarantee that they correspond to
         the same integration.
+        The spectrum is saved in the ARCManager internal 
+        variables.
         """
         
         self.get_data_auto()
@@ -554,12 +590,17 @@ class ARCManager():
         
     def get_tdump(self):
         """
-        Asks the ROACH for the data dump
-        rate.
+        Asks the ROACH for the data dump rate.
+        
+        Return
+        ------
+        The time it takes to process a spectrum in seconds.
         """
+        
         # factor 4 arises because the FFT processes 4 inputs simultaneously
         tdump = self.fft*self.acc_len/self.clck/4.0
         self.tdump = tdump
+        
         return self.tdump
         
     def make_head(self, ant1=None, ant2=None, source=None):
@@ -567,6 +608,10 @@ class ARCManager():
         Creates a list with observation data.
         The list is written at the beginning of
         each line in the output spectra.
+        
+        Return
+        ------
+        A list containing the header keywords and their respective values.
         """
         
         minhead = ['fc', self.fc, 'bw', self.bw, 
