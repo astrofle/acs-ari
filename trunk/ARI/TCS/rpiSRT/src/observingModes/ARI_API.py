@@ -579,7 +579,7 @@ class API():
 		self.calibrated = False
 		try:
 			self.controller.begin_SRTCalibrate(method, self.calibrateSRTCB, self.failureCB);
-			print "Calibration SRT receivers"
+			print "Calibrating SRT receivers"
 		except:
 			traceback.print_exc()
 			self.statusIC = 1
