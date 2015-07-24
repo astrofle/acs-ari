@@ -90,6 +90,7 @@ class ARIAPII(ARIAPI.API):
 		'SRT1': 1.0,
 		'SRT2': 1.0
 		}
+		self.CalibrationInProgress = False
 
 	def testConn(self, s, current = None):
 		print s
@@ -332,6 +333,8 @@ class ARIAPII(ARIAPI.API):
 		
 	def SRTCalibrate(self, method, current = None):
 		self.obsMode.SRTCalibration(method)
+		while(not self.CalibrationInProgress):
+			time.sleep(1)
 		return self.calcons
 		
 try:
