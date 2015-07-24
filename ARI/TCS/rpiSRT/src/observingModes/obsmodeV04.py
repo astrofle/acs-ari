@@ -417,7 +417,7 @@ class ObsBase():
 	def calibSRT1CB(self, calcons):
 		print calcons
 		self.calcons['SRT1'] = calcons
-		self.calibrated['SRT2'] = True
+		self.calibrated['SRT1'] = True
 		self.checkCalibration()
 		return
 		
