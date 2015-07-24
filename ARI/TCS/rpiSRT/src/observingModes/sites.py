@@ -25,7 +25,6 @@ planet_list = {
 	}
 
 SRT_sources_list = {
-SRT_sources_list = {
 	'Crab':{'ra':'05:31:30', 'dec':'21:58:00'},
 	'Orion':{'ra':'05:32:48','dec':'-5:27:00'},
 	'S6':{'ra':'15:28:58','dec':'-2:15:00'},
