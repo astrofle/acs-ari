@@ -334,7 +334,7 @@ class ARIAPII(ARIAPI.API):
 	def SRTCalibrate(self, method, current = None):
 		self.obsMode.SRTCalibration(method)
 		time.sleep(2)
-		while(self.CalibrationInProgress):
+		while(self.obsMode.CalibrationInProgress):
 			time.sleep(1)
 		return self.calcons
 		
