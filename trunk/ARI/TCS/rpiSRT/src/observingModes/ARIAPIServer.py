@@ -336,7 +336,7 @@ class ARIAPII(ARIAPI.API):
 		time.sleep(2)
 		while(self.obsMode.CalibrationInProgress):
 			time.sleep(1)
-		return self.calcons
+		return self.obsMode.calcons
 		
 try:
 	if len(sys.argv)<2:
