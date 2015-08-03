@@ -18,21 +18,13 @@ Contents:
 ARC API
 =======
 
-arcpy.arcpy module
+arcpy module
 ------------------
-
-.. automodule:: arcpy.arcpy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
 
 .. automodule:: arcpy
     :members:
     :undoc-members:
+    :private-members:
     :show-inheritance:
 
 Indices and tables

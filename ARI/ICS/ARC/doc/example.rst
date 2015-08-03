@@ -8,8 +8,3 @@ Example script
    :linenothreshold: 5
    
 .. literalinclude:: simple_ARC.py
-    
-    
-
-.. _installing-docdir:
-

@@ -14,11 +14,11 @@ then it should be as easy as::
 
   python setup.py install
 
-If that fails, run around in circles and go bother Rolando ;)
+After installing you can clean the current directory with::
 
-  > while True:
+  python setup.py clean
 
 Now you are ready to go scare some pigeons, they might
 be interfering with the signals
 
-.. image:: _static/pigeon2.png
+.. image:: _static/pigeon2.jpg
