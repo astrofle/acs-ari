@@ -25,6 +25,13 @@ __docformat__ = 'reStructuredText'
 def nearest_value(value, array):
     """
     Returns the closest array element to the specified value.
+    
+    :param value: Value to search for in array.
+    :param array: Array in which to search for a value.
+    :type value: int or float
+    :type array: list or numpy array
+    :returns: Closest ocurrence of value in array.
+    :rtype: Same as value.
     """
     
     try:
@@ -39,6 +46,13 @@ def format_line(head, data,
     """
     Concatenated the header and the data in a single string.
     This is based on the original MIT SRT java software output.
+    
+    :param head: List with header keywords and their value.
+    :param data: List with the data. Each entry must be a data value.
+    :param fmt: String describing the output data format.
+    :type head: Array or list
+    :type data: Array or list
+    :type fmt: Optional
     """
    
     data_line = datetime.datetime.now().\
@@ -51,9 +65,28 @@ def format_line(head, data,
 class ARCManager():
     """
     Class used to manage an Academic Radio Correlator (ARC).
+    
+    :param bw: Detector bandwidth.
+    :param chw: Detector channel spacing.
+    :param fft: FFT size. must be compatible with the bandwidth and channel spacing.
+    :param gain: Gain factor. Each channel amplitude is multiplied by this value.
+    :param acc_len: Number of spectra to accumulate in one integration.
+    :param log_handler: Log handler used to store error messages.
+    :param ip: Ip of the ROACH board. **SRT control room**: 146.155.121.6. **AIUC**:146.155.21.32
+    :param synth: True if the syntheziser is connected to a control PC with the USB cable. False otherwise.
+    :param synth_port: port where the syntheziser is mounted.
+    :type bw: int, float
+    :type chw: int, float
+    :type fft: int, float
+    :type gain: int
+    :type acc_len: int
+    :type log_handler: Logger object
+    :type ip: string
+    :type synth: bool
+    :type synth_port: string
     """
     
-    allowed_config = {100e6:[97656.25, 48828.125, 24414.0625],
+    allowed_config = {100e6:[97656.25, 48828.125, 24414.0625, 12207.03125],
                       400e6:[390625.0]}
     katcp_port = 7147
     roach_ip = '146.155.121.6'
@@ -65,8 +98,6 @@ class ARCManager():
         """
         Creates an ARCManager object.
         
-        Parameters
-        ----------
         :param bw: Detector bandwidth.
         :param chw: Detector channel spacing.
         :param fft: FFT size. must be compatible with the bandwidth and channel spacing.
@@ -113,7 +144,10 @@ class ARCManager():
         self.acc_len = acc_len
         self.acc_num = 0
         self.tdump = 0
-        self.clck = self.bw/4.0
+        if self.bw == 50e6:
+            self.clck = self.bw/4.0
+        else:
+            self.clck = self.bw/4.0
         self.cdelay = 0
         self.gain = gain
         
@@ -189,7 +223,8 @@ class ARCManager():
         """
         
         if log_handler:
-            print 'FAILURE DETECTED. Log entries:\n', log_handler[0].printMessages()
+            print('FAILURE DETECTED. Log entries:\n', 
+            log_handler.handlers[0].printMessages())
         else:
             print 'FAILURE DETECTED.\n'
         try:
@@ -212,9 +247,8 @@ class ARCManager():
         """
         Returns the current channel width.
         
-        Return
-        ------
-        ARC channel width in Hz.
+        :returns: ARC channel width in Hz.
+        :rtype: float
         """
         
         print 'Using a channel width of %.0f' % self.chw
@@ -224,9 +258,8 @@ class ARCManager():
         """
         Returns the current band width.
         
-        Return
-        ------
-        ARC bandwidth in Hz.
+        :returns: ARC bandwidth in Hz.
+        :rtype: float
         """
         
         print 'Using a band width of %.0f' % self.bw
@@ -236,14 +269,11 @@ class ARCManager():
         """
         Connects to a ROACH board through katcp_port using the corr
         module.
-        
-        Parameters
-        ----------
+
         :param katcp_port: Port on the ROACH board to connect to.
-        
-        Return
-        ------
-        An FPGA object from the corr module.
+        :type katcp_port: int
+        :returns: An FPGA object from the corr module.
+        :rtype: corr.FPGA
         """
         
         print 'Connecting to server %s on port %i... ' % (self.ip, katcp_port),
@@ -264,10 +294,9 @@ class ARCManager():
     def _init_log(self, ip):
         """
         Initializes the event log.
-        
-        Parameters
-        ----------
+
         :param ip: ROACH ip.
+        :type ip: string
         """
         
         lh = corr.log_handlers.DebugLogHandler()
@@ -279,7 +308,7 @@ class ARCManager():
         
     def _reset_firmware(self):
         """
-        Resets the correlator firmware counters and triggers.
+        Resets the correlator gateware counters and triggers.
         """
         
         print ('Resetting board, software triggering'
@@ -296,8 +325,6 @@ class ARCManager():
         """
         Sets the number of spectra to accumulate before output.
         
-        Parameters
-        ----------
         :param acc_len: Number of spectra to accumulate before output.
         :type acc_len: int
         """
@@ -307,13 +334,19 @@ class ARCManager():
         self.acc_len = acc_len
         print 'done'
     
-    def _set_bof_file(self):
+    def _set_bof_file(self, boffile=None):
         """
         Loads a .bof file into the FPGA.
+        
+        :param boffile: Bof file to load into the FPGA. The .bof file must be in the /boffiles folder inside the ROACH power PC.
+        :type boffile: string
         """
         
-        print 'Programming FPGA with %s...' % self.boffile,
-        self.fpga.progdev(self.boffile)
+        if not boffile:
+            boffile = self.boffile
+        
+        print 'Programming FPGA with %s...' % boffile,
+        self.fpga.progdev(boffile)
         print 'done'
         
     def set_bw(self, bw):
@@ -322,17 +355,20 @@ class ARCManager():
         This will update the channel width to the
         closest one allowed for this bandwidth.
         
-        Parameters
-        ----------
         :param bw: Band width. 100 MHz or 400 MHz.
+        :type bw: float
         """
         
         if bw not in self.allowed_config.keys():
             bw = nearest_value(bw, self.allowed_config.keys())
-            #bw = 100e6
             print ('Bandwidth not yet implemented. ' 
                    'Using default of %0.2f MHz.') % (bw/1e6)
-        self.set_ref_clck(2*bw/1e6)
+        
+        # Not used as no gateware with downconversion worked properly
+        if bw == 50e6:
+            self.set_ref_clck(200e6/1e6)
+        else:
+            self.set_ref_clck(2*bw/1e6)
         self.bw = bw
         
     def set_chw(self, chw):
@@ -341,8 +377,6 @@ class ARCManager():
         The channel width will change
         with each band width change.
         
-        Parameters
-        ----------
         :param chw: Channel width. Must be an allowed value.
         :type chw: float
         """
@@ -369,9 +403,7 @@ class ARCManager():
         Changes the fringe tracking correction.
         Delay is in FPGA clock cycles.
         Antenna can be 0 or 1 for ARI.
-        
-        Parameters
-        ----------
+
         :param antenna: Which antenna the delay is applied to. 
         :type antenna: int
         :param delay: Coarse delay to be applied. It should have units of clock cycles. 
@@ -389,6 +421,13 @@ class ARCManager():
         print 'done'
     
     def _set_fft_shift(self, shift=(2**32)-1):
+        """
+        Configures the shift value for the FFT.
+        
+        :param shift: shift value.
+        :type shift: int
+        """
+        
         print 'Configuring fft_shift...',
         self.fpga.write_int('fft_shift', shift)
         print 'done'
@@ -397,13 +436,12 @@ class ARCManager():
         """
         Sets the name of the files that will contain the spectra.
         
-        Parameters
-        ----------
         :param filename: name of the output files.
         :type filename: string
         :param product: product to rename. By default all products output will be renamed.
                         The allowed values are: abr, abi, bar, bai, aa or bb.
         """
+        
         #print "Set file name: existent output file %s will be updated to %s" % (self.filename, _filename)
         if product == 'abr':
             self.filename_abr = filename
@@ -435,8 +473,6 @@ class ARCManager():
         """
         Set the gain of all channels.
         
-        Parameters
-        ----------
         :param gain: Channel gain. Uses the same gain for every channel.
         :type gain: int
         """
@@ -463,9 +499,8 @@ class ARCManager():
         """
         Specifies LO frequency.
         
-        Parameters
-        ----------
         :param lofreq: LO frequency in MHz.
+        :type lofreq: float
         """
         
         if not self.synth:
@@ -478,15 +513,15 @@ class ARCManager():
         """
         Specifies reference signal frequency for the ADC.
         
-        Parameters
-        ----------
         :param adcfreq: ADC reference frequency in MHz.
+        :type adcfreq: float
         """
         
         if not self.synth:
-            print ('No synthesizer on ROACH.'
+            print ('No synthesizer on ROACH. '
                    'The ADC reference frequency can not be changed.')
         else:
+            print ('Changing the ADC reference frequency to %0.f MHz.' % adcfreq)
             self.synth.set_frequency(vs.SYNTH_B, adcfreq)
     
     def start(self, ip='146.155.121.6'):
@@ -511,11 +546,10 @@ class ARCManager():
         """
         Stores the current accumulation into the ARCManager variables.
         
-        Return
-        ------
-        4 numpy arrays containing the data.
-        ab, ba, aa, bb
-        The first 2 contain complex numbers.
+        :returns: 4 numpy arrays containing the data.
+                  ab, ba, aa, bb
+                  The first 2 contain complex numbers.
+        :rtype: numpy arrays
         """
         
         self.get_spectrum()
@@ -526,10 +560,12 @@ class ARCManager():
         """
         Reads the crosscorrelation data from the FPGA.
         
-        Parameters
-        ----------
         :param baseline: Baseline name. ARI only has an ab baseline.
         :type baseline: string
+        :returns: 2 numpy arrays containing the data.
+                  ab, ba
+                  These contain complex numbers.
+        :rtype: numpy arrays
         """
         
         acc_num = self.fpga.read_uint('acc_num')
@@ -580,11 +616,8 @@ class ARCManager():
         """
         Reads the autocorrelation data from the FPGA.
         
-        Return
-        ------
-        accumulation number, frequency, 
-        auto correlation antenna A, 
-        auto correlation antenna B
+        :returns: Accumulation number, frequency, auto-correlation antenna A, auto-correlation antenna B.
+        :rtype: int, numpy arrays
         """
         
         acc_num = self.fpga.read_uint('acc_num')
@@ -641,9 +674,7 @@ class ARCManager():
         """
         Asks the ROACH for the data dump rate.
         
-        Return
-        ------
-        The time it takes to process a spectrum in seconds.
+        :returns: The time it takes to process a spectrum in seconds.
         """
         
         # factor 4 arises because the FFT processes 4 inputs simultaneously
@@ -657,10 +688,10 @@ class ARCManager():
         Creates a list with observation data.
         The list is written at the beginning of
         each line in the output spectra.
+        This is based on the old SRT python control module.
         
-        Return
-        ------
-        A list containing the header keywords and their respective values.
+        :returns: A list containing the header keywords and their respective values.
+        :rtype: list
         """
         
         minhead = ['fc', self.fc, 'bw', self.bw, 
@@ -722,8 +753,10 @@ class ARCManager():
         
     def take_data(self):
         """
-        Fast way to take data
+        Fast way to take data. It grabs the data from the auto and cross-correlations
+        and writes them to the output files. Then it waits for an integration time.
         """
+        
         self.get_spectrum()
         self.make_head()
         self.write_spectrum()
@@ -757,3 +790,8 @@ class ARCManager():
         self.datafile_abi.write( format_line(self.head, self.amp_ab.imag) )
         self.datafile_bar.write( format_line(self.head, self.amp_ba.real) )
         self.datafile_bai.write( format_line(self.head, self.amp_ba.imag) )
+        
+        
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
