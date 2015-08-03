@@ -11,15 +11,29 @@ Contents:
 .. toctree::
    :maxdepth: 2
    
-   getting_started.rst
-   intro.rst
-   example.rst
+..    getting_started.rst
+..    intro.rst
+..    example.rst
    
 ARC API
 =======
 
-.. automodule:: ../arc.py
-   :members:
+arcpy.arcpy module
+------------------
+
+.. automodule:: arcpy.arcpy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: arcpy
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Indices and tables
 ==================
