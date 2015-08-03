@@ -180,7 +180,7 @@ latex_elements = {
 
 # Additional stuff for the LaTeX preamble.
 #'preamble': '',
-    'classoptions': ',oneside',
+    'classoptions': ',oneside,openany',
     'babel': '\\usepackage[english]{babel}'
 }
 
