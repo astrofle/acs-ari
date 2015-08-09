@@ -16,7 +16,7 @@ if __name__ == '__main__':
     # ~390 kHz, which corresponds to 1024 channels.
     # Tell the ARCManager to connect to port 7147 on the ip 
     # 146.155.21.32, this is specific to the AIUC LAN.
-    # Also, tell the ARCMAanager that we have control over
+    # Also, tell the ARCManager that we have control over
     # the Valon synthesizer card. The card is mounted in 
     # /dev/ttyUSB0, but this is /dev/valonsynth on the SRT
     # control PC.
