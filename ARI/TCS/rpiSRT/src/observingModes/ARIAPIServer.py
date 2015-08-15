@@ -183,7 +183,32 @@ class ARIAPII(ARIAPI.API):
 		return msg
 		
 	def getLastScanMap(self, current = None):
-		return self.obsMode.map
+		mapS = {}
+		for node in self.obsMode.nodes:
+			if node.startswith('SRT'):
+				points = len(self.obsMode.map[node])
+				Spoints = []
+				for point in range(points):
+					_stamp = ARIAPI.stamp(self.obsMode.map[node][point].maspecs.sampleStamp.name,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.timdate,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.aznow,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.elnow,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.temperature,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.freq0,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.av,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.avc,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.nfreq,\
+					self.obsMode.map[node][point].maspecs.sampleStamp.freqsep)
+					
+					_sp = ARIAPI.specs(_stamp, self.obsMode.map[node][point].maspecs.spec,\
+					self.obsMode.map[node][point].maspecs.avspec,\
+					self.obsMode.map[node][point].maspecs.avspecc,\
+					self.obsMode.map[node][point].maspecs.specd)
+					
+					_ml = ARIAPI.mapel(self.obsMode.map[node][point].azeloff, _sp)
+					Spoints.append(_ml)
+				mapS[node] = Spoints
+		return mapS
 	
 	def findRaDecSources(self, current = None):
 		sources = []

@@ -42,7 +42,7 @@ module ARIAPI{
 	    };
 
     sequence<mapel> map;
-    
+    dictionary<string, map> scmap
     
     dictionary<string, specs> lsp;
     
@@ -166,7 +166,7 @@ module ARIAPI{
         void enableSpectrumArray(out string r);
         void disableSpectrumArray(out string r);
         void npointScanMap(int points, float delta, bool spec, out string r);
-        void getLastScanMap(out map sm);
+        void getLastScanMap(out scmap sm);
         void findRaDecSources(out sources r);
         void findPlanets(out sources r);
         void findStars(out sources r);
