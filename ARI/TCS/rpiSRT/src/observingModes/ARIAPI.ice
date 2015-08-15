@@ -42,7 +42,7 @@ module ARIAPI{
 	    };
 
     sequence<mapel> map;
-    dictionary<string, map> scmap
+    dictionary<string, map> scmap;
     
     dictionary<string, specs> lsp;
     
