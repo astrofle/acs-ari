@@ -966,9 +966,9 @@ class Antenna:
 		#print "relay 2: " + str(relay2)
 
 	def SD_ARI_Switch(self, mode):
-		if (mode == 'SD'):
-			self.off(self.SwitchPin)
 		if (mode == 'ARI'):
+			self.off(self.SwitchPin)
+		if (mode == 'SD'):
 			self.on(self.SwitchPin)
 
 	#def R2(state):
