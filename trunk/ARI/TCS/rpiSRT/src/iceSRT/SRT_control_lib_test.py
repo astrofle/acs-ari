@@ -720,7 +720,7 @@ class Antenna:
 				pass
 		data = self.port.read(128)
 		print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())+" " +self.name+" recibido"
-		recv = struct.unpack('64H', data)
+		recv = struct.unpack('!64H', data)
 		#####
 		for i in range(64):
 			if (i<=31):
