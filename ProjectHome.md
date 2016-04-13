@@ -1,0 +1,1 @@
+This project ports/adapt ALMA Common Software (ACS) and ALMA observation software for the Academic Radio Interferometer at Pontificia Universidad Catolica de Chile
